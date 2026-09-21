@@ -6,7 +6,7 @@ import tempfile
 import unittest
 import zipfile
 
-import fitz
+import pymupdf as fitz
 
 ROOT = Path(__file__).resolve().parents[1]
 

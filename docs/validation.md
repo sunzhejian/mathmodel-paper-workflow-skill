@@ -8,6 +8,7 @@
 
 - `python -m unittest discover -s tests -v`：25 项通过，包括合同驱动检查、dry-run、合并 PDF 的正文边界、非法数值/路径和旧报告保护，以及端到端合成案例、原附录保真、占用页脚拒绝和打包限制。
 - skill-creator 的 `quick_validate.py`：技能入口有效。
+- 远端测试暴露旧 `fitz` 导入的警告会污染 JSON 标准输出；已使用正式 `pymupdf` 导入，最低版本调整到 1.24.3（[上游版本说明](https://github.com/pymupdf/PyMuPDF/discussions/3458)）。dry-run 测试直接解析完整标准输出，防止类似回归。
 - `run_demo.py`：生成 21 条合成解析结果；新正文 2 页，原附录 2 页，最终 4 页；原文件未改；大留白与原始公式文本反例均被识别。
 - 合成正文最大整行连续空白带约 4.95%，通过示例的 20% 阈值。此数字仅描述测试夹具，不代表真实论文。
 - 三张 `.drawio` 使用已安装 scibox-diagram 的严格布局检查，均为 FAIL 0 / WARN 0；PNG 导出后检查中文文本、箭头、对齐与遮挡。讲解图由本仓库原创 XML 生成器制作。

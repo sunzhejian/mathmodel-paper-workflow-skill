@@ -9,7 +9,7 @@ import subprocess
 import sys
 import zipfile
 
-import fitz
+import pymupdf as fitz
 
 ROOT = Path(__file__).resolve().parents[1]
 SOLVER = '''"""Synthetic analytic example; not experimental or competition data."""
