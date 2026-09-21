@@ -1,0 +1,10 @@
+{
+  "purpose": "Historical source pins; not a claim that all installed skills executed, and not a latest-version recommendation",
+  "sources": [
+    {"name": "MathModelAgent", "url": "https://github.com/jihe520/MathModelAgent", "commit": "83d8783187a2d29dda1b046cb667009cc50c8203"},
+    {"name": "sci-box", "url": "https://github.com/jihe520/sci-box", "commit": "9687d2a52037e92bf68a781b9b1e061ca03c8125"},
+    {"name": "BZD", "url": "https://github.com/BZDmathclub/bzd-math-modeling-skills", "commit": "332d55c2f3244c9e193e90749f42bcc0d534ce53"},
+    {"name": "EditaPlot", "url": "https://github.com/hang-jin/editaplot", "commit": "01721038afd212103d96225319b22d1bbfe32270"}
+  ],
+  "local_only": [{"name": "mma-paper", "public_source_verified": false}]
+}

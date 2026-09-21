@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="workflow" name="Page-1">
+    <mxGraphModel page="1" pageWidth="1400" pageHeight="900" grid="1" gridSize="10" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="03  排版验收与附录保真" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=30;fontColor=#172b43;fontStyle=1;fillColor=none;strokeColor=none;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="30" width="1310" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="先完成正文迭代，再接回原附录；量化留白与人工视觉检查缺一不可" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=0;fillColor=none;strokeColor=none;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="90" width="1310" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="修改源文件&lt;br&gt;段落、图宽、浮动体" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="190" width="290" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="编译正文&lt;br&gt;检查引用、缺字、越界" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="385" y="190" width="290" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="自动检查&lt;br&gt;页数、公式文本、留白" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="725" y="190" width="290" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="逐页看图&lt;br&gt;遮挡、透视、图文顺序" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="190" width="290" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="8" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="337" y="250" as="sourcePoint" />
+            <mxPoint x="383" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="677" y="250" as="sourcePoint" />
+            <mxPoint x="723" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="10" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1017" y="250" as="sourcePoint" />
+            <mxPoint x="1063" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1210" y="312" as="sourcePoint" />
+            <mxPoint x="190" y="312" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1210" y="365" />
+              <mxPoint x="190" y="365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12" value="未通过：返回源文件修改并重编译" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=0;fillColor=none;strokeColor=none;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="430" y="385" width="540" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="通过后接回原附录&lt;br&gt;按原 PDF 物理页选取&lt;br&gt;不重建用户手改内容" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#dbeef4;strokeColor=#668d89;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="515" width="370" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="逐页保真比对&lt;br&gt;文字 + 渲染像素&lt;br&gt;加页码只使用空白页脚" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#dbeef4;strokeColor=#668d89;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="515" y="515" width="370" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="最终交付&lt;br&gt;PDF / 按需 Word / 源文件&lt;br&gt;白名单 ZIP + 哈希清单" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#dbeef4;strokeColor=#668d89;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="985" y="515" width="370" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="16" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="417" y="580" as="sourcePoint" />
+            <mxPoint x="513" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="17" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="887" y="580" as="sourcePoint" />
+            <mxPoint x="983" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="18" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1357" y="250" as="sourcePoint" />
+            <mxPoint x="43" y="580" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1380" y="250" />
+              <mxPoint x="1380" y="465" />
+              <mxPoint x="25" y="465" />
+              <mxPoint x="25" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="19" value="留白口径：版心内“整行宽度连续空白高度” ÷ 版心高度&lt;br&gt;20% 是示例阈值，不是整页白色像素比例；自动指标不能发现全部重叠" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#fcead9;strokeColor=#c08b5c;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="725" width="1310" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

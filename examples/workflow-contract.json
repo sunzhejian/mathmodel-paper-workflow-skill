@@ -1,0 +1,15 @@
+{
+  "status": "illustrative; replace with the latest user and competition requirements",
+  "authoritative_source": "input/latest-user-approved.pdf",
+  "editable_entry": "paper/main.tex",
+  "page_scope": ["abstract", "body", "ai-disclosure", "references"],
+  "page_requirement": {"mode": "maximum", "count": 31},
+  "margins_cm_top_right_bottom_left": [2.5, 2.5, 2.5, 2.5],
+  "paragraph_indent_chinese_characters": 2,
+  "blank_limit_percent": 20,
+  "blank_measurement": "maximum full-width continuous vertical blank band inside content area",
+  "appendix": {"preserve": true, "source": "input/original.pdf", "start_pdf_page": 30, "number_pages": false},
+  "citations": {"chinese_cnki_verifiable_if_required": true, "style": "superscript-square-brackets"},
+  "outputs": ["pdf", "editable-source", "support-zip"],
+  "note": "This contract is an agent-readable example, not a config file automatically consumed by the CLI scripts. Physical PDF page indices are one-based."
+}

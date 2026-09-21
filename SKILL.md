@@ -18,6 +18,7 @@ description: 依据求解证据迭代定稿中文数学建模竞赛论文，处�
 
 ## 选择本次需要的步骤
 
+- **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。按现有产物选择 MathModelAgent、sci-box、BZD 等阶段技能，不重复部署同名入口；记录安装、阅读与执行的不同状态。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。
 - **模型、数值、摘要或措辞**：读 [证据与写作](references/evidence-and-writing.md)。建立每问“输入—假设—方程—算法—输出—验证”对应后写结论。只做排版时不擅自重算或替换模型。
 - **图、公式、线稿、分页**：读 [图表与排版](references/figures-and-layout.md)。先修标注和图文顺序，再量化留白；优先编辑矢量源。
 - **附录、Word/PDF、支撑包或复现**：读 [编译与交付](references/build-and-delivery.md)。先编译检查正文，最后接回原附录。

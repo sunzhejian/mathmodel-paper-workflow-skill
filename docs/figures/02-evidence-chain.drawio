@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="workflow" name="Page-1">
+    <mxGraphModel page="1" pageWidth="1400" pageHeight="900" grid="1" gridSize="10" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="02  结果怎样进入论文" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=30;fontColor=#172b43;fontStyle=1;fillColor=none;strokeColor=none;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="30" width="1310" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="保留完整精度的证据链：每个结论都能回到输入、脚本、参数和运行记录" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=0;fillColor=none;strokeColor=none;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="90" width="1310" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="题面与附件&lt;br&gt;字段 · 单位 · 文件哈希" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=1;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="190" width="290" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="逐问独立入口&lt;br&gt;方程 · 假设 · 参数 · 环境" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=1;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="385" y="190" width="290" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="原精度结果&lt;br&gt;数组 · 元数据 · 收敛记录&lt;br&gt;核验通过后再分流" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=1;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="725" y="190" width="290" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="验证并反馈&lt;br&gt;解析对照 · 网格 · 边界" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=1;fillColor=#eef6fd;strokeColor=#3b547f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="190" width="290" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="8" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="337" y="255" as="sourcePoint" />
+            <mxPoint x="383" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="677" y="255" as="sourcePoint" />
+            <mxPoint x="723" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="10" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1017" y="255" as="sourcePoint" />
+            <mxPoint x="1063" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1210" y="188" as="sourcePoint" />
+            <mxPoint x="870" y="188" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1210" y="155" />
+              <mxPoint x="870" y="155" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12" value="判据分支&lt;br&gt;阈值、事件、误差计算&lt;br&gt;始终使用未舍入值" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#dbeef4;strokeColor=#668d89;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="190" y="425" width="440" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="展示分支&lt;br&gt;表格格式、坐标轴与摘要&lt;br&gt;仅在显示时取约定小数位" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#dbeef4;strokeColor=#668d89;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="770" y="425" width="440" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="14" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="322" as="sourcePoint" />
+            <mxPoint x="410" y="423" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="850" y="370" />
+              <mxPoint x="410" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="15" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="895" y="322" as="sourcePoint" />
+            <mxPoint x="990" y="423" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="895" y="385" />
+              <mxPoint x="990" y="385" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="16" value="正文中的每一问&lt;br&gt;方法 → 关键公式与范围 → 数值结果 → 物理/业务含义 → 适用边界" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#172b43;fontStyle=0;fillColor=#e5dfeb;strokeColor=#9b979f;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="190" y="650" width="1020" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="17" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="410" y="562" as="sourcePoint" />
+            <mxPoint x="410" y="648" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="18" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeColor=#52697d;strokeWidth=2;dashed=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="990" y="562" as="sourcePoint" />
+            <mxPoint x="990" y="648" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="19" value="同一份结果驱动表格、数据图和文字；示意图单独标明几何关系，不伪装成实测图" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;spacing=12;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#172b43;fontStyle=0;fillColor=none;strokeColor=none;strokeWidth=1.4;" vertex="1" parent="1">
+          <mxGeometry x="45" y="805" width="1310" height="45" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
