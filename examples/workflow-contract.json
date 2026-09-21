@@ -2,6 +2,7 @@
   "status": "illustrative; replace with the latest user and competition requirements",
   "authoritative_source": "input/latest-user-approved.pdf",
   "editable_entry": "paper/main.tex",
+  "audit": {"pdf": "deliverables/body.pdf", "pdf_scope": "body-only", "first_page": 1, "last_page": null},
   "page_scope": ["abstract", "body", "ai-disclosure", "references"],
   "page_requirement": {"mode": "maximum", "count": 31},
   "margins_cm_top_right_bottom_left": [2.5, 2.5, 2.5, 2.5],
@@ -11,5 +12,5 @@
   "appendix": {"preserve": true, "source": "input/original.pdf", "start_pdf_page": 30, "number_pages": false},
   "citations": {"chinese_cnki_verifiable_if_required": true, "style": "superscript-square-brackets"},
   "outputs": ["pdf", "editable-source", "support-zip"],
-  "note": "This contract is an agent-readable example, not a config file automatically consumed by the CLI scripts. Physical PDF page indices are one-based."
+  "note": "audit_contract.py consumes audit, page_requirement, margins and blank_limit. Other fields guide the agent and are not automatically enforced. Physical PDF page indices are one-based."
 }

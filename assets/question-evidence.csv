@@ -1,0 +1,2 @@
+question,requirement,input_files,assumptions,model_and_domain,solver_command,raw_output,field_or_locator,unit,display_rule,validation_evidence,status
+Q1,填写原题要求,相对路径,明确假设,公式与适用范围,独立求解入口,原精度输出路径,字段或索引,物理单位,例如四位小数,实际检验记录,pending

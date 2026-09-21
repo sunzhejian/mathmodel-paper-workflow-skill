@@ -55,6 +55,10 @@ python -m pip install -r requirements.txt
 | [复现手册](references/reproduction-guide.md) | 环境、端到端演示、真实项目迁移、图源重绘 |
 | [历史版本锁](examples/upstream-lock.json) | 4 个公开上游的来源与当时提交 |
 | [约束合同示例](examples/workflow-contract.json) | 页数口径、边距、留白、附录与交付约定 |
+| [合同检查入口](scripts/audit_contract.py) | 直接读取合同，校验范围并运行 PDF 检查；支持 dry-run |
+| [修订细则](references/revision-playbook.md) | 反馈定位、逐问公式、摘要、图片宽度与同版本验收 |
+| [失败恢复](references/failure-recovery.md) | 14 类常见故障的定位、修改和复验动作 |
+| [修订记录](assets/revision-record.md) / [逐问证据表](assets/question-evidence.csv) | 多轮修订时按需复制使用 |
 | [证据与写作](references/evidence-and-writing.md) | 数值追溯、摘要、逐问模型、符号及文献 |
 | [图表与排版](references/figures-and-layout.md) | 中文字体、可见图宽、线稿透视、标注避让、留白 |
 | [编译与交付](references/build-and-delivery.md) | 原附录接回、PDF/Word验收及支撑包 |
@@ -62,6 +66,7 @@ python -m pip install -r requirements.txt
 | [支撑包工具](scripts/package_support.py) | 显式白名单、路径检查、哈希与 ZIP 回读 |
 | [可运行合成案例](scripts/run_demo.py) | 独立计算、正反例检查、附录拼接、打包回读 |
 | [核验记录](docs/validation.md) | 本轮测试、讲解图检查与自动验收边界 |
+| [人工验收情景](examples/acceptance-scenarios.md) | 十种典型反馈的预期行为与失败判据；供实际评估时使用 |
 
 ```sh
 python scripts/pdf_workflow.py audit paper.pdf --last-page 31 --blank-limit 20 --report qa/layout.json --render-dir qa/pages

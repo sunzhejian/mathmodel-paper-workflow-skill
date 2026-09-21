@@ -18,6 +18,7 @@ description: 依据求解证据迭代定稿中文数学建模竞赛论文，处�
 
 ## 选择本次需要的步骤
 
+- **多轮反馈、每问公式或检查失败**：读 [修订细则](references/revision-playbook.md)，按需使用反馈记录与逐问证据模板；遇到具体失败查 [恢复手册](references/failure-recovery.md)。简单修改不强制建完整台账。
 - **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。按现有产物选择 MathModelAgent、sci-box、BZD 等阶段技能，不重复部署同名入口；记录安装、阅读与执行的不同状态。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。
 - **模型、数值、摘要或措辞**：读 [证据与写作](references/evidence-and-writing.md)。建立每问“输入—假设—方程—算法—输出—验证”对应后写结论。只做排版时不擅自重算或替换模型。
 - **图、公式、线稿、分页**：读 [图表与排版](references/figures-and-layout.md)。先修标注和图文顺序，再量化留白；优先编辑矢量源。
@@ -28,6 +29,9 @@ description: 依据求解证据迭代定稿中文数学建模竞赛论文，处�
 需要时安装本技能根目录 `requirements.txt` 的依赖。`python` 指当前环境可用的 Python，不写死盘符。
 
 ```sh
+# 按项目合同检查；合同示例须先替换成该项目的真实路径和约束。
+python scripts/audit_contract.py project-contract.json --project-root project --report qa/round-01/layout.json --render-dir qa/round-01/pages
+
 # 只审核正文范围；示例参数按项目替换，页号从 1 开始。
 python scripts/pdf_workflow.py audit paper.pdf --last-page 31 --margins-cm 2.5 2.5 2.5 2.5 --blank-limit 20 --report qa/layout.json --render-dir qa/pages
 
@@ -45,6 +49,8 @@ python scripts/package_support.py support-root support-files.json support.zip
 ```
 
 `audit` 测量版心内整行宽度连续无内容的竖向区间，报告页尾及最大空白带。**不是总白色像素比例，也不能自动证明没有文字重叠。** 它跳过范围外附录，检测疑似未编译公式，输出逐页预览。超标退出码 1，输入错误 2；未提供留白限制时只报告，不发明门槛。
+
+`audit_contract.py` 读取合同的 `audit`、页数、边距与留白字段；其余字段供代理执行，不代表已自动核验。合并 PDF 必须指定正文末页，报告和预览采用新路径；`--dry-run` 仅打印参数。详细字段和命令见 [复现手册](references/reproduction-guide.md#8-让合同直接驱动检查)。
 
 `append` 复核每页原附录的渲染和文字；加页码前检查页脚文字与图形为空，之后验证页脚外一致。已有页码、扫描污点、旋转页或不合适区域会停止，不用白块覆盖。数字签名等 PDF 级元数据不属于视觉保真保证。
 

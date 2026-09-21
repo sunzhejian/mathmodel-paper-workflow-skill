@@ -105,7 +105,7 @@ git -C vendor/EditaPlot checkout 01721038afd212103d96225319b22d1bbfe32270
 
 ## 5. 实际论文的编译与迭代
 
-1. 把最新指令落实到 [约束合同示例](../examples/workflow-contract.json)。本示例用于人工/代理读取，CLI 不会自动解析它；调用命令的参数必须与合同一致。
+1. 把最新指令落实到 [约束合同示例](../examples/workflow-contract.json)。`audit_contract.py` 可以读取其中的 PDF 范围、页数、边距和留白阈值执行检查（见第 8 节）；其余约束仍由代理/人工落实。
 2. 找到可编辑源。用户指定的 PDF 与旧 TeX 不同，应先比对正文和保留区域，不能覆盖用户手改附录。
 3. 按每问组织模型：输入、假设、方程/方程组、参数与单位、变量范围、求解结果、含义。共享理论放前面，每问保留自己的关键公式。方程后有范围时用逗号分隔；没有续接内容时按用户/模板约定统一标点。
 4. 适度加粗关键方法与结果；框选最终模型、判据或主要结果，不把全部公式加框。摘要仅使用已核验数值。符号表一行一个符号。
@@ -141,3 +141,26 @@ drawio -x -f png -s 1.5 -b 0 -o docs/figures/03-layout-loop.png docs/figures/03-
 需要已安装 draw.io 桌面版，命令别名随系统安装而不同；服务器需图形会话或相应虚拟显示。中文字体使用 Microsoft YaHei，其他系统建议安装 Noto Sans CJK SC 并在源图中替换字体。PNG 因字体与 draw.io 版本可能略有不同，XML 几何定义可重复生成。
 
 若装有 scibox-diagram，对每张源图运行其 `scripts/check_layout.py <图.drawio> --strict`，再用 `scripts/export_figure.py <图.drawio>` 导出。图源生成不依赖该技能，版式检查与导出借助其已安装工具；本仓库不复制上游实现。导出后进行两轮视觉复核：第一轮检查文字、重叠与裁切，第二轮检查箭头逻辑、节点顺序与对齐。
+
+## 8. 让合同直接驱动检查
+
+复制合同示例，按本次用户要求填写。路径使用相对于 `--project-root` 的路径；脚本拒绝目录逃逸，不允许覆盖已有报告或预览目录。
+
+```sh
+python scripts/audit_contract.py project-contract.json --project-root project --dry-run
+python scripts/audit_contract.py project-contract.json --project-root project --report qa/round-01/layout.json --render-dir qa/round-01/pages
+```
+
+| 字段 | 处理方式 |
+| --- | --- |
+| `audit.pdf` | 待检查 PDF，须已编译且位于项目内 |
+| `audit.pdf_scope` | `body-only` 表示纯正文范围文件；`combined` 表示包含附录 |
+| `audit.first_page` / `last_page` | 从 1 开始的物理页号；包含末页；合并 PDF 必须明确末页 |
+| `page_requirement.mode` / `count` | `maximum` 为上限，`exact` 为确切页数；不能因为历史例子写 31 就替用户设定 |
+| `margins_cm_top_right_bottom_left` | 四个非负有限数，顺序上右下左 |
+| `blank_limit_percent` | 0—100；设为 `null` 只报告，不判断是否超标 |
+| 其余字段 | 代理参考，不自动执行文献审查、附录拼接、Word 检查或对外发布 |
+
+`page_scope` 描述计数口径，脚本不会识别某页是不是摘要或参考文献。运行前必须核实物理页范围与合同口径一致。退出码与恢复方法见 [失败恢复](failure-recovery.md)。
+
+可直接用已有合成演示试运行：复制合同到新文件，将 `audit.pdf` 改成 `body.pdf`，页数设置为 `exact: 2`，项目根设成 `qa/demo`，报告使用 `qa/contract-layout.json`。演示仍是合成数据，不构成原论文复现。
