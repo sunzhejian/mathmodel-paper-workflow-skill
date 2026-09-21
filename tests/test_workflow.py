@@ -23,6 +23,15 @@ package = module('package_support')
 
 
 class WorkflowTests(unittest.TestCase):
+    def test_portable_utf8_text_resources(self):
+        candidates = list(ROOT.glob('*.md'))
+        for directory in ['agents', 'references', 'scripts', 'tests', '.github']:
+            candidates.extend(p for p in (ROOT/directory).rglob('*') if p.suffix in {'.md', '.py', '.yml', '.yaml'})
+        for path in candidates:
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                text = path.read_bytes().decode('utf-8')
+                self.assertNotIn('\ufffd', text)
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)

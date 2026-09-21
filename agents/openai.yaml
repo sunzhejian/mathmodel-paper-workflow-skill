@@ -1,4 +1,4 @@
 interface:
-  display_name: "��ģ���ĵ�������"
-  short_description: "��ͨ���֤�ݡ���ʽͼ���������߸塢�Ű漰��¼��������ģ���Ĺ�����"
-  default_prompt: "ʹ�� $mathmodel-paper-workflow �����ҵ����⡢���������������Ҫ������޶������ͼ���Ű沢������׷�ݵ������ļ���"
+  display_name: "数模论文迭代定稿"
+  short_description: "贯通求解证据、公式图表、物理线稿、排版及附录保留的数模论文工作流"
+  default_prompt: "使用 $mathmodel-paper-workflow 依据我的赛题、求解结果和最新论文要求完成修订，检查图文排版并交付可追溯的最终文件。"
