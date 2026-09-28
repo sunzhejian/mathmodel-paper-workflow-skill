@@ -71,6 +71,7 @@ python -m pip install -r requirements.txt
 | [PDF 工具](scripts/pdf_workflow.py) | 留白/公式检查、渲染、附录保留和可选页码 |
 | [支撑包工具](scripts/package_support.py) | 显式白名单、路径检查、哈希与 ZIP 回读 |
 | [交付一致性门禁](scripts/verify_delivery.py) | 核对正文、附录来源、最终 PDF、检查报告及支撑 ZIP 属于同一版 |
+| [论文口吻筛查](scripts/check_paper_voice.py) | 在 TeX/Markdown 源中标出明显的工作过程用语，供人工复核 |
 | [可运行合成案例](scripts/run_demo.py) | 独立计算、正反例检查、附录拼接、打包回读 |
 | [核验记录](docs/validation.md) | 本轮测试、讲解图检查与自动验收边界 |
 | [人工验收情景](examples/acceptance-scenarios.md) | 十种典型反馈的预期行为与失败判据；供实际评估时使用 |

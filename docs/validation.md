@@ -6,7 +6,7 @@
 
 ## 本地检查
 
-- `python -X utf8 -m unittest discover -s tests -v`：30 项通过，包括合同驱动检查、dry-run、合并 PDF 的正文边界、非法数值/路径和旧报告保护，以及端到端合成案例、原附录保真、占用页脚拒绝、打包限制、子模块入口与父仓库指针、远端更新检测的正反例。
+- `python -X utf8 -m unittest discover -s tests -v`：32 项通过，包括合同驱动检查、dry-run、合并 PDF 的正文边界、非法数值/路径和旧报告保护，以及端到端合成案例、原附录保真、占用页脚拒绝、打包限制、子模块入口与父仓库指针、远端更新检测、论文制作语泄露筛查的正反例。
 - `python -X utf8 scripts/check_vendor_skills.py`：4 个子模块均与历史版本锁提交一致，12 个选用 `SKILL.md` 的文件与 frontmatter 名称均匹配。
 - `python -X utf8 scripts/check_upstream_updates.py`：更新版本锁后，四个来源的远端 HEAD 与固定提交一致，错误数 0。该检查只读，不自行决定上游变更是否适用。
 - skill-creator 的 `quick_validate.py`：技能入口有效。
@@ -23,4 +23,4 @@
 
 自动检查不证明模型正确、论文有创新或竞赛合规；文献检索、物理含义、图中文字遮挡和 Word 分页仍需对应检查。示例源是合成数据；历史技能使用证据是部署/审查记录，不意味着公开提供了原项目的私人产物。
 
-[人工验收情景](../examples/acceptance-scenarios.md) 列出十种技能行为评估输入和预期；它们不是已运行的代理评测，不计入上述 30 项脚本测试。子模块文件可用不证明其已在某次论文任务中执行。
+[人工验收情景](../examples/acceptance-scenarios.md) 列出十二种技能行为评估输入和预期；它们不是已运行的代理评测，不计入上述 32 项脚本测试。子模块文件可用不证明其已在某次论文任务中执行。

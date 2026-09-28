@@ -50,6 +50,9 @@ python scripts/package_support.py support-root support-files.json support.zip
 
 # 交付前核对正文、原附录、最终 PDF、检查报告和支撑包是否来自同一版。
 python scripts/verify_delivery.py body.pdf original.pdf final.pdf qa/layout.json qa/appendix.json --support-zip support.zip --support-root support-root --report qa/delivery.json
+
+# 在论文源中筛查高确定性的工作过程用语；仍需人工通读题注和正文。
+python scripts/check_paper_voice.py paper/main.tex paper/sections
 ```
 
 `audit` 测量版心内整行宽度连续无内容的竖向区间，报告页尾及最大空白带。**不是总白色像素比例，也不能自动证明没有文字重叠。** 它跳过范围外附录，检测疑似未编译公式，输出逐页预览。超标退出码 1，输入错误 2；未提供留白限制时只报告，不发明门槛。
@@ -62,9 +65,11 @@ python scripts/verify_delivery.py body.pdf original.pdf final.pdf qa/layout.json
 
 - 变更对应用户反馈；新增分析有数据或推导支持，不以套话填页。
 - 数值和结果表可追溯，显示与计算精度分开；不冒充实测或未经运行的验证。
+- 对照题面分别核验“正文展示范围”和“电子文件完整范围”：每问的起止时间、采样间隔、空间列、工作表及额外终点记录均满足要求，不能用典型时刻小表替代全过程文件。
 - 编译没有未解决引用、缺字、明显越界；重点页原尺寸查看，正文逐页检查。
 - 图例、引线、尺寸线和文字互不遮挡；公式及黑框不裁切；标题后有正文。
 - 图表就近放在完整段落之后，同一问的结果不被下一问标题隔开。
+- 标题、图题、表题和摘要只表达研究对象、方法与结果；“一行一符号”等排版指令留在制作记录，不写成读者可见的题注。对自动筛查结果逐条复核。
 - PDF 与被要求的 Word 分别核验；仅检查 PDF 就只报告 PDF 合格。
 - 原附录按约定保留，新增页码连续；源、图和支撑包对应同一最终版本。
 - 修改正文或最终 PDF 后重新生成相关检查报告；用 `verify_delivery.py` 拒绝旧报告和变更后的支撑文件。该工具只核对文件与报告一致性，不替代人工内容审查。
