@@ -7,7 +7,7 @@
 建议 Python 3.11；支持的底线见 README。以下命令都从仓库根目录执行。若已经安装为 skill，直接进入该目录，不必重复克隆。
 
 ```sh
-git clone https://github.com/sunzhejian/mathmodel-paper-workflow-skill.git
+git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-workflow-skill.git
 cd mathmodel-paper-workflow-skill
 python -m venv .venv
 ```
@@ -88,7 +88,16 @@ project/
 
 ## 4. 复现历史技能配置
 
-安装路线与作用见 [技能协作](skill-orchestration.md)。需要复现上游时从锁定文件获取地址与提交，逐个执行，例如：
+安装路线与作用见 [技能协作](skill-orchestration.md)。四个固定版本上游现已通过子模块接入本仓库，首次克隆若未带 `--recurse-submodules`，运行：
+
+```sh
+git submodule update --init --recursive
+python scripts/check_vendor_skills.py
+```
+
+上游项目文件随后位于 `vendor/MathModelAgent`、`vendor/sci-box`、`vendor/BZD`、`vendor/EditaPlot`；[入口清单](../vendor/skill-integrations.json) 明确所选的本地 `SKILL.md`。本仓库的 Git 提交固定了子模块版本，`check_vendor_skills.py` 再核对它们与[历史版本锁](../examples/upstream-lock.json)一致。只为当前阶段读取所需入口及引用文件。
+
+若只想独立获取某个上游，也可从锁定文件获取地址与提交，例如：
 
 ```sh
 git clone https://github.com/jihe520/MathModelAgent vendor/MathModelAgent
@@ -101,7 +110,7 @@ git clone https://github.com/hang-jin/editaplot vendor/EditaPlot
 git -C vendor/EditaPlot checkout 01721038afd212103d96225319b22d1bbfe32270
 ```
 
-从各仓库查找 `SKILL.md`，读取它的安装说明，按 `name` 去重后安装所需技能。不要递归复制所有文件夹到技能目录，也不要把 `vendor` 提交为本仓库原创内容。`mma-paper` 没有已核验公开来源，需要使用项目现有副本；缺少它不妨碍运行本仓库的演示与验收工具。
+从各仓库查找 `SKILL.md`，读取它的安装说明，按 `name` 去重后安装所需技能。子模块是上游仓库引用，不是本仓库原创代码；不要将其内容按本仓库 MIT 许可重新发布。`mma-paper` 没有已核验公开来源，需要使用项目现有副本；缺少它不妨碍运行本仓库的演示与验收工具。
 
 ## 5. 实际论文的编译与迭代
 

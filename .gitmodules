@@ -1,0 +1,12 @@
+[submodule "vendor/MathModelAgent"]
+	path = vendor/MathModelAgent
+	url = https://github.com/jihe520/MathModelAgent.git
+[submodule "vendor/sci-box"]
+	path = vendor/sci-box
+	url = https://github.com/jihe520/sci-box.git
+[submodule "vendor/BZD"]
+	path = vendor/BZD
+	url = https://github.com/BZDmathclub/bzd-math-modeling-skills.git
+[submodule "vendor/EditaPlot"]
+	path = vendor/EditaPlot
+	url = https://github.com/hang-jin/editaplot.git

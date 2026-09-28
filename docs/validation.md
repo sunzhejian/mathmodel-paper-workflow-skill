@@ -2,11 +2,12 @@
 
 ## 范围
 
-已包含技能协作说明、复现手册、上游版本记录、约束合同、合成演示和三张可编辑讲解图；本轮进一步增加合同执行入口、修订细则、失败恢复和记录模板。没有改动或公开竞赛论文及其数据。
+已包含技能协作说明、复现手册、上游版本记录、约束合同、合成演示和三张可编辑讲解图；本轮将四个上游技能项目以固定提交的 Git 子模块放入 `vendor/`，增加入口清单与校验脚本。没有改动或公开竞赛论文及其数据。
 
 ## 本地检查
 
-- `python -m unittest discover -s tests -v`：25 项通过，包括合同驱动检查、dry-run、合并 PDF 的正文边界、非法数值/路径和旧报告保护，以及端到端合成案例、原附录保真、占用页脚拒绝和打包限制。
+- `python -X utf8 -m unittest discover -s tests -v`：27 项通过，包括合同驱动检查、dry-run、合并 PDF 的正文边界、非法数值/路径和旧报告保护，以及端到端合成案例、原附录保真、占用页脚拒绝、打包限制，以及子模块入口的正确与错误配置检查。
+- `python -X utf8 scripts/check_vendor_skills.py`：4 个子模块均与历史版本锁提交一致，12 个选用 `SKILL.md` 的文件与 frontmatter 名称均匹配。
 - skill-creator 的 `quick_validate.py`：技能入口有效。
 - 远端测试暴露旧 `fitz` 导入的警告会污染 JSON 标准输出；已使用正式 `pymupdf` 导入，最低版本调整到 1.24.3（[上游版本说明](https://github.com/pymupdf/PyMuPDF/discussions/3458)）。dry-run 测试直接解析完整标准输出，防止类似回归。
 - `run_demo.py`：生成 21 条合成解析结果；新正文 2 页，原附录 2 页，最终 4 页；原文件未改；大留白与原始公式文本反例均被识别。
@@ -15,10 +16,10 @@
 
 ## 如何复查
 
-从仓库根目录执行复现手册中的环境和演示命令。GitHub Actions 对每次提交运行 Windows 与 Ubuntu 测试；远端最新状态以 [Actions](https://github.com/sunzhejian/mathmodel-paper-workflow-skill/actions) 为准。draw.io 渲染依赖桌面环境，未列入这两项无界面自动测试；测试只验证图源生成确定性与可编辑节点结构。
+从仓库根目录执行复现手册中的环境和演示命令。首次克隆须带 `--recurse-submodules`；已有仓库须运行 `git submodule update --init --recursive`。GitHub Actions 对每次提交在 Windows 与 Ubuntu 递归拉取子模块、核对入口并运行测试；远端最新状态以 [Actions](https://github.com/sunzhejian/mathmodel-paper-workflow-skill/actions) 为准。draw.io 渲染依赖桌面环境，未列入这两项无界面自动测试；测试只验证图源生成确定性与可编辑节点结构。
 
 ## 界限
 
 自动检查不证明模型正确、论文有创新或竞赛合规；文献检索、物理含义、图中文字遮挡和 Word 分页仍需对应检查。示例源是合成数据；历史技能使用证据是部署/审查记录，不意味着公开提供了原项目的私人产物。
 
-[人工验收情景](../examples/acceptance-scenarios.md) 列出十种技能行为评估输入和预期；它们不是已运行的代理评测，不计入上述 25 项脚本测试。
+[人工验收情景](../examples/acceptance-scenarios.md) 列出十种技能行为评估输入和预期；它们不是已运行的代理评测，不计入上述 27 项脚本测试。子模块文件可用不证明其已在某次论文任务中执行。

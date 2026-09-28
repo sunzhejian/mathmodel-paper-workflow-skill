@@ -2,7 +2,7 @@
 
 一个从实际中文数学建模论文多轮修订中提炼的 Codex skill：将逐问求解证据、摘要与公式、科研图表、教材式物理线稿、分页优化、原附录保留及支撑材料验收连接起来。
 
-它接续 **MathModelAgent、sci-box、BZD 专项审查、项目已有的 mma-paper** 等技能。不是把它们重新打包：完整的分工、实际使用证据、可选工具与历史版本见 [技能协作说明](references/skill-orchestration.md)。
+它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、项目已有的 mma-paper** 等技能。前四个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
 **先体验：**安装依赖后运行 `python scripts/run_demo.py --output qa/demo`，得到合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包。详细命令、预期输出、真实项目迁移与失败处理见 [复现手册](references/reproduction-guide.md)。
 
@@ -31,8 +31,10 @@ MathModelAgent 组织建模与写作，sci-box 处理图形，BZD 提供专项�
 将仓库克隆到 Codex 的技能目录（Windows 默认位于用户目录下 `.codex/skills`，或使用自己的 `$CODEX_HOME/skills`）：
 
 ```sh
-git clone https://github.com/sunzhejian/mathmodel-paper-workflow-skill.git ~/.codex/skills/mathmodel-paper-workflow
+git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-workflow-skill.git ~/.codex/skills/mathmodel-paper-workflow
 ```
+
+已克隆旧版仓库时，在仓库根目录执行 `git submodule update --init --recursive`。运行 `python scripts/check_vendor_skills.py` 检查四个上游提交和 12 个选用入口。子模块文件在本地可读，但不会自动注册为顶层 Codex skill；按当前阶段读取对应 `SKILL.md`。
 
 使用脚本需要 Python 3.10+：
 
@@ -52,6 +54,8 @@ python -m pip install -r requirements.txt
 | --- | --- |
 | [SKILL.md](SKILL.md) | 入口、反馈处理与完成标准 |
 | [技能协作](references/skill-orchestration.md) | 其他技能的分工、证据等级、调用顺序、同名去重 |
+| [上游项目文件](vendor/README.md) / [入口清单](vendor/skill-integrations.json) | 固定提交的实际文件、所选技能路径和许可边界 |
+| [上游技能检查](scripts/check_vendor_skills.py) | 核对四个子模块提交、入口文件及 frontmatter 名称 |
 | [复现手册](references/reproduction-guide.md) | 环境、端到端演示、真实项目迁移、图源重绘 |
 | [历史版本锁](examples/upstream-lock.json) | 4 个公开上游的来源与当时提交 |
 | [约束合同示例](examples/workflow-contract.json) | 页数口径、边距、留白、附录与交付约定 |
