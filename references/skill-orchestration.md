@@ -15,7 +15,7 @@
 | `mma-paper` | 原项目本地工作流入口，有配置与论文源；没有已核验的公开上游地址 | 本地可用且项目要求时遵循其入口；否则按本技能接口执行，不虚构下载地址 |
 | `mathmodel-paper-workflow` | 从上述实际迭代提炼的本仓库 | 反馈登记、证据约束、版面检查、附录保真与交付 |
 
-历史版本锁定在 [upstream-lock.json](../examples/upstream-lock.json)。它们是当时的版本，**不代表最新版本**。其他软件如 Python、MATLAB、COMSOL、Stata、Origin、draw.io、LaTeX 是工具，不因此被计作独立 skill。安装过 `typst-author` 也不代表最终论文由 Typst 编译。
+仓库当前子模块版本锁定在 [upstream-lock.json](../examples/upstream-lock.json)。它只记录本仓库采用的提交，**不持续保证为上游最新版本**。其他软件如 Python、MATLAB、COMSOL、Stata、Origin、draw.io、LaTeX 是工具，不因此被计作独立 skill。安装过 `typst-author` 也不代表最终论文由 Typst 编译。
 
 原流程提到但当时未发现可用入口的 `paper-diagram`、`paper-search`、`nature-figure`，不得写成已调用；分别使用可用的示意图工具、实际检索核验和一致的科研图形样式补足。
 
@@ -50,6 +50,8 @@ MathModelAgent 当时的十个部署入口为 `1start-mathmodel`、`2analysis-mo
 | 特定背景查询 | `bzd-cumcm-school-awards`，不属于论文定稿的必要步骤 |
 
 “去穿帮”指清理工作记录口吻、模糊指代、未经执行的能力宣称和不对应的证据，**不是隐藏真实 AI 使用情况**。保留按实际参与程度编写的 AI 声明；不承诺绕过检测或获得奖项。不要把综合评分、院校信息采集强加给只要求修排版的任务。
+
+BZD 后续版本可能新增评分或赛事专属规则。那些规则属于上游审查框架，不能仅因子模块更新就写成竞赛官方标准；只有在用户要求对应审查且当前赛事适用时才按证据使用。
 
 ## 4. 安装时以 frontmatter 为准
 

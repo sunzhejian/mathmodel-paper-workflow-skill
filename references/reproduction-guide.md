@@ -101,11 +101,11 @@ python scripts/check_vendor_skills.py
 
 ```sh
 git clone https://github.com/jihe520/MathModelAgent vendor/MathModelAgent
-git -C vendor/MathModelAgent checkout 83d8783187a2d29dda1b046cb667009cc50c8203
+git -C vendor/MathModelAgent checkout 487f35085271f2f5bac5c0bad0b30c64b7b889f9
 git clone https://github.com/jihe520/sci-box vendor/sci-box
 git -C vendor/sci-box checkout 9687d2a52037e92bf68a781b9b1e061ca03c8125
 git clone https://github.com/BZDmathclub/bzd-math-modeling-skills vendor/BZD
-git -C vendor/BZD checkout 332d55c2f3244c9e193e90749f42bcc0d534ce53
+git -C vendor/BZD checkout 5395fb591a47f8f3b906feb9647bebdf1f4779e8
 git clone https://github.com/hang-jin/editaplot vendor/EditaPlot
 git -C vendor/EditaPlot checkout 01721038afd212103d96225319b22d1bbfe32270
 ```
