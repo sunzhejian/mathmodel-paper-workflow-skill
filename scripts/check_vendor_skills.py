@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FRONTMATTER_NAME = re.compile(r"(?m)^name:\s*['\"]?([^\r\n'\"]+)['\"]?\s*$")
 
 
-def inspect(root: Path) -> dict:
+def inspect(root: Path, check_index: bool = False) -> dict:
     lock = json.loads((root / "examples/upstream-lock.json").read_text(encoding="utf-8"))
     registry = json.loads((root / "vendor/skill-integrations.json").read_text(encoding="utf-8"))
     sources = {item["name"]: item for item in lock["sources"]}
@@ -39,6 +39,13 @@ def inspect(root: Path) -> dict:
         url = configured.stdout.strip() if configured.returncode == 0 else None
         if url != source["url"] + ".git":
             findings.append(f"{name}: expected .gitmodules URL {source['url']}.git, found {url!r}")
+        if check_index:
+            staged = subprocess.run(
+                ["git", "-C", str(root), "ls-files", "--stage", "--", f"vendor/{name}"],
+                capture_output=True, text=True, encoding="utf-8")
+            fields = staged.stdout.strip().split()
+            if staged.returncode or len(fields) != 4 or fields[0] != "160000" or fields[1] != source["commit"]:
+                findings.append(f"{name}: staged Git submodule pointer does not match version lock")
     seen: set[str] = set()
     for skill in registry["skills"]:
         name = skill["name"]
@@ -72,9 +79,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="Skill repository root")
     parser.add_argument("--json", action="store_true", help="Print machine-readable result")
+    parser.add_argument("--check-index", action="store_true",
+                        help="Also require staged parent-repository gitlinks to match the lock")
     args = parser.parse_args()
     try:
-        result = inspect(args.root.resolve())
+        result = inspect(args.root.resolve(), args.check_index)
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
         print(f"Vendor manifest error: {exc}", file=sys.stderr)
         return 2

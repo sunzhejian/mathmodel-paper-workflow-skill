@@ -44,6 +44,7 @@ macOS/Linux：
 6. 单独构造大留白与未编译公式两个反例，确认工具能拒绝，而不是只演示成功路径。
 7. 把两页原附录拼到新正文后，补页码 3、4；逐页比较页脚外渲染和文字，并确认原文件未变。
 8. 按白名单打包脚本与结果，回读哈希清单。汇总 `demo-report.json`。
+9. 用交付一致性门禁再次核对正文、原附录、最终 PDF、两份检查报告和支撑包，写出 `delivery.json`。
 
 预期产物：
 
@@ -56,9 +57,10 @@ qa/demo/
   final.pdf                     # 2 页新正文 + 2 页原附录
   bad-whitespace.pdf / bad-formula.pdf
   layout.json / appendix.json / bad-whitespace.json / bad-formula.json
+  delivery.json                 # 同版本哈希、页数与支撑 ZIP 一致性检查
   pages/                        # 正文页图与缩略拼图
   support-files.json / support.zip
-  demo-report.json               # passed=true、预期失败原因、总页数4
+  demo-report.json               # passed=true、交付核验、预期失败原因、总页数4
 ```
 
 自动检查通过后仍应打开 `pages/contact_001.png` 与 `final.pdf`。只凭退出码不能判断文字遮挡、物理箭头或论文论证正确。
@@ -130,7 +132,7 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=build paper/mai
 7. 对正文部分执行 `audit`，查看所有正文页及重点放大图。先调整浮动体、图表就近顺序、图内外白边及段落完整性，再微调图尺寸。图片按**可见主体**对齐版心，图框空边不等于有效内容。不要靠拉大行距、插空行或无依据分析凑页数。
 8. 留白超过阈值时，返回源文件修订并重编译；没有超过就不继续为了数字挤压可读性。算法测的是整行宽的连续空白带，不是所有空白像素面积；图内部两列之间的白区不由该指标约束。
 9. Word 若在交付范围，单独检查其公式对象、字体、分页与图片，不把 PDF 合格推断成 DOCX 合格。
-10. 最后才运行 `append`，接回原附录。页号参数是物理 PDF 页，不是印刷页脚；已有页码不要覆盖。留存附录比对报告，再打包。
+10. 最后才运行 `append`，接回原附录。页号参数是物理 PDF 页，不是印刷页脚；已有页码不要覆盖。留存附录比对报告，再打包并运行 `verify_delivery.py`，防止用旧报告验收新文件。
 
 ## 6. 支撑材料与发布
 

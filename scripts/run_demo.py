@@ -108,9 +108,17 @@ def run(output):
     with zipfile.ZipFile(output/'support.zip') as archive:
         if set(archive.namelist()) != {'code/problem1.py', 'results/series.csv', 'MANIFEST.json'}:
             raise RuntimeError('Unexpected support package files')
+    calls.append(command(ROOT/'scripts'/'verify_delivery.py',
+                         [output/'body.pdf', output/'original.pdf', output/'final.pdf',
+                          output/'layout.json', output/'appendix.json', '--support-zip',
+                          output/'support.zip', '--support-root', support,
+                          '--report', output/'delivery.json']))
+    delivery = json.loads((output/'delivery.json').read_text(encoding='utf-8'))
+    if not delivery['passed'] or delivery['support_files_checked'] != 2:
+        raise RuntimeError('Final delivery consistency gate did not pass')
     report = {'passed': True, 'data_kind': 'synthetic analytic example, not competition data',
               'python': sys.version, 'rows': len(rows), 'total_pages': 4,
-              'appendix_pages_verified': 2, 'original_unchanged': True,
+              'appendix_pages_verified': 2, 'delivery_verified': True, 'original_unchanged': True,
               'expected_rejections': {'whitespace': bad_blank['failures'], 'formula': bad_formula['failures']},
               'commands': calls}
     write_json(output/'demo-report.json', report)

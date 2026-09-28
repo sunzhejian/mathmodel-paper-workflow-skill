@@ -47,6 +47,9 @@ python scripts/pdf_workflow.py append body.pdf original.pdf final.pdf --appendix
 
 # 根据白名单打包，生成 SHA-256 清单。
 python scripts/package_support.py support-root support-files.json support.zip
+
+# 交付前核对正文、原附录、最终 PDF、检查报告和支撑包是否来自同一版。
+python scripts/verify_delivery.py body.pdf original.pdf final.pdf qa/layout.json qa/appendix.json --support-zip support.zip --support-root support-root --report qa/delivery.json
 ```
 
 `audit` 测量版心内整行宽度连续无内容的竖向区间，报告页尾及最大空白带。**不是总白色像素比例，也不能自动证明没有文字重叠。** 它跳过范围外附录，检测疑似未编译公式，输出逐页预览。超标退出码 1，输入错误 2；未提供留白限制时只报告，不发明门槛。
@@ -64,5 +67,6 @@ python scripts/package_support.py support-root support-files.json support.zip
 - 图表就近放在完整段落之后，同一问的结果不被下一问标题隔开。
 - PDF 与被要求的 Word 分别核验；仅检查 PDF 就只报告 PDF 合格。
 - 原附录按约定保留，新增页码连续；源、图和支撑包对应同一最终版本。
+- 修改正文或最终 PDF 后重新生成相关检查报告；用 `verify_delivery.py` 拒绝旧报告和变更后的支撑文件。该工具只核对文件与报告一致性，不替代人工内容审查。
 
 交付先给最终文件链接，再报告实际页数、留白口径、附录状态及未完成事项，只写已验证内容。用户继续反馈时从最新授权版本修订，不重新解释整套流程。

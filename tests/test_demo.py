@@ -25,8 +25,22 @@ class DemoTests(unittest.TestCase):
             self.assertTrue(report['passed'])
             self.assertEqual(report['total_pages'], 4)
             self.assertEqual(report['appendix_pages_verified'], 2)
+            self.assertTrue(report['delivery_verified'])
             self.assertEqual(report['rows'], 21)
             self.assertTrue((output/'pages'/'contact_001.png').exists())
+            self.assertTrue(json.loads((output/'delivery.json').read_text(encoding='utf-8'))['passed'])
+            gate = load('verify_delivery')
+            arguments = [output/'body.pdf', output/'original.pdf', output/'final.pdf',
+                         output/'layout.json', output/'appendix.json',
+                         output/'support.zip', output/'support']
+            self.assertTrue(gate.verify(*arguments)['passed'])
+            with (output/'final.pdf').open('ab') as stream:
+                stream.write(b'\nchanged-after-appendix-check')
+            self.assertIn('final PDF hash is stale or mismatched', gate.verify(*arguments)['failures'])
+            with (output/'support/results/series.csv').open('a', encoding='utf-8') as stream:
+                stream.write('stale,0\n')
+            self.assertIn('Support source differs from ZIP: results/series.csv',
+                          gate.verify(*arguments)['failures'])
             self.assertEqual(json.loads((output/'demo-report.json').read_text(encoding='utf-8')), report)
             before = (output/'final.pdf').read_bytes()
             with self.assertRaises(FileExistsError):

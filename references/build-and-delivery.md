@@ -36,3 +36,11 @@
 ## 验收
 
 看正文全篇联系页与重点页原尺寸：摘要、方程组、双表、联图、问题交界、文献、附录衔接。核对编号、引文、页码、字形、遮挡、孤行和图表顺序。只报告实测指标。公开 skill 时仅发布通用流程、原创说明及代码，不混入论文、赛题、附件、个人路径或团队档案。
+
+完成独立 PDF 审核、附录拼接与支撑 ZIP 后，运行 `verify_delivery.py` 做同版本核对：正文哈希须同时匹配 PDF 审核报告和附录拼接报告，原附录与最终 PDF 哈希须匹配拼接报告；正文审查应覆盖整个正文 PDF，页数与附录验证数须一致。提供支撑 ZIP 时，逐文件核对 ZIP 清单、内容哈希和大小；若传入 `--support-root`，还与当前源文件比较。任一文件在出报告后被修改就不应交付，先重做相应步骤再检查。
+
+```sh
+python scripts/verify_delivery.py body.pdf original.pdf final.pdf qa/layout.json qa/appendix.json --support-zip support.zip --support-root support-root --report qa/delivery.json
+```
+
+此门禁不检查模型结论、引用真实性、图文遮挡或 Word 分页，仍须按前文单独核验。
