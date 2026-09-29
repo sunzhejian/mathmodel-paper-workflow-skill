@@ -26,5 +26,20 @@
 
 - 用户已明确选定模板、已有项目源需小修、或配置与本轮要求一致且更换会破坏已修改附录时，沿用已有选择；只向用户简短说明当前使用哪套模板。
 - 重大改版、模板不存在、用户给的参考图与配置冲突、或 PDF 想转为可编辑 Word 且保真要求不明时，尽早询问一次。答案尚未到来时可继续整理题意、数值证据和图表清单，依赖模板的排版工作等答案或按已说明的合理默认推进。
-- 将已确认或有依据推断的决策写进项目报告：paper_template、engine、entry_file、diagram_choice（按图逐张）、data_figure_choice、source_evidence、decision_status。只记录必要偏好；不要把身份字段复制到匿名正文或公开技能仓库。
+- 将已确认或有依据推断的决策写进项目的 reports/template-decisions.json；再次询问前先读这份文件。记录每个选择的类别、目标图/论文、模板 id 和来源依据（user、project-config 或 inferred），不能把项目配置自动伪称成用户确认。数据图若套现成模板，另记 source_data 和 simulated_data_replaced=true；不使用模板时记 custom 与真实数据路径。只记录必要偏好，不把身份字段复制到匿名正文或公开技能仓库。
 - 使用内置模板时只在项目入口尚不存在时复制完整模板；自定义模板从用户给定路径读取。切换模板后单独验公式、图片、页码与 Word/PDF，不以“同属 CUMCM”假定输出等价。
+
+记录格式示例（按实际选择增减项目，不要预写未选图）：
+
+~~~json
+{
+  "decisions": [
+    {"kind": "paper", "target": "main", "choice": "cumcm-latex", "language": "zh", "basis": "user"},
+    {"kind": "diagram", "target": "roadmap", "choice": "roadmap-5band", "basis": "user"},
+    {"kind": "data-figure", "target": "drying-profile", "choice": "custom",
+     "basis": "inferred", "source_data": "results/p3.npz"}
+  ]
+}
+~~~
+
+运行 python scripts/validate_template_decisions.py reports/template-decisions.json --project-root 项目目录，检查 id、配置变化、源文件和图形模板是否可用。该工具只验证文件与清单一致，不能证明使用者确实说过“确认”，也不代替模板预览和图形语义审查。若记录与本轮用户新选择冲突，以新指示为准，更新记录并写明变更原因；无需重复询问已明确的部分。
