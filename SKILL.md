@@ -1,6 +1,6 @@
 ---
 name: mathmodel-paper-workflow
-description: 依据求解证据迭代定稿中文数学建模竞赛论文，处理摘要与逐问模型、公式图表、物理线稿、PDF/Word排版、原附录保留和支撑材料验收。适用于已有赛题、程序或论文，需要按反馈继续修订并交付可追溯成果的任务。
+description: 依据求解证据撰写、扩写或迭代定稿中文数学建模竞赛论文，处理逐问模型、图表、页数范围、PDF/Word排版、附录保留和支撑材料验收。适用于已有赛题、程序或论文，需要交付可追溯成果的任务。
 ---
 
 # 数模论文迭代定稿
@@ -10,6 +10,7 @@ description: 依据求解证据迭代定稿中文数学建模竞赛论文，处�
 ## 接手与确定约束
 
 1. 读取项目 `AGENTS.md`，以及存在时的 `.mathmodel/paper/config.json`。模板、队伍档案和入口文件属于用户数据，不覆盖已有配置。身份信息只进入模板明确要求的非匿名页面。
+   新稿或大幅改版时按[模板选择](references/template-selection.md)先盘点现有模板并询问使用者；流程图与数据图分开选择。已有明确决定的小修不重复发问。
 2. 确定最新**用户指定**文件、可编辑源、输出目录及保留区域。用户改过附录的 PDF 可能比 TeX/Word 更权威，不能用旧源重建这部分。
 3. 留存原文件及 SHA-256。在授权目录创建修订源，不覆盖其他方案、历史提交或外部聊天附件。
 4. 记录简短约束表：页数口径（含不含摘要/声明/文献）、上限还是精确页数、边距、缩进、图片可见宽度、留白口径、文献要求、附录保留方式、交付格式。最新明确指示覆盖旧值。
@@ -22,6 +23,8 @@ description: 依据求解证据迭代定稿中文数学建模竞赛论文，处�
 - **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。本仓库的固定上游项目文件位于 [vendor](vendor/README.md)：先运行 `git submodule update --init --recursive`，再用 `python scripts/check_vendor_skills.py` 核对提交及入口。只读取当前阶段所需的本地 `SKILL.md` 和其引用文件；子模块存在不等于技能已执行。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。
 - **模型、数值、摘要或措辞**：读 [证据与写作](references/evidence-and-writing.md)。建立每问“输入—假设—方程—算法—输出—验证”对应后写结论。只做排版时不擅自重算或替换模型。
 - **图、公式、线稿、分页**：读 [图表与排版](references/figures-and-layout.md)。先修标注和图文顺序，再量化留白；优先编辑矢量源。
+- **需要选论文/流程图/科研图模板**：读 [模板选择](references/template-selection.md)，运行 `scripts/template_inventory.py` 列出本机实际存在的候选，按用途向使用者问少量关键问题；已指定模板不强行改。
+- **用户要求论文达到页数下限**：读 [证据驱动扩写](references/longform-paper.md)。先列证据支持的新增论证单元，再编译验证下限与上限；不靠拉行距、重复图表或空泛背景凑页。
 - **附录、Word/PDF、支撑包或复现**：读 [编译与交付](references/build-and-delivery.md)。先编译检查正文，最后接回原附录。
 - **维护本仓库的上游技能版本**：读 [上游维护](references/upstream-maintenance.md)。先只读比较远端，再审查差异、更新固定提交和入口、运行验证；没有变化时不修改文件。
 
@@ -38,6 +41,9 @@ python scripts/pdf_workflow.py audit paper.pdf --last-page 31 --margins-cm 2.5 2
 
 # 对仅含正文部分的 PDF 校验页数上限；确切要求才用 --exact-pages。
 python scripts/pdf_workflow.py audit body.pdf --max-pages 31 --report qa/body.json
+
+# 同时校验下限与上限；例如“20 页以上且不超过 31 页”。
+python scripts/pdf_workflow.py audit body.pdf --min-pages 21 --max-pages 31 --report qa/body-range.json
 
 # 接回原 PDF 第 30 页起的附录；默认完全保留，不改页码。
 python scripts/pdf_workflow.py append body.pdf original.pdf final.pdf --appendix-start 30 --report qa/appendix.json

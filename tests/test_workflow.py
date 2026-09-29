@@ -128,6 +128,18 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue((self.root/'render/page_001.png').exists())
         self.assertFalse((self.root/'render/page_002.png').exists())
 
+    def test_minimum_page_gate_accepts_range_and_rejects_short_pdf(self):
+        source = self.make_pdf('range.pdf', count=2)
+        self.assertEqual(pdf.main(['audit', str(source), '--min-pages', '2', '--max-pages', '3',
+                                   '--report', str(self.root/'pass.json')]), 0)
+        self.assertEqual(pdf.main(['audit', str(source), '--min-pages', '3', '--max-pages', '31',
+                                   '--report', str(self.root/'fail.json')]), 1)
+        with self.assertRaises(ValueError):
+            pdf.audit(argparse.Namespace(pdf=source, first_page=1, last_page=None, min_pages=4,
+                                         max_pages=3, exact_pages=None, blank_limit=None,
+                                         report=self.root/'invalid.json', render_dir=None,
+                                         margins_cm=[2.5]*4))
+
     def test_raw_formula_is_flagged(self):
         source = self.make_pdf('raw.pdf', raw=True)
         self.assertEqual(pdf.main(['audit', str(source), '--report', str(self.root/'qa.json')]), 1)

@@ -167,7 +167,8 @@ python scripts/audit_contract.py project-contract.json --project-root project --
 | `audit.pdf` | 待检查 PDF，须已编译且位于项目内 |
 | `audit.pdf_scope` | `body-only` 表示纯正文范围文件；`combined` 表示包含附录 |
 | `audit.first_page` / `last_page` | 从 1 开始的物理页号；包含末页；合并 PDF 必须明确末页 |
-| `page_requirement.mode` / `count` | `maximum` 为上限，`exact` 为确切页数；不能因为历史例子写 31 就替用户设定 |
+| `page_requirement.mode` / `count` | `maximum` 为上限，`minimum` 为下限，`exact` 为确切页数 |
+| `page_requirement.min` / `max` | `mode=range` 时同时给出正整数下限和上限，且 min 不得超过 max；不能因为历史例子写 31 就替用户设定 |
 | `margins_cm_top_right_bottom_left` | 四个非负有限数，顺序上右下左 |
 | `blank_limit_percent` | 0—100；设为 `null` 只报告，不判断是否超标 |
 | 其余字段 | 代理参考，不自动执行文献审查、附录拼接、Word 检查或对外发布 |

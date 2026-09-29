@@ -78,8 +78,12 @@ def render_pages(doc, indices, directory):
 def audit(args):
     if args.blank_limit is not None and not 0 <= args.blank_limit <= 100:
         raise ValueError('blank-limit must be between 0 and 100')
-    if args.exact_pages is not None and args.max_pages is not None:
-        raise ValueError('Choose exact-pages or max-pages, not both')
+    if args.exact_pages is not None and (args.max_pages is not None or args.min_pages is not None):
+        raise ValueError('Choose exact-pages or min/max range, not both')
+    if any(value is not None and value < 1 for value in (args.min_pages, args.max_pages, args.exact_pages)):
+        raise ValueError('Page limits must be positive integers')
+    if args.min_pages is not None and args.max_pages is not None and args.min_pages > args.max_pages:
+        raise ValueError('min-pages cannot exceed max-pages')
     if Path(args.report).resolve() == Path(args.pdf).resolve():
         raise ValueError('Report must not overwrite the PDF')
     with fitz.open(args.pdf) as doc:
@@ -90,6 +94,8 @@ def audit(args):
         failures, records = [], []
         if args.max_pages is not None and len(indices) > args.max_pages:
             failures.append('Selected page count exceeds maximum')
+        if args.min_pages is not None and len(indices) < args.min_pages:
+            failures.append('Selected page count is below minimum')
         if args.exact_pages is not None and len(indices) != args.exact_pages:
             failures.append('Selected page count differs from exact requirement')
         for i in indices:
@@ -199,6 +205,7 @@ def main(argv=None):
     a.add_argument('--first-page', type=int, default=1)
     a.add_argument('--last-page', type=int)
     a.add_argument('--max-pages', type=int)
+    a.add_argument('--min-pages', type=int)
     a.add_argument('--exact-pages', type=int)
     a.add_argument('--margins-cm', type=float, nargs=4, default=[2.5]*4, metavar=('TOP', 'RIGHT', 'BOTTOM', 'LEFT'))
     a.add_argument('--blank-limit', type=float)

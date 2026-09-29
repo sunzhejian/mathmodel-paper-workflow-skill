@@ -59,6 +59,23 @@ class ContractTests(unittest.TestCase):
         self.assertIn('--max-pages', args)
         self.assertNotIn('--blank-limit', args)
 
+    def test_range_rejects_short_paper_and_validates_order(self):
+        self.contract['page_requirement'] = {'mode': 'range', 'min': 2, 'max': 3}
+        dry = self.cli('--dry-run')
+        self.assertEqual(dry.returncode, 0, dry.stderr)
+        args = json.loads(dry.stdout)['arguments']
+        self.assertIn('--min-pages', args)
+        self.assertIn('--max-pages', args)
+        result = self.cli()
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads((self.root/'qa/layout.json').read_text(encoding='utf-8'))
+        self.assertIn('Selected page count is below minimum', report['failures'])
+
+    def test_invalid_range_is_an_input_error(self):
+        self.contract['page_requirement'] = {'mode': 'range', 'min': 22, 'max': 21}
+        self.assertEqual(self.cli().returncode, 2)
+        self.assertFalse((self.root/'qa').exists())
+
     def test_combined_pdf_requires_explicit_boundary(self):
         self.contract['audit']['pdf_scope'] = 'combined'
         self.assertEqual(self.cli().returncode, 2)

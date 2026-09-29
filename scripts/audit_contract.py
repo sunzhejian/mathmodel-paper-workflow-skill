@@ -57,9 +57,16 @@ def make_arguments(contract, root, report, render_dir=None):
     if audit['pdf_scope'] == 'combined' and last is None:
         raise ValueError('A combined PDF requires last_page to exclude the appendix')
     requirement = contract.get('page_requirement')
-    if not isinstance(requirement, dict) or requirement.get('mode') not in {'maximum', 'exact'}:
-        raise ValueError('page_requirement.mode must be maximum or exact')
-    count = integer(requirement.get('count'), 'page_requirement.count')
+    if not isinstance(requirement, dict) or requirement.get('mode') not in {'maximum', 'minimum', 'exact', 'range'}:
+        raise ValueError('page_requirement.mode must be maximum, minimum, exact or range')
+    mode = requirement['mode']
+    if mode == 'range':
+        minimum = integer(requirement.get('min'), 'page_requirement.min')
+        maximum = integer(requirement.get('max'), 'page_requirement.max')
+        if minimum > maximum:
+            raise ValueError('page_requirement.min cannot exceed max')
+    else:
+        count = integer(requirement.get('count'), 'page_requirement.count')
     margins = contract.get('margins_cm_top_right_bottom_left')
     if not isinstance(margins, list) or len(margins) != 4:
         raise ValueError('Margins must contain top, right, bottom, left')
@@ -71,9 +78,12 @@ def make_arguments(contract, root, report, render_dir=None):
     report_path = local_path(root, report, 'report')
     if report_path == pdf:
         raise ValueError('Report must not overwrite input PDF')
-    args = ['audit', str(pdf), '--first-page', str(first),
-            '--max-pages' if requirement['mode'] == 'maximum' else '--exact-pages', str(count),
-            '--margins-cm', *map(str, margins), '--report', str(report_path)]
+    args = ['audit', str(pdf), '--first-page', str(first)]
+    if mode == 'range':
+        args += ['--min-pages', str(minimum), '--max-pages', str(maximum)]
+    else:
+        args += [{'maximum': '--max-pages', 'minimum': '--min-pages', 'exact': '--exact-pages'}[mode], str(count)]
+    args += ['--margins-cm', *map(str, margins), '--report', str(report_path)]
     if last is not None:
         args += ['--last-page', str(last)]
     if blank is not None:
