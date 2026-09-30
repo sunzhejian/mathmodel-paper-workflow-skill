@@ -4,7 +4,7 @@
 
 ## 1. 干净环境运行
 
-建议 Python 3.11；支持的底线见 README。以下命令都从仓库根目录执行。若已经安装为 skill，直接进入该目录，不必重复克隆。
+建议 Python 3.11；支持的底线见 README。首次安装 Git、Python 或选用的论文/绘图软件时先看[工具安装与第一次使用](../docs/toolchain.md)。以下命令都从仓库根目录执行。若已经安装为 skill，直接进入该目录，不必重复克隆。
 
 ```sh
 git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-workflow-skill.git

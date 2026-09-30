@@ -1,10 +1,10 @@
-# 数模论文迭代定稿 Skill
+# 数学建模论文与材料工作流 Skill
 
-一个从实际中文数学建模论文多轮修订中提炼的 Codex skill：将逐问求解证据、摘要与公式、科研图表、教材式物理线稿、分页优化、原附录保留及支撑材料验收连接起来。
+面向中文数学建模竞赛的 Codex skill：可以**从题面和附件开始完成模型、求解、论文及相关材料**，也可以接续现稿，只修论文、审查模型、制作图示或处理排版。工作围绕逐问证据展开，将程序与原精度结果、摘要与公式、数据图和线稿、分页优化、附录保留及支撑材料验收连接起来。缺少题面、数据或运行证据时会标明缺口，不把演示结果写进正式论文。
 
 它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、项目已有的 mma-paper** 等技能。前四个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
-**先体验：**安装依赖后运行 `python scripts/run_demo.py --output qa/demo`，得到合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包。详细命令、预期输出、真实项目迁移与失败处理见 [复现手册](references/reproduction-guide.md)。
+**第一次使用：**先看[工具安装与第一次使用](docs/toolchain.md)，装好 Git、Python 和本仓库依赖后，用同一个虚拟环境解释器运行 `scripts/run_demo.py --output qa/demo`。演示会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；它不需要 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。详细产物及真实项目迁移见[复现手册](references/reproduction-guide.md)。
 
 ## 三张图看懂流程
 
@@ -28,27 +28,39 @@ MathModelAgent 组织建模与写作，sci-box 处理图形，BZD 提供专项�
 
 ## 安装与调用
 
-将仓库克隆到 Codex 的技能目录（Windows 默认位于用户目录下 `.codex/skills`，或使用自己的 `$CODEX_HOME/skills`）：
+将仓库克隆到 Codex 的技能目录（Windows 默认位于用户目录下 `.codex/skills`，也可使用自己的 `CODEX_HOME/skills`）：
 
 ```sh
 git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-workflow-skill.git ~/.codex/skills/mathmodel-paper-workflow
 ```
 
-已克隆旧版仓库时，在仓库根目录执行 `git submodule update --init --recursive`。运行 `python scripts/check_vendor_skills.py` 检查四个上游提交和 12 个选用入口。子模块文件在本地可读，但不会自动注册为顶层 Codex skill；按当前阶段读取对应 `SKILL.md`。
+上面的路径写法适用于 macOS/Linux shell。**Windows PowerShell 请直接照[安装指南的 Windows 命令](docs/toolchain.md#windows-powershell)执行**，不必把 `~` 或 Bash 语法硬搬过去。已克隆旧版仓库时，在仓库根目录执行 `git submodule update --init --recursive`。运行 `python scripts/check_vendor_skills.py` 检查四个上游提交和 12 个选用入口。子模块文件在本地可读，但不会自动注册为顶层 Codex skill；按当前阶段读取对应 `SKILL.md`。
 
-使用脚本需要 Python 3.10+：
+使用脚本需要 Python 3.10+。先按[安装指南](docs/toolchain.md#1-先把仓库演示跑通)创建 `.venv`；下面只示范从该环境安装依赖：
 
-```sh
-python -m pip install -r requirements.txt
+```powershell
+# Windows PowerShell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
+```sh
+# macOS / Linux
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+这一步只安装仓库验收脚本所需的 PyMuPDF、NumPy 和 Pillow。真正求解赛题时，按方案另装 SciPy、pandas、Matplotlib、openpyxl 等；选 LaTeX、Typst、draw.io 或 Word 路线时再装对应工具。每项的官方入口、验证命令和第一次使用示例都在[工具安装指南](docs/toolchain.md)，**不用为了运行演示把所有软件装一遍**。
+
 新稿或大幅改版且方向未定时，先提供六项单选：继续修改现稿、用已有求解结果写论文、**从零到完整论文及相关材料全交付**、只审查现稿、只制作图示、只修排版。选定后核对缺少的材料和交付范围，再运行 python scripts/template_inventory.py --project-root 项目目录 --category paper --configured-family，展示当前赛事的论文变体；需要流程图时再运行同一命令的 --category diagram，向使用者询问合适版式。示意图候选按用途筛选为五带路线、三栏框架、三栏阶段流程或横版任务流水线；有参考图时可选择自定义重绘。数据图模板只有与真实结果结构匹配时才推荐，不能使用其中的模拟数据充当论文结果。选项文案与使用条件见[首轮问询](references/template-selection.md)。
+
+选择“从零到完整论文及相关材料全交付”时，流程依次为：**题面与附件核对 → 每问建模与独立求解 → 原精度结果和图表 → 论文与可编辑源 → 编译、审查、支撑包验收**。通常会有论文 PDF、要求的 Word/源文件、逐问代码、电子结果表、图源、运行记录和支撑包；实际清单以本次比赛规则和用户要求为准。只修现稿时从相应阶段接续，不重做已验证的全部工作。
 
 国赛 CUMCM 匿名正文保留真正的论文标题，但不显示题号、参赛队号抬头。赛题号和队号仍可留在项目配置中；`pdf_workflow.py audit --cumcm-anonymous --project-config ...` 可对编译后的 PDF 做文字层检查，首页仍需目视核对。
 
 新任务中调用：
 
 > 使用 $mathmodel-paper-workflow，根据我指定的最新版论文和求解结果继续修改。正文四边 2.5 cm，摘要、正文、AI 声明和文献最多 31 页；附录内容不动，补连续页码。检查公式、图文遮挡及超过 20% 的页尾连续留白。
+
+从零开始时也可直接说：“使用 $mathmodel-paper-workflow，选第 3 项。根据我提供的赛题与附件，完成逐问求解、论文 PDF 与可编辑版本、代码、电子结果及要求的支撑材料；先核对缺少的材料和比赛规则。”
 
 这是示例配置；页数、边距与阈值遵循具体用户和比赛要求，不是固定标准。可与已有数学建模技能配合，也可独立使用。
 
@@ -63,6 +75,7 @@ python -m pip install -r requirements.txt
 | [上游更新检测](scripts/check_upstream_updates.py) | 只读比较四个上游 HEAD 与当前固定提交，供定期维护使用 |
 | [上游维护步骤](references/upstream-maintenance.md) | 发现更新后的差异审查、兼容性检查、提交和异常处理 |
 | [复现手册](references/reproduction-guide.md) | 环境、端到端演示、真实项目迁移、图源重绘 |
+| [工具安装与第一次使用](docs/toolchain.md) | Git/Python 基础环境，数值库、LaTeX/Typst、draw.io、Word 与可选商业软件 |
 | [历史版本锁](examples/upstream-lock.json) | 4 个公开上游的来源与当时提交 |
 | [约束合同示例](examples/workflow-contract.json) | 页数口径、边距、留白、附录与交付约定 |
 | [合同检查入口](scripts/audit_contract.py) | 直接读取合同，校验范围并运行 PDF 检查；支持 dry-run |
@@ -82,7 +95,7 @@ python -m pip install -r requirements.txt
 | [论文口吻筛查](scripts/check_paper_voice.py) | 在 TeX/Markdown 源中标出明显的工作过程用语，供人工复核 |
 | [可运行合成案例](scripts/run_demo.py) | 独立计算、正反例检查、附录拼接、打包回读 |
 | [核验记录](docs/validation.md) | 本轮测试、讲解图检查与自动验收边界 |
-| [人工验收情景](examples/acceptance-scenarios.md) | 十种典型反馈的预期行为与失败判据；供实际评估时使用 |
+| [人工验收情景](examples/acceptance-scenarios.md) | 十九种典型反馈的预期行为与失败判据；供实际评估时使用 |
 
 ```sh
 python scripts/pdf_workflow.py audit paper.pdf --last-page 31 --blank-limit 20 --report qa/layout.json --render-dir qa/pages

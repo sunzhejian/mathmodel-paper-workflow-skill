@@ -19,6 +19,7 @@ description: 依据求解证据撰写、扩写或迭代定稿中文数学建模�
 
 ## 选择本次需要的步骤
 
+- **用户需要搭环境、安装编程/排版/绘图工具**：读[工具安装与第一次使用](docs/toolchain.md)，先区分 Git/Python 基础依赖与按路线选择的数值库、TeX/Typst、draw.io、Word 或商业软件；给出官方安装入口和验证命令，不把“安装成功”记为模型已验证。
 - **多轮反馈、每问公式或检查失败**：读 [修订细则](references/revision-playbook.md)，按需使用反馈记录与逐问证据模板；遇到具体失败查 [恢复手册](references/failure-recovery.md)。简单修改不强制建完整台账。
 - **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。本仓库的固定上游项目文件位于 [vendor](vendor/README.md)：先运行 `git submodule update --init --recursive`，再用 `python scripts/check_vendor_skills.py` 核对提交及入口。只读取当前阶段所需的本地 `SKILL.md` 和其引用文件；子模块存在不等于技能已执行。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。
 - **模型、数值、摘要或措辞**：读 [证据与写作](references/evidence-and-writing.md)。建立每问“输入—假设—方程—算法—输出—验证”对应后写结论。只做排版时不擅自重算或替换模型。
