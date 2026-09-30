@@ -144,6 +144,45 @@ class WorkflowTests(unittest.TestCase):
         source = self.make_pdf('raw.pdf', raw=True)
         self.assertEqual(pdf.main(['audit', str(source), '--report', str(self.root/'qa.json')]), 1)
 
+    def test_cumcm_header_labels_preserve_actual_title(self):
+        self.assertEqual(pdf.cumcm_header_labels('题号：A  参赛队号：SYNTHETIC\n药材烘干模型'),
+                         ['problem number', 'team number'])
+        self.assertEqual(pdf.cumcm_header_labels('药材烘干过程的热质耦合建模\n摘要'), [])
+
+    def test_cumcm_audit_rejects_header_fields_in_pdf(self):
+        path = self.root/'header.pdf'
+        with fitz.open() as doc:
+            page = doc.new_page(width=595, height=842)
+            page.insert_text((75, 120), '题号：A  参赛队号：SYNTHETIC', fontname='china-s')
+            page.insert_text((75, 190), '药材烘干过程建模', fontname='china-s')
+            doc.save(path)
+        report = self.root/'header-check.json'
+        self.assertEqual(pdf.main(['audit', str(path), '--cumcm-anonymous',
+                                   '--report', str(report)]), 1)
+        failures = json.loads(report.read_text(encoding='utf-8'))['failures']
+        self.assertTrue(any('problem number field' in item for item in failures))
+        self.assertTrue(any('team number field' in item for item in failures))
+        self.assertFalse(any('SYNTHETIC' in item for item in failures))
+
+    def test_cumcm_audit_rejects_configured_team_number_without_reporting_it(self):
+        source = self.make_pdf('anonymous.pdf')
+        synthetic_id = '987654321012'
+        with fitz.open(source) as doc:
+            doc[0].insert_text((75, 100), synthetic_id)
+            doc.save(self.root/'identified.pdf')
+        config = self.root/'config.json'
+        config.write_text(json.dumps({'contestFields': [{'id': 'teamNumber', 'value': synthetic_id}]}),
+                          encoding='utf-8')
+        report = self.root/'anonymous-check.json'
+        self.assertEqual(pdf.main(['audit', str(self.root/'identified.pdf'), '--cumcm-anonymous',
+                                   '--project-config', str(config), '--report', str(report)]), 1)
+        body = report.read_text(encoding='utf-8')
+        self.assertNotIn(synthetic_id, body)
+        self.assertIn('configured team number appears', body)
+        self.assertEqual(pdf.main(['audit', str(source), '--cumcm-anonymous',
+                                   '--project-config', str(config), '--report',
+                                   str(self.root/'clean-check.json')]), 0)
+
     def test_blank_limit_failure(self):
         source = self.make_pdf('blank.pdf', filled=False)
         self.assertEqual(pdf.main(['audit', str(source), '--blank-limit', '20', '--report', str(self.root/'qa.json')]), 1)

@@ -9,8 +9,8 @@ description: 依据求解证据撰写、扩写或迭代定稿中文数学建模�
 
 ## 接手与确定约束
 
-1. 读取项目 `AGENTS.md`，以及存在时的 `.mathmodel/paper/config.json`。模板、队伍档案和入口文件属于用户数据，不覆盖已有配置。身份信息只进入模板明确要求的非匿名页面。
-   新稿或大幅改版时按[模板选择](references/template-selection.md)先盘点现有模板并询问使用者；流程图与数据图分开选择。先读已有模板决策记录，已明确的小修不重复发问；新决定写回项目报告并验证。
+1. 读取项目 `AGENTS.md`，以及存在时的 `.mathmodel/paper/config.json`。模板、队伍档案和入口文件属于用户数据，不覆盖已有配置。身份信息只进入模板明确要求的非匿名页面。**国赛 CUMCM 匿名论文首页保留论文标题，不在标题上方写“题号/题目：A”“参赛队号”等配置字段。**
+   新稿或大幅改版时按[模板选择](references/template-selection.md)先确认工作大方向（接续修订、从头完成、只审查或只制图）及交付范围，再问论文、流程图或数据图模板。先读已有决策记录，已明确的小修不重复发问；新决定写回项目报告并验证。
 2. 确定最新**用户指定**文件、可编辑源、输出目录及保留区域。用户改过附录的 PDF 可能比 TeX/Word 更权威，不能用旧源重建这部分。
 3. 留存原文件及 SHA-256。在授权目录创建修订源，不覆盖其他方案、历史提交或外部聊天附件。
 4. 记录简短约束表：页数口径（含不含摘要/声明/文献）、上限还是精确页数、边距、缩进、图片可见宽度、留白口径、文献要求、附录保留方式、交付格式。最新明确指示覆盖旧值。
@@ -39,6 +39,9 @@ python scripts/audit_contract.py project-contract.json --project-root project --
 
 # 只审核正文范围；示例参数按项目替换，页号从 1 开始。
 python scripts/pdf_workflow.py audit paper.pdf --last-page 31 --margins-cm 2.5 2.5 2.5 2.5 --blank-limit 20 --report qa/layout.json --render-dir qa/pages
+
+# 国赛匿名正文额外检查首页字段；有项目配置时，还检查队号是否进入正文。报告不输出队号原值。
+python scripts/pdf_workflow.py audit body.pdf --cumcm-anonymous --project-config .mathmodel/paper/config.json --report qa/anonymous.json
 
 # 对仅含正文部分的 PDF 校验页数上限；确切要求才用 --exact-pages。
 python scripts/pdf_workflow.py audit body.pdf --max-pages 31 --report qa/body.json
@@ -77,6 +80,7 @@ python scripts/check_paper_voice.py paper/main.tex paper/sections
 - 图例、引线、尺寸线和文字互不遮挡；公式及黑框不裁切；标题后有正文。
 - 图表就近放在完整段落之后，同一问的结果不被下一问标题隔开。
 - 标题、图题、表题和摘要只表达研究对象、方法与结果；“一行一符号”等排版指令留在制作记录，不写成读者可见的题注。对自动筛查结果逐条复核。
+- 国赛匿名首页直接从论文标题开始；编译后查看第一页并运行匿名字段检查，不能把项目配置中的题号、队号行带进正文。
 - PDF 与被要求的 Word 分别核验；仅检查 PDF 就只报告 PDF 合格。
 - 原附录按约定保留，新增页码连续；源、图和支撑包对应同一最终版本。
 - 修改正文或最终 PDF 后重新生成相关检查报告；用 `verify_delivery.py` 拒绝旧报告和变更后的支撑文件。该工具只核对文件与报告一致性，不替代人工内容审查。

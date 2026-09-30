@@ -56,6 +56,9 @@ def make_arguments(contract, root, report, render_dir=None):
         raise ValueError('audit.pdf_scope must be body-only or combined')
     if audit['pdf_scope'] == 'combined' and last is None:
         raise ValueError('A combined PDF requires last_page to exclude the appendix')
+    anonymous_cumcm = audit.get('anonymous_cumcm', False)
+    if not isinstance(anonymous_cumcm, bool):
+        raise ValueError('audit.anonymous_cumcm must be true or false')
     requirement = contract.get('page_requirement')
     if not isinstance(requirement, dict) or requirement.get('mode') not in {'maximum', 'minimum', 'exact', 'range'}:
         raise ValueError('page_requirement.mode must be maximum, minimum, exact or range')
@@ -86,6 +89,11 @@ def make_arguments(contract, root, report, render_dir=None):
     args += ['--margins-cm', *map(str, margins), '--report', str(report_path)]
     if last is not None:
         args += ['--last-page', str(last)]
+    if anonymous_cumcm:
+        args += ['--cumcm-anonymous']
+        config_path = root/'.mathmodel/paper/config.json'
+        if config_path.is_file():
+            args += ['--project-config', str(config_path)]
     if blank is not None:
         args += ['--blank-limit', str(blank)]
     if render_dir:

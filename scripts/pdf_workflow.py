@@ -75,6 +75,29 @@ def render_pages(doc, indices, directory):
         sheet.save(directory / f'contact_{indices[first]+1:03d}.png')
 
 
+def cumcm_header_labels(text):
+    """Return only field names; never include values from an anonymous paper."""
+    labels = {
+        'problem number': r'题\s*号\s*[：:]|(?:参\s*赛\s*)?题\s*目\s*[：:]',
+        'team number': r'参\s*赛\s*队\s*号\s*[：:]|队\s*伍\s*编\s*号\s*[：:]',
+    }
+    return [label for label, pattern in labels.items() if re.search(pattern, text)]
+
+
+def configured_team_number(path):
+    if path is None:
+        return None
+    config = json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    fields = config.get('contestFields', [])
+    if not isinstance(fields, list):
+        raise ValueError('project-config contestFields must be a list')
+    for field in fields:
+        if isinstance(field, dict) and field.get('id') == 'teamNumber':
+            value = field.get('value')
+            return str(value).strip() if value is not None else None
+    return None
+
+
 def audit(args):
     if args.blank_limit is not None and not 0 <= args.blank_limit <= 100:
         raise ValueError('blank-limit must be between 0 and 100')
@@ -86,6 +109,13 @@ def audit(args):
         raise ValueError('min-pages cannot exceed max-pages')
     if Path(args.report).resolve() == Path(args.pdf).resolve():
         raise ValueError('Report must not overwrite the PDF')
+    cumcm_anonymous = bool(getattr(args, 'cumcm_anonymous', False))
+    project_config = getattr(args, 'project_config', None)
+    if project_config and not cumcm_anonymous:
+        raise ValueError('project-config requires cumcm-anonymous')
+    if cumcm_anonymous and args.first_page != 1:
+        raise ValueError('cumcm-anonymous requires first-page 1 to inspect the title page')
+    team_number = configured_team_number(project_config) if cumcm_anonymous else None
     with fitz.open(args.pdf) as doc:
         last = args.last_page if args.last_page is not None else len(doc)
         if not 1 <= args.first_page <= last <= len(doc):
@@ -108,10 +138,19 @@ def audit(args):
                 failures.append(f'Page {i+1}: continuous blank band exceeds limit')
             if raw:
                 failures.append(f'Page {i+1}: suspected formula text requires visual review')
+            if cumcm_anonymous:
+                if i == 0:
+                    top = fitz.Rect(page.rect.x0, page.rect.y0, page.rect.x1,
+                                    page.rect.y0 + page.rect.height * 0.4)
+                    for label in cumcm_header_labels(page.get_text(clip=top)):
+                        failures.append(f'Page 1: CUMCM anonymous header contains {label} field')
+                if team_number and len(team_number) >= 5 and team_number in page.get_text():
+                    failures.append(f'Page {i+1}: configured team number appears in anonymous paper')
         if args.render_dir:
             render_pages(doc, indices, args.render_dir)
         report = {'pdf_sha256': sha256(args.pdf), 'total_pages': len(doc),
                   'selected_pages': len(indices), 'margins_cm_top_right_bottom_left': args.margins_cm,
+                  'cumcm_anonymous_check': cumcm_anonymous,
                   'blank_limit_percent': args.blank_limit,
                   'measurement': 'Full-width continuous blank height / content-region height; excludes margins; NOT total white-pixel area or overlap detection',
                   'pages': records, 'failures': failures, 'passed': not failures}
@@ -211,6 +250,8 @@ def main(argv=None):
     a.add_argument('--blank-limit', type=float)
     a.add_argument('--report', required=True)
     a.add_argument('--render-dir')
+    a.add_argument('--cumcm-anonymous', action='store_true', help='Reject problem/team fields above the first-page title')
+    a.add_argument('--project-config', help='Optional .mathmodel/paper/config.json for team-number scan; value is never reported')
     a.set_defaults(run=audit)
     p = sub.add_parser('append')
     p.add_argument('body'); p.add_argument('original'); p.add_argument('output')

@@ -4,6 +4,8 @@
 
 编译后检查缺字、未定义引用、错误、overfull 等。扫描 PDF 的 `\frac`、`\partial`、`$` 等痕迹后人工确认：正文可能讨论 LaTeX，存在误报；抽取顺序也可能不可靠。附录代码不纳入正文公式扫描。
 
+国赛 CUMCM 匿名论文首页应直接呈现论文标题与摘要，不添加题号、队号抬头。项目配置中的赛题号和队号仍可保留供非匿名页面使用；若本地论文源另写了这些字段，只删除匿名正文里的输出语句。用 `pdf_workflow.py audit body.pdf --cumcm-anonymous --project-config .mathmodel/paper/config.json --report qa/anonymous.json` 检查首页字段和所选正文中的队号原值；检查报告只写问题类别，不写队号。PDF 文本提取不能保证识别扫描图或转曲文字，仍须查看首页渲染图。
+
 ## 原附录接回
 
 正文单独编译，插入用户原 PDF 的附录页，不将整页栅格化重建。`pdf_workflow.py append` 默认不修改原页码。授权补页码时使用 `--number-pages`，脚本会：

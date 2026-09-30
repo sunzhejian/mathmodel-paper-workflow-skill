@@ -50,6 +50,19 @@ class ContractTests(unittest.TestCase):
         self.assertNotIn('--max-pages', args)
         self.assertFalse((self.root/'qa').exists())
 
+    def test_cumcm_anonymous_option_uses_project_config_without_exposing_value(self):
+        self.contract['audit']['anonymous_cumcm'] = True
+        config_dir = self.root/'.mathmodel/paper'
+        config_dir.mkdir(parents=True)
+        secret = '987654321012'
+        (config_dir/'config.json').write_text(json.dumps({'contestFields': [
+            {'id': 'teamNumber', 'value': secret}]}), encoding='utf-8')
+        proc = self.cli('--dry-run')
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn('--cumcm-anonymous', proc.stdout)
+        self.assertIn('--project-config', proc.stdout)
+        self.assertNotIn(secret, proc.stdout)
+
     def test_maximum_mode_and_no_threshold(self):
         self.contract['page_requirement'] = {'mode': 'maximum', 'count': 2}
         self.contract['blank_limit_percent'] = None
