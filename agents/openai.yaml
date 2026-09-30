@@ -1,4 +1,4 @@
 interface:
-  display_name: "数模论文迭代定稿"
-  short_description: "贯通求解证据、公式图表、物理线稿、排版及附录保留的数模论文工作流"
-  default_prompt: "使用 $mathmodel-paper-workflow 根据赛题和求解证据完成论文；新稿或大改版先展示论文与流程图模板并询问未定选择，记录答案后交付可追溯文件。"
+  display_name: "数模论文与材料工作流"
+  short_description: "从零完成逐问建模求解、论文与材料，或接续现稿修订并核验可复现证据"
+  default_prompt: "使用 $mathmodel-paper-workflow 完成本次数模工作；方向未定时先展示六项工作选择，再询问必要的模板与交付格式，按实际清单交付可追溯成果。"

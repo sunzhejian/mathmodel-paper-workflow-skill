@@ -1,11 +1,11 @@
 ---
 name: mathmodel-paper-workflow
-description: 依据求解证据撰写、扩写或迭代定稿中文数学建模竞赛论文，处理逐问模型、图表、页数范围、PDF/Word排版、附录保留和支撑材料验收。适用于已有赛题、程序或论文，需要交付可追溯成果的任务。
+description: 从赛题和附件完成可复现建模、求解与中文数学建模竞赛论文及相关材料，或接续已有程序和论文核对证据、扩写、修订图表排版、保留附录及验收交付。适用于数模竞赛全流程交付与论文修订。
 ---
 
-# 数模论文迭代定稿
+# 数学建模论文与材料工作流
 
-贯通“题目要求—逐问求解—结果证据—正文表达—图表排版—最终交付”，把用户反馈转为可核验的论文变更。可接续已有建模工作流，不要求安装特定上游技能。
+贯通“题目要求—逐问求解—结果证据—正文表达—图表排版—最终交付”。从零任务按题面覆盖全部子问，已有成果从所需阶段接续；两者都保留可复现证据。不要求安装特定上游技能。
 
 ## 接手与确定约束
 
@@ -28,6 +28,7 @@ description: 依据求解证据撰写、扩写或迭代定稿中文数学建模�
 - **模板选择已答复或项目存在旧记录**：运行 `scripts/validate_template_decisions.py` 检查所选入口和真实数据路径；记录冲突时按用户最新指示修订，不把配置默认值当成用户确认。
 - **用户要求论文达到页数下限**：读 [证据驱动扩写](references/longform-paper.md)。先列证据支持的新增论证单元，再编译验证下限与上限；不靠拉行距、重复图表或空泛背景凑页。
 - **附录、Word/PDF、支撑包或复现**：读 [编译与交付](references/build-and-delivery.md)。先编译检查正文，最后接回原附录。
+- **从零全交付或多个成果一起交付**：按[交付清单](references/build-and-delivery.md#按本次范围检查交付清单)逐项记录实际必需文件和每问代码/结果；用 `scripts/check_project_delivery.py` 查漏，无原附录时也能使用。只改一处文字不强制建全套清单。
 - **维护本仓库的上游技能版本**：读 [上游维护](references/upstream-maintenance.md)。先只读比较远端，再审查差异、更新固定提交和入口、运行验证；没有变化时不修改文件。
 
 ## 可重复的检查工具
@@ -64,6 +65,9 @@ python scripts/verify_delivery.py body.pdf original.pdf final.pdf qa/layout.json
 
 # 在论文源中筛查高确定性的工作过程用语；仍需人工通读题注和正文。
 python scripts/check_paper_voice.py paper/main.tex paper/sections
+
+# 检查本次必需文件及每问代码/结果；原附录可不存在。先按实际范围改清单。
+python scripts/check_project_delivery.py reports/project-delivery.json --project-root . --report qa/round-01/inventory.json
 ```
 
 `audit` 测量版心内整行宽度连续无内容的竖向区间，报告页尾及最大空白带。**不是总白色像素比例，也不能自动证明没有文字重叠。** 它跳过范围外附录，检测疑似未编译公式，输出逐页预览。超标退出码 1，输入错误 2；未提供留白限制时只报告，不发明门槛。
@@ -71,6 +75,8 @@ python scripts/check_paper_voice.py paper/main.tex paper/sections
 `audit_contract.py` 读取合同的 `audit`、页数、边距与留白字段；其余字段供代理执行，不代表已自动核验。合并 PDF 必须指定正文末页，报告和预览采用新路径；`--dry-run` 仅打印参数。详细字段和命令见 [复现手册](references/reproduction-guide.md#8-让合同直接驱动检查)。
 
 `append` 复核每页原附录的渲染和文字；加页码前检查页脚文字与图形为空，之后验证页脚外一致。已有页码、扫描污点、旋转页或不合适区域会停止，不用白块覆盖。数字签名等 PDF 级元数据不属于视觉保真保证。
+
+`check_project_delivery.py` 的 `inventory_complete` 只表示声明的非空文件完整、保留源哈希一致；它不执行运行命令，也不证明文件内容、模型或格式合格。输出清单由用户实际要求决定，不能把可选 Word/商业软件变成强制项。
 
 ## 每轮完成标准
 

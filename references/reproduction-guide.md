@@ -45,6 +45,7 @@ macOS/Linux：
 7. 把两页原附录拼到新正文后，补页码 3、4；逐页比较页脚外渲染和文字，并确认原文件未变。
 8. 按白名单打包脚本与结果，回读哈希清单。汇总 `demo-report.json`。
 9. 用交付一致性门禁再次核对正文、原附录、最终 PDF、两份检查报告和支撑包，写出 `delivery.json`。
+10. 根据真实演示文件生成项目交付清单，核对逐问代码/结果、两项必需成果和原文件哈希；未要求的 Word 文件可缺失。写出 `inventory.json`，该检查不再次执行求解命令。
 
 预期产物：
 
@@ -58,6 +59,7 @@ qa/demo/
   bad-whitespace.pdf / bad-formula.pdf
   layout.json / appendix.json / bad-whitespace.json / bad-formula.json
   delivery.json                 # 同版本哈希、页数与支撑 ZIP 一致性检查
+  project-delivery.json / inventory.json  # 实际文件清单及完成情况，不是模型验证
   pages/                        # 正文页图与缩略拼图
   support-files.json / support.zip
   demo-report.json               # passed=true、交付核验、预期失败原因、总页数4

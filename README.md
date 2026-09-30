@@ -54,6 +54,8 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 
 选择“从零到完整论文及相关材料全交付”时，流程依次为：**题面与附件核对 → 每问建模与独立求解 → 原精度结果和图表 → 论文与可编辑源 → 编译、审查、支撑包验收**。通常会有论文 PDF、要求的 Word/源文件、逐问代码、电子结果表、图源、运行记录和支撑包；实际清单以本次比赛规则和用户要求为准。只修现稿时从相应阶段接续，不重做已验证的全部工作。
 
+全交付时将[项目清单示例](examples/project-delivery.json)改成实际清单，列出每问代码、原精度结果及用户要求的文件，再用 `check_project_delivery.py` 查漏。新建论文没有旧附录也能运行；可选输出缺失不会被当作失败，必需文件和保留原文件会核对。清单完整仍需配合模型、引用、PDF/Word和图文视觉审查。
+
 国赛 CUMCM 匿名正文保留真正的论文标题，但不显示题号、参赛队号抬头。赛题号和队号仍可留在项目配置中；`pdf_workflow.py audit --cumcm-anonymous --project-config ...` 可对编译后的 PDF 做文字层检查，首页仍需目视核对。
 
 新任务中调用：
@@ -92,10 +94,11 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [PDF 工具](scripts/pdf_workflow.py) | 留白/公式检查、渲染、附录保留和可选页码 |
 | [支撑包工具](scripts/package_support.py) | 显式白名单、路径检查、哈希与 ZIP 回读 |
 | [交付一致性门禁](scripts/verify_delivery.py) | 核对正文、附录来源、最终 PDF、检查报告及支撑 ZIP 属于同一版 |
+| [项目交付清单](examples/project-delivery.json) / [文件检查](scripts/check_project_delivery.py) | 根据实际选择查漏，核对逐问代码/结果与保留源哈希；支持没有旧附录的新稿 |
 | [论文口吻筛查](scripts/check_paper_voice.py) | 在 TeX/Markdown 源中标出明显的工作过程用语，供人工复核 |
 | [可运行合成案例](scripts/run_demo.py) | 独立计算、正反例检查、附录拼接、打包回读 |
 | [核验记录](docs/validation.md) | 本轮测试、讲解图检查与自动验收边界 |
-| [人工验收情景](examples/acceptance-scenarios.md) | 十九种典型反馈的预期行为与失败判据；供实际评估时使用 |
+| [人工验收情景](examples/acceptance-scenarios.md) | 二十一种典型反馈的预期行为与失败判据；供实际评估时使用 |
 
 ```sh
 python scripts/pdf_workflow.py audit paper.pdf --last-page 31 --blank-limit 20 --report qa/layout.json --render-dir qa/pages
@@ -103,6 +106,7 @@ python scripts/pdf_workflow.py audit body.pdf --min-pages 21 --max-pages 31 --re
 python scripts/pdf_workflow.py append body.pdf original.pdf final.pdf --appendix-start 30 --report qa/appendix.json
 python scripts/package_support.py support-root support-files.json support.zip
 python scripts/verify_delivery.py body.pdf original.pdf final.pdf qa/layout.json qa/appendix.json --support-zip support.zip --support-root support-root
+python scripts/check_project_delivery.py reports/project-delivery.json --project-root . --report qa/round-01/inventory.json
 python -m unittest discover -s tests -v
 python scripts/run_demo.py --output qa/demo
 ```

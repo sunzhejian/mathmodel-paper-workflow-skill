@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "mode": "full-delivery",
+  "note": "Illustrative only. Replace every path and list ALL actual questions and user-required outputs. Optional Word is only an example, not a contest rule.",
+  "deliverables": [
+    {"id": "paper-pdf", "path": "deliverables/paper.pdf", "required": true},
+    {"id": "editable-paper", "path": "paper/main.tex", "required": true},
+    {"id": "paper-word", "path": "deliverables/paper.docx", "required": false},
+    {"id": "support-package", "path": "deliverables/support.zip", "required": true},
+    {"id": "figure-source", "path": "figures/roadmap.drawio", "required": true},
+    {"id": "figure-pdf", "path": "figures/roadmap.pdf", "required": true}
+  ],
+  "questions": [
+    {"id": "Q1", "solver": "code/problem1.py", "run_command": "python code/problem1.py",
+     "results": ["results/problem1.csv"]}
+  ],
+  "preserved_inputs": []
+}

@@ -116,9 +116,25 @@ def run(output):
     delivery = json.loads((output/'delivery.json').read_text(encoding='utf-8'))
     if not delivery['passed'] or delivery['support_files_checked'] != 2:
         raise RuntimeError('Final delivery consistency gate did not pass')
+    write_json(output/'project-delivery.json', {
+        'schema_version': 1, 'mode': 'full-delivery',
+        'deliverables': [{'id': 'final-pdf', 'path': 'final.pdf', 'required': True},
+                         {'id': 'support-zip', 'path': 'support.zip', 'required': True},
+                         {'id': 'word-not-requested', 'path': 'optional.docx', 'required': False}],
+        'questions': [{'id': 'Q1', 'solver': 'support/code/problem1.py',
+                       'results': ['support/results/series.csv'],
+                       'run_command': 'python support/code/problem1.py'}],
+        'preserved_inputs': [{'path': 'original.pdf', 'sha256': original_hash}]})
+    calls.append(command(ROOT/'scripts'/'check_project_delivery.py',
+                         [output/'project-delivery.json', '--project-root', output,
+                          '--report', 'inventory.json']))
+    inventory = json.loads((output/'inventory.json').read_text(encoding='utf-8'))
+    if not inventory['inventory_complete'] or inventory['required_deliverables'] != 2:
+        raise RuntimeError('Project delivery inventory is incomplete')
     report = {'passed': True, 'data_kind': 'synthetic analytic example, not competition data',
               'python': sys.version, 'rows': len(rows), 'total_pages': 4,
-              'appendix_pages_verified': 2, 'delivery_verified': True, 'original_unchanged': True,
+              'appendix_pages_verified': 2, 'delivery_verified': True, 'inventory_complete': True,
+              'original_unchanged': True,
               'expected_rejections': {'whitespace': bad_blank['failures'], 'formula': bad_formula['failures']},
               'commands': calls}
     write_json(output/'demo-report.json', report)
