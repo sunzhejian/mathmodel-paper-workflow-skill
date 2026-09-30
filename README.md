@@ -42,7 +42,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 python -m pip install -r requirements.txt
 ```
 
-新稿或大幅改版时，先确认使用者的工作大方向（接续修订、重新完成、仅审查、仅制图）和交付范围，再运行 python scripts/template_inventory.py --project-root 项目目录 --category paper --configured-family，展示当前赛事的论文变体；需要流程图时再运行同一命令的 --category diagram，向使用者询问合适版式。示意图候选按用途筛选为五带路线、三栏框架、三栏阶段流程或横版任务流水线；有参考图时可选择自定义重绘。数据图模板只有与真实结果结构匹配时才推荐，不能使用其中的模拟数据充当论文结果。
+新稿或大幅改版且方向未定时，先提供六项单选：继续修改现稿、用已有求解结果写论文、**从零到完整论文及相关材料全交付**、只审查现稿、只制作图示、只修排版。选定后核对缺少的材料和交付范围，再运行 python scripts/template_inventory.py --project-root 项目目录 --category paper --configured-family，展示当前赛事的论文变体；需要流程图时再运行同一命令的 --category diagram，向使用者询问合适版式。示意图候选按用途筛选为五带路线、三栏框架、三栏阶段流程或横版任务流水线；有参考图时可选择自定义重绘。数据图模板只有与真实结果结构匹配时才推荐，不能使用其中的模拟数据充当论文结果。选项文案与使用条件见[首轮问询](references/template-selection.md)。
 
 国赛 CUMCM 匿名正文保留真正的论文标题，但不显示题号、参赛队号抬头。赛题号和队号仍可留在项目配置中；`pdf_workflow.py audit --cumcm-anonymous --project-config ...` 可对编译后的 PDF 做文字层检查，首页仍需目视核对。
 
