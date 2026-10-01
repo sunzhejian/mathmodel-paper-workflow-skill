@@ -9,7 +9,7 @@ description: 从赛题和附件完成可复现建模、求解与中文数学建�
 
 ## 接手与确定约束
 
-1. 读取项目 `AGENTS.md`，以及存在时的 `.mathmodel/paper/config.json`。模板、队伍档案和入口文件属于用户数据，不覆盖已有配置。身份信息只进入模板明确要求的非匿名页面。**国赛 CUMCM 匿名论文首页保留论文标题，不在标题上方写“题号/题目：A”“参赛队号”等配置字段。**
+1. 读取项目 `AGENTS.md`，以及存在时的 `.mathmodel/paper/config.json`。模板、队伍档案和入口文件属于用户数据，不覆盖已有配置。姓名、学校等身份信息只进入模板明确要求的非匿名页面；美赛 Team Control Number 作为规则要求的匿名编号按规定显示。**国赛 CUMCM 匿名论文首页保留论文标题，不在标题上方写“题号/题目：A”“参赛队号”等配置字段。**
    新稿或大幅改版且方向不明时，按[首轮选项与模板选择](references/template-selection.md)先让使用者单选主要方向：修订现稿、已有结果写稿、从零到完整论文及相关材料全交付、只审查、只制图或只修排版。选定后再核对缺少的材料与交付范围；赛制和年份未明确时先选择比赛类型，再选必要的排版引擎、论文和图示模板。先读已有决策记录，已明确的小修不重复发问；新决定写回项目报告并验证。
 2. 确定最新**用户指定**文件、可编辑源、输出目录及保留区域。用户改过附录的 PDF 可能比 TeX/Word 更权威，不能用旧源重建这部分。
 3. 留存原文件及 SHA-256。在授权目录创建修订源，不覆盖其他方案、历史提交或外部聊天附件。
@@ -21,6 +21,7 @@ description: 从赛题和附件完成可复现建模、求解与中文数学建�
 
 ## 选择本次需要的步骤
 
+- **美赛 MCM/ICM**：先读[美赛路线](references/mcm-icm.md)，核对年份、英文 Summary Sheet、方案页数口径、题面指定memo/letter、队号页眉与AI报告；内部全交付材料和正式提交PDF分别准备，不套用国赛规则。
 - **用户需要搭环境、安装编程/排版/绘图工具**：读[工具安装与第一次使用](docs/toolchain.md)，先区分 Git/Python 基础依赖与按路线选择的数值库、TeX/Typst、draw.io、Word 或商业软件；给出官方安装入口和验证命令，不把“安装成功”记为模型已验证。
 - **多轮反馈、每问公式或检查失败**：读 [修订细则](references/revision-playbook.md)，按需使用反馈记录与逐问证据模板；遇到具体失败查 [恢复手册](references/failure-recovery.md)。简单修改不强制建完整台账。
 - **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。本仓库的固定上游项目文件位于 [vendor](vendor/README.md)：先运行 `git submodule update --init --recursive`，再用 `python scripts/check_vendor_skills.py` 核对提交及入口。只读取当前阶段所需的本地 `SKILL.md` 和其引用文件；子模块存在不等于技能已执行。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。

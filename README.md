@@ -87,6 +87,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [证据与写作](references/evidence-and-writing.md) | 数值追溯、摘要、逐问模型、符号及文献 |
 | [证据驱动扩写](references/longform-paper.md) | 用户要求最低页数时的内容预算与页数范围验收 |
 | [模板选择](references/template-selection.md) / [模板盘点](scripts/template_inventory.py) | 向使用者询问论文和流程图模板，区分数据图的实际适用性 |
+| [MCM/ICM 美赛路线](references/mcm-icm.md) / [检查示例](examples/mcm-audit-contract.json) | 已核对的2027规则、2026题面启示、现有模板问题与美赛优先开发项 |
 | [模板决策校验](scripts/validate_template_decisions.py) | 保存用户选择后验证模板与数据源，后续修订避免重复询问 |
 | [流程图模板对照图](scripts/preview_diagram_templates.py) | 从子模块预览生成本地四图对照，供使用者选择，不发布上游素材 |
 | [图表与排版](references/figures-and-layout.md) | 中文字体、可见图宽、线稿透视、标注避让、留白 |
@@ -100,7 +101,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [核验记录](docs/validation.md) | 本轮测试、讲解图检查与自动验收边界 |
 | [开发计划](docs/roadmap.md) | 基于官方竞赛要求和开源长处的开发顺序；明确后台检查不进入论文正文 |
 | [开源技能研读](docs/upstream-study.md) | 四个固定版本的实际入口与相关实现、可吸收做法和需要适配的冲突 |
-| [人工验收情景](examples/acceptance-scenarios.md) | 二十三种典型反馈的预期行为与失败判据；供实际评估时使用 |
+| [人工验收情景](examples/acceptance-scenarios.md) | 二十六种典型反馈的预期行为与失败判据；供实际评估时使用 |
 
 ```sh
 python scripts/pdf_workflow.py audit paper.pdf --last-page 31 --blank-limit 20 --report qa/layout.json --render-dir qa/pages

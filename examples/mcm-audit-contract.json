@@ -1,0 +1,13 @@
+{
+  "status": "illustrative MCM/ICM 2027 audit; replace with actual problem and document scope",
+  "contest": "MCM/ICM",
+  "year": 2027,
+  "official_rules": "https://contest.comap.com/undergraduate/contests/mcm/instructions.html",
+  "audit": {"pdf": "deliverables/solution-only.pdf", "pdf_scope": "body-only", "first_page": 1, "last_page": null, "anonymous_cumcm": false},
+  "page_scope": ["summary-sheet", "contents", "solution", "problem-specific-memo-or-letter", "references", "appendices"],
+  "page_requirement": {"mode": "maximum", "count": 25},
+  "margins_cm_top_right_bottom_left": [2.54, 2.54, 2.54, 2.54],
+  "blank_limit_percent": null,
+  "ai_report": {"if_used": "append after the solution in the final PDF", "excluded_from_solution_page_limit": true},
+  "note": "Only audit, page_requirement, margins and blank_limit drive the existing script. Margins are illustrative measurement bounds, not a COMAP mandate. AI-report placement, actual solution boundary, headers, fonts and citations require separate checks. For a combined PDF set last_page to the actual solution end, not automatically 25."
+}
