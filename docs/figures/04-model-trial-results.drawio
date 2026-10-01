@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="trial-figure" name="真实模型测试结果">
+    <mxGraphModel page="1" pageWidth="1600" pageHeight="980" grid="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="canvas" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#FFFFFF;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1600" height="980" as="geometry" />
+        </mxCell>
+        <mxCell id="title" value="真实模型测试示例" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=48;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="56" y="42" width="1488" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="DeepSeek · GLM · Kimi  /  2026-10-01  /  匿名合成任务" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#62738A;" vertex="1" parent="1">
+          <mxGeometry x="56" y="124" width="1488" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_bg_0" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#EAF0F8;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="56" y="196" width="476" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_0" value="13 次会话" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="78" y="206" width="432" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_bg_1" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#EAF0F8;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="562" y="196" width="476" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_1" value="8 份原始答复" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="584" y="206" width="432" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_bg_2" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#EAF0F8;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1068" y="196" width="476" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_2" value="5 次截断或超时" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="206" width="432" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="card_bg_0" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#F5F8FC;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="56" y="292" width="476" height="524" as="geometry" />
+        </mxCell>
+        <mxCell id="accent_0" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#2C507A;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="56" y="292" width="476" height="7" as="geometry" />
+        </mxCell>
+        <mxCell id="model_0" value="DeepSeek" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=48;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="318" width="424" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="scope_0" value="新参数任务" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#62738A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="376" width="424" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="numeric_label_0" value="数值与字段检查" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="432" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="numeric_value_0" value="19 / 19" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=48;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#2C507A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="470" width="424" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="code_label_0" value="修复后程序 · 输入去重" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="550" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="code_value_0" value="13 / 13 个输入通过" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="590" width="424" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="latex_label_0" value="公式片段 · 实际编译" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="660" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="latex_value_0" value="通过" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#2C507A;" vertex="1" parent="1">
+          <mxGeometry x="82" y="700" width="424" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="note_0" value="代码已修复；原文字仍需审查" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#896020;" vertex="1" parent="1">
+          <mxGeometry x="82" y="764" width="424" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="card_bg_1" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#F5F8FC;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="562" y="292" width="476" height="524" as="geometry" />
+        </mxCell>
+        <mxCell id="accent_1" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#2C507A;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="562" y="292" width="476" height="7" as="geometry" />
+        </mxCell>
+        <mxCell id="model_1" value="GLM" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=48;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="318" width="424" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="scope_1" value="分阶段旧题" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#62738A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="376" width="424" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="numeric_label_1" value="数值与字段检查" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="432" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="numeric_value_1" value="18 / 18" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=48;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#2C507A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="470" width="424" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="code_label_1" value="旧题通用程序 · 输入去重" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="550" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="code_value_1" value="13 / 13 个输入通过" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="590" width="424" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="latex_label_1" value="公式片段 · 实际编译" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="660" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="latex_value_1" value="通过" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#2C507A;" vertex="1" parent="1">
+          <mxGeometry x="588" y="700" width="424" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="note_1" value="新参数整包超时，未计通过" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#896020;" vertex="1" parent="1">
+          <mxGeometry x="588" y="764" width="424" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="card_bg_2" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#F5F8FC;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1068" y="292" width="476" height="524" as="geometry" />
+        </mxCell>
+        <mxCell id="accent_2" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#2C507A;fontSize=32;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1068" y="292" width="476" height="7" as="geometry" />
+        </mxCell>
+        <mxCell id="model_2" value="Kimi" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=48;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="318" width="424" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="scope_2" value="新参数任务" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#62738A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="376" width="424" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="numeric_label_2" value="数值与字段检查" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="432" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="numeric_value_2" value="19 / 19" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=48;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#2C507A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="470" width="424" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="code_label_2" value="新参数程序 · 输入去重" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="550" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="code_value_2" value="13 / 13 个输入通过" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="590" width="424" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="latex_label_2" value="公式片段 · 实际编译" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="660" width="424" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="latex_value_2" value="通过" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontFamily=Microsoft YaHei;fontColor=#2C507A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="700" width="424" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="note_2" value="通过项限于本轮测试范围" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#62738A;" vertex="1" parent="1">
+          <mxGeometry x="1094" y="764" width="424" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="note1" value="GLM显示旧题分阶段结果；新参数完整会话未完成。超时与截断不计作通过。" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#20324A;" vertex="1" parent="1">
+          <mxGeometry x="56" y="850" width="1488" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="note2" value="仅为列明小任务的验证记录，不是模型排行榜，也不代表完整论文质量。" style="text;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontSize=24;fontStyle=0;fontFamily=Microsoft YaHei;fontColor=#62738A;" vertex="1" parent="1">
+          <mxGeometry x="56" y="904" width="1488" height="38" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

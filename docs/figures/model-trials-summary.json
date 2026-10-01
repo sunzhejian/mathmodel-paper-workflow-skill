@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-01",
+  "sessions": 13,
+  "completed_original_answers": 8,
+  "failed_sessions": 5,
+  "models": [
+    {
+      "name": "DeepSeek",
+      "numeric": {
+        "passed": 19,
+        "total": 19
+      },
+      "numeric_scope": "新参数任务",
+      "code": {
+        "passed": 13,
+        "total": 13
+      },
+      "latex_pass": true,
+      "note": "代码已修复；原文字仍需审查"
+    },
+    {
+      "name": "GLM",
+      "numeric": {
+        "passed": 18,
+        "total": 18
+      },
+      "numeric_scope": "分阶段旧题",
+      "code": {
+        "passed": 13,
+        "total": 13
+      },
+      "latex_pass": true,
+      "note": "新参数整包超时，未计通过"
+    },
+    {
+      "name": "Kimi",
+      "numeric": {
+        "passed": 19,
+        "total": 19
+      },
+      "numeric_scope": "新参数任务",
+      "code": {
+        "passed": 13,
+        "total": 13
+      },
+      "latex_pass": true,
+      "note": "通过项限于本轮测试范围"
+    }
+  ],
+  "repair": {
+    "before": {
+      "passed": 8,
+      "total": 11
+    },
+    "after_same_inputs": {
+      "passed": 11,
+      "total": 11
+    },
+    "new_inputs": {
+      "passed": 2,
+      "total": 2
+    },
+    "all_distinct": {
+      "passed": 13,
+      "total": 13
+    }
+  },
+  "source_sha256": "b16d2662e6f958eb261b6784b1a25720dbf9d1e1ecbe9f0420824f99f1e08810"
+}

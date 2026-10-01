@@ -4,7 +4,21 @@
 
 它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、项目已有的 mma-paper** 等技能。前四个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
-**第一次使用：**先看[工具安装与第一次使用](docs/toolchain.md)，装好 Git、Python 和本仓库依赖后，用同一个虚拟环境解释器运行 `scripts/run_demo.py --output qa/demo`。演示会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；它不需要 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。详细产物及真实项目迁移见[复现手册](references/reproduction-guide.md)。
+**第一次使用**：先看[工具安装与第一次使用](docs/toolchain.md)，装好 Git、Python 和本仓库依赖后，用同一个虚拟环境解释器运行 `scripts/run_demo.py --output qa/demo`。演示会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；它不需要 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。详细产物及真实项目迁移见[复现手册](references/reproduction-guide.md)。
+
+## 真实测试示例
+
+用匿名合成任务调用 DeepSeek、GLM、Kimi，分别核对数值、源码运行和公式编译。以下为2026-10-01这一轮的实际记录；GLM新参数整包超时，图中明确标为未完成。
+
+![DeepSeek、GLM、Kimi测试结果总览：保留旧题和新参数阶段差异，未完成不计通过](docs/figures/04-model-trial-results.png)
+
+### 错误修复与新输入复测
+
+DeepSeek原程序把整数上取整技巧套到连续吨数，漏算小吨位运输方案。给出一个失败输入后修复，再用未放入提示词的新输入检查：**同一11个输入由8项通过变为11项通过，另外2个新输入也通过**。去重后共13种输入；没有把重复案例叠加成更大的样本。
+
+![DeepSeek错误修复示例：原集合8/11，修复后同集合11/11，另外2个新输入通过，去重共13种](docs/figures/05-code-repair-example.png)
+
+这些是列明小任务的验证示例，不能换算为比赛评级或完整论文质量。查看[详细测试说明](docs/model-trials-20261001-families.md)、[原始答复与检测记录](examples/model-trials/observed-v2/evaluation.json)；图提供[可编辑draw.io和矢量文件](docs/figures)，由[生成脚本](scripts/generate_trial_figures.py)读取实际数据生成。
 
 ## 三张图看懂流程
 
@@ -129,6 +143,6 @@ python scripts/run_demo.py --output qa/demo
 - PDF 公式扫描可能误报，需要查看渲染页；自动检测只覆盖指定正文范围。
 - 保留附录指页面可见内容与文字的比对，不保证数字签名、书签或表单等文档级特性。
 - 加页码只接受空白页脚；遇到已有内容直接停止，不覆盖旧页码。
-- 仓库仅包含通用流程、工具和合成测试，不包含任何竞赛论文、附件、队伍信息或计算数据。
+- 仓库公开通用流程、工具、合成测试及匿名模型试用记录；不包含真实参赛论文、赛题附件、队伍信息或私有赛题计算数据。
 
 工具使用 PyMuPDF、NumPy 和 Pillow；依赖各自许可证适用。仓库原创说明与代码采用 MIT 许可证。
