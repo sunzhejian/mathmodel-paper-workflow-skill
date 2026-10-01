@@ -21,7 +21,7 @@ description: 从赛题和附件完成可复现建模、求解与中文数学建�
 
 ## 选择本次需要的步骤
 
-- **美赛 MCM/ICM**：先读[美赛路线](references/mcm-icm.md)，核对年份、英文 Summary Sheet、方案页数口径、题面指定memo/letter、队号页眉与AI报告；内部全交付材料和正式提交PDF分别准备，不套用国赛规则。
+- **美赛 MCM/ICM**：先读[美赛路线](references/mcm-icm.md)，核对年份、英文 Summary Sheet、方案页数口径、题面指定memo/letter、队号页眉与AI报告。新稿优先使用本项目双引擎适配版；已有论文不自动替换。编译后用 `check_mcm_pdf.py` 核对侧文件边界及页眉，再做科学内容与视觉检查。
 - **用户需要搭环境、安装编程/排版/绘图工具**：读[工具安装与第一次使用](docs/toolchain.md)，先区分 Git/Python 基础依赖与按路线选择的数值库、TeX/Typst、draw.io、Word 或商业软件；给出官方安装入口和验证命令，不把“安装成功”记为模型已验证。
 - **多轮反馈、每问公式或检查失败**：读 [修订细则](references/revision-playbook.md)，按需使用反馈记录与逐问证据模板；遇到具体失败查 [恢复手册](references/failure-recovery.md)。简单修改不强制建完整台账。
 - **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。本仓库的固定上游项目文件位于 [vendor](vendor/README.md)：先运行 `git submodule update --init --recursive`，再用 `python scripts/check_vendor_skills.py` 核对提交及入口。只读取当前阶段所需的本地 `SKILL.md` 和其引用文件；子模块存在不等于技能已执行。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。
@@ -71,6 +71,12 @@ python scripts/check_paper_voice.py paper/main.tex paper/sections
 
 # 检查本次必需文件及每问代码/结果；原附录可不存在。先按实际范围改清单。
 python scripts/check_project_delivery.py reports/project-delivery.json --project-root . --report qa/round-01/inventory.json
+
+# 美赛新稿模板；目标须位于用户赛题项目且尚不存在。示例路径按项目替换。
+python scripts/prepare_mcm_template.py --engine latex --output paper-mcm-new
+
+# 美赛实际编译PDF与模板导出的边界侧文件；检查报告不会改写正文。
+python scripts/check_mcm_pdf.py paper-mcm-new/build/main.pdf --metadata paper-mcm-new/build/main.mcm.json --year 2027 --report qa/mcm-round-01/check.json
 ```
 
 `audit` 测量版心内整行宽度连续无内容的竖向区间，报告页尾及最大空白带。**不是总白色像素比例，也不能自动证明没有文字重叠。** 它跳过范围外附录，检测疑似未编译公式，输出逐页预览。超标退出码 1，输入错误 2；未提供留白限制时只报告，不发明门槛。

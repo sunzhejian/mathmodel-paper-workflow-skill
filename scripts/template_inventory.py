@@ -54,7 +54,22 @@ def inspect(project_root: Path, skill_root: Path = SKILL) -> dict:
                         "id": candidate.name,
                         "engine": "LaTeX" if entry.endswith(".tex") else "Typst",
                         "entry": (candidate / entry).relative_to(skill_root).as_posix(),
+                        "template_source": "vendor",
                     })
+    # Project adaptations take precedence for the same language/id/engine,
+    # without changing fixed vendor files or any user configuration.
+    choices = {(item["language"], item["id"], item["engine"]): item for item in available}
+    adaptation_root = skill_root / "assets/templates"
+    if adaptation_root.is_dir():
+        for language in sorted(path for path in adaptation_root.iterdir() if path.is_dir()):
+            for candidate in sorted(path for path in language.iterdir() if path.is_dir()):
+                for entry, engine in (("main.tex", "LaTeX"), ("main.typ", "Typst")):
+                    if (candidate/entry).is_file():
+                        item = {"language": language.name, "id": candidate.name, "engine": engine,
+                                "entry": (candidate/entry).relative_to(skill_root).as_posix(),
+                                "template_source": "project-adaptation"}
+                        choices[(language.name, candidate.name, engine)] = item
+    available = [choices[key] for key in sorted(choices)]
     if selected and isinstance(selected["id"], str):
         selected["matching_variants"] = [
             item["id"] for item in available

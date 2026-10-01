@@ -1,0 +1,65 @@
+% Original MCM/ICM project adaptation. Compile with XeLaTeX until references settle.
+\documentclass[a4paper,12pt]{article}
+\usepackage[margin=1in,headheight=16pt,headsep=18pt]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx}
+\usepackage{fancyhdr,refcount}
+\usepackage{url}
+\newif\ifMCMIncludeContents
+\newif\ifMCMIncludeAppendix
+\newif\ifMCMIncludeAI
+\input{config}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\fancyhf{}
+\fancyhead[L]{Team \#\TeamControlNumber}
+\fancyhead[R]{Page \thepage\ of \getpagerefnumber{mcm-last-page}}
+\renewcommand{\headrulewidth}{0.4pt}
+\pagestyle{fancy}
+\newwrite\MCMBoundaryFile
+\AtEndDocument{%
+  \immediate\openout\MCMBoundaryFile=\jobname.mcm.json
+  \immediate\write\MCMBoundaryFile{%
+    {"schema_version":1,"family":"mcm-icm","contest_year":\MCMYear,
+     "team_control_number":"\TeamControlNumber","problem":"\ProblemChosen",
+     "summary_last_page":\getpagerefnumber{mcm-summary-end},
+     "solution_last_page":\getpagerefnumber{mcm-solution-end},
+     "ai_first_page":\ifMCMIncludeAI\getpagerefnumber{mcm-ai-start}\else null\fi,
+     "total_pages":\getpagerefnumber{mcm-last-page}}}
+  \immediate\closeout\MCMBoundaryFile
+}
+\begin{document}
+\begin{center}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccc@{}}
+    \parbox[t]{0.22\textwidth}{\centering\bfseries Problem Chosen} &
+    \parbox[t]{0.38\textwidth}{\centering\bfseries\MCMYear\ MCM/ICM\\Summary Sheet} &
+    \parbox[t]{0.34\textwidth}{\centering\bfseries Team Control Number} \\[0.35em]
+    \textbf{\ProblemChosen} & & \textbf{\TeamControlNumber}
+  \end{tabular*}
+\end{center}
+\hrule
+\begin{center}
+  {\large\bfseries\PaperTitle\par}
+  \textbf{Summary}
+\end{center}
+\input{summary}
+\par\label{mcm-summary-end}
+\clearpage
+\ifMCMIncludeContents
+  \tableofcontents
+  \clearpage
+\fi
+\input{solution}
+\input{references}
+\ifMCMIncludeAppendix
+  \appendix
+  \input{appendix}
+\fi
+\par\label{mcm-solution-end}
+\ifMCMIncludeAI
+  \clearpage
+  \section*{Report on Use of AI Tools}
+  \label{mcm-ai-start}
+  \input{ai-report}
+\fi
+\par\label{mcm-last-page}
+\end{document}

@@ -87,7 +87,8 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [证据与写作](references/evidence-and-writing.md) | 数值追溯、摘要、逐问模型、符号及文献 |
 | [证据驱动扩写](references/longform-paper.md) | 用户要求最低页数时的内容预算与页数范围验收 |
 | [模板选择](references/template-selection.md) / [模板盘点](scripts/template_inventory.py) | 向使用者询问论文和流程图模板，区分数据图的实际适用性 |
-| [MCM/ICM 美赛路线](references/mcm-icm.md) / [检查示例](examples/mcm-audit-contract.json) | 已核对的2027规则、2026题面启示、现有模板问题与美赛优先开发项 |
+| [MCM/ICM 美赛路线](references/mcm-icm.md) / [双引擎模板](assets/templates/en) | 已核对的2027规则、项目适配模板、真实编译边界与美赛开发项 |
+| [美赛初始化](scripts/prepare_mcm_template.py) / [PDF检查](scripts/check_mcm_pdf.py) | 新目录建稿，检查摘要、方案/AI报告边界与每页页眉；不覆写用户论文 |
 | [模板决策校验](scripts/validate_template_decisions.py) | 保存用户选择后验证模板与数据源，后续修订避免重复询问 |
 | [流程图模板对照图](scripts/preview_diagram_templates.py) | 从子模块预览生成本地四图对照，供使用者选择，不发布上游素材 |
 | [图表与排版](references/figures-and-layout.md) | 中文字体、可见图宽、线稿透视、标注避让、留白 |

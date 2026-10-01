@@ -49,9 +49,56 @@ AI 使用需按真实情况在正文相关位置和参考文献披露，方案�
 
 以上为本 skill 根据所读材料制定的写作方法，不是固定评分公式。官方强调摘要质量、组织清楚和有依据的模型分析，参考其[规则中的写作指导](https://contest.comap.com/undergraduate/contests/mcm/instructions.html)和[官方 Tips](https://contest.comap.com/undergraduate/contests/mcm/flyer/MCM-ICM_Tips.pdf)。
 
-## 固定版本模板审查结果
+## 本项目维护的双引擎模板
 
-本轮只读检查了 MathModelAgent 固定版本 `487f3508` 的 `templates/en/mcm-latex/main.tex` 与 `templates/en/mcm/main.typ`。它们是可选择的模板入口，但不能直接标为已完成2027适配；本轮未编译它们、也未修改上游或用户论文。
+已提供本项目原创的 [LaTeX 模板](../assets/templates/en/mcm-latex/main.tex)和 [Typst 模板](../assets/templates/en/mcm/main.typ)。同一语言/模板id的盘点优先显示本项目适配版，`template_source=project-adaptation`；固定上游文件保留。已有用户论文继续按原源文件修订，不因新版本可用便替换整稿。
+
+两套骨架只有一个Summary Sheet，目录自动生成，页眉使用实际页码及整个PDF总页数，方案和AI报告分别记录边界。年份、控制号、题号、标题及可选目录/附录/AI报告在配置文件中填写。报告边界只输出到侧文件，不渲染为正文内容。主体字号为12pt，LaTeX基础版不要求系统特定字体或 `hyperref`。
+
+从用户选定的赛题项目目录调用skill脚本，新稿写在该项目下的新目录。不要把正式论文、队伍配置或私有结果放在用于公开维护的skill仓库。下面脚本路径须替换为实际安装路径：
+
+```sh
+python /path/to/skill/scripts/prepare_mcm_template.py --engine latex --output paper-mcm-new
+# Typst 改用 --engine typst，并选择另一个新的目标目录。
+```
+
+初始化拒绝覆盖任何既有目录或项目配置。填好 `config.tex`/`config.typ`，替换摘要、任务正文、参考文献和按真实用途启用的AI报告；`REPLACE_` 标记、零控制号与题号X会被验收检查指出。memo/letter按题面写在方案中，模板不生成虚构内容。
+
+LaTeX：先创建 `build/`，从模板目录执行至少两遍并使引用稳定（合成回归使用三遍）：
+
+```sh
+xelatex -interaction=nonstopmode -halt-on-error -no-shell-escape -output-directory=build main.tex
+xelatex -interaction=nonstopmode -halt-on-error -no-shell-escape -output-directory=build main.tex
+```
+
+生成 `build/main.pdf` 与 `build/main.mcm.json`。如本机依赖需要额外处理，先按工具指南定位，不在模板研发中更新系统TeX。基础版已在当前MiKTeX上编译验证。
+
+Typst 0.15+：
+
+```sh
+typst compile main.typ build/main.pdf
+typst eval 'query(<mcm-boundary>).first().value' --in main.typ > build/main.mcm.json
+```
+
+Windows PowerShell 的JSON导出使用明确的UTF-8编码：
+
+```powershell
+typst eval 'query(<mcm-boundary>).first().value' --in main.typ | Out-File -LiteralPath build/main.mcm.json -Encoding utf8
+```
+
+旧版CLI可用 `typst query main.typ '<mcm-boundary>' --field value --one` 取出同一JSON。测试会检测eval是否可用；本轮验证使用官方Typst 0.15.1便携版。
+
+编译后使用安装的skill脚本路径运行（以下命令中的脚本路径按本机实际位置替换）：
+
+```sh
+python /path/to/skill/scripts/check_mcm_pdf.py build/main.pdf --metadata build/main.mcm.json --year 2027 --report build/mcm-check-round-01.json
+```
+
+检查器校验摘要页位置/数量、真实方案上限、AI报告起始页、每页队号/页码/总页数及显式占位内容。报告不输出控制号原值，新报告路径不会覆盖输入或旧报告。可单独使用的编译边界不是数学验证；它也不证明实际AI披露、引用、字体、所有图文位置或COMAP最终合规。仍需按源文件、逐页渲染和真实使用记录复核，不能手工改边界JSON把超页方案藏到AI报告中。
+
+## 固定上游版本模板审查结果
+
+研究阶段只读检查了 MathModelAgent 固定版本 `487f3508` 的 `templates/en/mcm-latex/main.tex` 与 `templates/en/mcm/main.typ`。下表说明这些上游文件的问题；本轮编译验证的是上面的本项目适配版，没有修改上游或用户论文。
 
 | 源文件中的实际发现 | 后续适配方式 |
 | --- | --- |
@@ -73,13 +120,13 @@ AI 使用需按真实情况在正文相关位置和参考文献披露，方案�
 python scripts/audit_contract.py reports/mcm-audit-contract.json --project-root . --report qa/mcm-round-01/layout.json --render-dir qa/mcm-round-01/pages
 ```
 
-此命令使用已有工具检查声明范围内的页数与疑似未编译公式；它不能独立核验 Summary Sheet、字号、每页队号、AI正文引用或语义正确性。这些仍须源文件/视觉核查，后续美赛专用检查器是开发项。
+此命令使用已有工具检查声明范围内的页数与疑似未编译公式；配合上面的 `check_mcm_pdf.py` 检查摘要位置、页眉及编译边界。字号、AI正文引用及语义正确性仍须源文件/视觉核查。
 
 正式提交目录按本次规则准备单一PDF；源码、数据、图源、完整运行日志和本地复现包可另交给用户，但不自动作为COMAP额外附件发送。参考文献应覆盖真正使用的数据、理论、图形与AI工具；“知网中文文献”只在用户明确要求且确实适用时采用，不能继承为美赛默认。比赛结束后的处理遵守当届截止要求；skill维护、对外发布和测试仅操作通用材料或匿名合成夹具。
 
 ## 接下来优先开发
 
-1. **适配模板与页数边界：**统一年份、Summary Sheet、动态目录、队号页眉、真实页数及AI报告接入；先用合成夹具编译和视觉核对。
+1. **基础模板与页数边界已实现：**本项目双引擎骨架、初始化与编译边界检查已通过合成测试；下一步在不同篇幅、图表与真实获授权项目副本中扩展验证，不把骨架通过当成整篇论文质量合格。
 2. **任务解析：**支持编号/项目符号/段落，区别必需任务和启发；把memo/letter列为明确交付项。
 3. **Summary 与正文一致性：**核对方法、数字、单位、建议和局限；先基于真实结果再写英文，不硬套词数或最低页数。
 4. **合成回归：**覆盖26页方案拒绝、AI报告独立计数、漏memo、硬编码目录、三问占位和题号/年份错配；后台报告不进入正文。
