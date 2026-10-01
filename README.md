@@ -98,6 +98,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [论文口吻筛查](scripts/check_paper_voice.py) | 在 TeX/Markdown 源中标出明显的工作过程用语，供人工复核 |
 | [可运行合成案例](scripts/run_demo.py) | 独立计算、正反例检查、附录拼接、打包回读 |
 | [核验记录](docs/validation.md) | 本轮测试、讲解图检查与自动验收边界 |
+| [开发优化方向](docs/roadmap.md) | P0/P1/P2 优先级、具体缺口、验收标准及推荐首个开发包；计划不计为已实现 |
 | [人工验收情景](examples/acceptance-scenarios.md) | 二十一种典型反馈的预期行为与失败判据；供实际评估时使用 |
 
 ```sh
