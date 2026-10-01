@@ -1,0 +1,34 @@
+{
+  "inference": {
+    "point_share_a": 0.55,
+    "rank_interval_a": {
+      "lower": 0.65,
+      "upper": 1.0,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "rank_case_intervals": [
+      {
+        "case_id": "always_wins",
+        "interval": {
+          "lower": 0.0,
+          "upper": 1.0,
+          "lower_inclusive": true,
+          "upper_inclusive": true
+        }
+      },
+      {
+        "case_id": "impossible_win",
+        "interval": null
+      }
+    ],
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A zero recorded after a contestant is eliminated is a structural status placeholder; it does not necessarily mean the contestant had zero active support in that week.",
+      "future_na": "NA marks a week that has not yet been held; it carries no information about latent support and must not be imputed as a numeric share."
+    },
+    "results_paragraph": "In week 1 the combined score is exact, so the fan share solves to p_A=0.55. In a rank-only week with the same judge share 0.4 and judge weight 0.6, A strictly outranks B in combined score if and only if p_A>0.65; hence the feasible fan-share set is (0.65,1]. For the extra case 'always_wins' (j_A=0.9, alpha=0.8) the required threshold is -1.1, so every p_A in [0,1] is feasible. For 'impossible_win' (j_A=0.2, alpha=0.7) the threshold is 1.2, which exceeds the maximum possible fan share; therefore no p_A in [0,1] can make A outrank B, reflecting that the judge deficit is too large to overcome even with 100% fan support. Absolute vote counts cannot be recovered from shares alone, and without a supplied sampling distribution or repeated observations no confidence interval is available.",
+    "latex_model": "\\begin{align}\n s_A^{(w)} &= \\alpha j_A^{(w)} + (1-\\alpha)p_A^{(w)},\\\\\n s_B^{(w)} &= \\alpha(1-j_A^{(w)}) + (1-\\alpha)(1-p_A^{(w)}).\n\\end{align}\nRanking by combined score gives\n\\begin{equation}\n s_A^{(w)} - s_B^{(w)} = \\alpha(2j_A^{(w)}-1) + (1-\\alpha)(2p_A^{(w)}-1) > 0,\n\\end{equation}\nso that\n\\begin{equation}\n p_A^{(w)} > \\frac12 - \\frac{\\alpha}{1-\\alpha}\\left(j_A^{(w)}-\\frac12\\right).\n\\end{equation}\nFor week~1 the score is exact:\n\\begin{equation}\n 0.46 = 0.6(0.4)+0.4p_A^{(1)} \\quad\\Rightarrow\\quad p_A^{(1)}=0.55.\n\\end{equation}\nFor the rank-only week with $j_A^{(r)}=0.4$ and $\\alpha=0.6$, the threshold is $0.65$, hence $p_A^{(r)}\\in(0.65,1]$. For \\texttt{always\\_wins} with $(j_A,\\alpha)=(0.9,0.8)$ the threshold is $-1.1$, giving $p_A\\in[0,1]$; for \\texttt{impossible\\_win} with $(0.2,0.7)$ it is $1.2$, so no feasible fan share exists."
+  }
+}

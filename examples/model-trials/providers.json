@@ -13,5 +13,20 @@
     "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
     "model": "glm-5.3",
     "env_key": "MM_ARK_CODING_API_KEY"
+  },
+  "deepseek-coding-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+    "model": "deepseek-v4-pro",
+    "env_key": "MM_ARK_CODING_API_KEY"
+  },
+  "kimi-coding-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+    "model": "kimi-k2.7-code",
+    "env_key": "MM_ARK_CODING_API_KEY"
+  },
+  "kimi-k3-coding-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+    "model": "kimi-k3",
+    "env_key": "MM_ARK_CODING_API_KEY"
   }
 }

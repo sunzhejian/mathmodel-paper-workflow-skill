@@ -1,0 +1,2883 @@
+{
+  "date": "2026-10-01",
+  "source_type": "Original anonymous synthetic tasks; no official contest paper",
+  "tools": {
+    "Codex CLI": "0.144.1",
+    "OpenCode": "1.18.34"
+  },
+  "sessions_requested": 13,
+  "scope": "Three families chosen by the user. Same stage inputs supplied where comparable; client/part/recovery differences are explicit.",
+  "records": [
+    {
+      "id": "deepseek-clarified",
+      "raw_file": "deepseek-clarified.txt",
+      "raw_sha256": "b26f65422262b8ae27244a91b3a85a98b4e063b0911207fe268dd9f9b644ead5",
+      "canonical_file": "deepseek-clarified.json",
+      "canonical_sha256": "3f1cc5bd5e273637c005dd333332df249e14b057163b2a07790a102a3d204533",
+      "fence_removed": false,
+      "requested_model": "deepseek-v4-pro",
+      "tool": "Codex CLI",
+      "protocol": "Responses",
+      "seconds": 244.7,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "clarified",
+        "task_schema_version": 2,
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "802b045f1a3e7118cd5f3399cdb268b599dccf043e26f8146c8abd8068ac121f",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "91d5182a3df96b3134fc3db5373d7156848f1b7eb925e912d02066d11e890315"
+      },
+      "actual_prompt_sha256": "2245ec2fde629c49ea802aa4b3e28356cc092fb383767b8f5ec4518204bf73b4",
+      "legacy_prompt_hash_mismatch": true,
+      "numeric_shape_checks": {
+        "round": "clarified",
+        "passed": 18,
+        "total": 18,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_700",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1400",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "87 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "139 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_always_wins",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_impossible_win",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_interval": {
+            "lower": 0.65,
+            "upper": 1.0,
+            "lower_inclusive": false,
+            "upper_inclusive": true
+          },
+          "expected_lower": 0.6499999999999999,
+          "boundary_substitution": {
+            "fan_share_a": 0.6499999999999999,
+            "combined_a": 0.49999999999999994,
+            "combined_b": 0.5
+          },
+          "endpoint_substitution": [
+            {
+              "fan_share_a": 0,
+              "combined_a": 0.24,
+              "combined_b": 0.76
+            },
+            {
+              "fan_share_a": 1,
+              "combined_a": 0.64,
+              "combined_b": 0.36
+            }
+          ]
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      }
+    },
+    {
+      "id": "glm-transport",
+      "raw_file": "glm-transport.txt",
+      "raw_sha256": "c92179c2c051b6f700b5ce83017a6be5eefe735a8b36cbbc941e1e4ba8100960",
+      "canonical_file": "glm-transport.json",
+      "canonical_sha256": "1601750009ff587698b2b9690b168d28d13e05e1da4ce022ca311dcfc69185a3",
+      "fence_removed": false,
+      "requested_model": "glm-5.3",
+      "tool": "Codex CLI",
+      "protocol": "Responses",
+      "seconds": 380.2,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "clarified",
+        "part": "transport",
+        "task_schema_version": 2,
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "802b045f1a3e7118cd5f3399cdb268b599dccf043e26f8146c8abd8068ac121f",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "52735756319177ad915bd82c565125603ab9066e818fc4fbfbf43a5a0c00d993"
+      },
+      "actual_prompt_sha256": "db56ef3940d3fea188b0c8b66853d7b7282f37f6bbf74f26c05d5109caa25cb9",
+      "legacy_prompt_hash_mismatch": true
+    },
+    {
+      "id": "glm-inference",
+      "raw_file": "glm-inference.txt",
+      "raw_sha256": "e48b6947dca0b5d6833704a379eb4a61f19e0a624382e0044f375e112204478e",
+      "canonical_file": "glm-inference.json",
+      "canonical_sha256": "e48b6947dca0b5d6833704a379eb4a61f19e0a624382e0044f375e112204478e",
+      "fence_removed": false,
+      "requested_model": "glm-5.3",
+      "tool": "Codex CLI",
+      "protocol": "Responses",
+      "seconds": 108.5,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "clarified",
+        "part": "inference",
+        "task_schema_version": 2,
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "802b045f1a3e7118cd5f3399cdb268b599dccf043e26f8146c8abd8068ac121f",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "0ca5e6451acccb5d3b2b398293a60d2c307b26354556d13e0fdb95b2676e9991"
+      },
+      "actual_prompt_sha256": "9af5344d455644396c38b57b28d744db1c11d9c2a51b97102fd7426f1e4a983d",
+      "legacy_prompt_hash_mismatch": true
+    },
+    {
+      "id": "kimi-codex-inference",
+      "raw_file": "kimi-codex-inference.txt",
+      "raw_sha256": "df1bac9fb379c2e38ac2f38f36b8cd726e4d465686bc628e8f06dc4656cecbea",
+      "canonical_file": "kimi-codex-inference.json",
+      "canonical_sha256": "3bb389246b4fc6da4b9b94c08a114747cdf2e4332657ada8e4b0a95b53677495",
+      "fence_removed": true,
+      "requested_model": "kimi-k2.7-code",
+      "tool": "Codex CLI",
+      "protocol": "Responses",
+      "seconds": 178.0,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "clarified",
+        "part": "inference",
+        "task_schema_version": 2,
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "802b045f1a3e7118cd5f3399cdb268b599dccf043e26f8146c8abd8068ac121f",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "0ca5e6451acccb5d3b2b398293a60d2c307b26354556d13e0fdb95b2676e9991"
+      },
+      "actual_prompt_sha256": "9af5344d455644396c38b57b28d744db1c11d9c2a51b97102fd7426f1e4a983d",
+      "legacy_prompt_hash_mismatch": true
+    },
+    {
+      "id": "kimi-clarified",
+      "raw_file": "kimi-clarified.txt",
+      "raw_sha256": "f5b3d7d4bc559f686f34b3812891367cf76e6e013728cd88fa863ae9943b1867",
+      "canonical_file": "kimi-clarified.json",
+      "canonical_sha256": "dff8fae42748e79599cf470cc19bd0472219d8561ed3dc76f3291d4e54dda300",
+      "fence_removed": true,
+      "requested_model": "kimi-k2.7-code",
+      "tool": "OpenCode",
+      "protocol": "Chat Completions",
+      "seconds": 231.2,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "clarified",
+        "task_schema_version": 2,
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "802b045f1a3e7118cd5f3399cdb268b599dccf043e26f8146c8abd8068ac121f",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "91d5182a3df96b3134fc3db5373d7156848f1b7eb925e912d02066d11e890315"
+      },
+      "actual_prompt_sha256": "2245ec2fde629c49ea802aa4b3e28356cc092fb383767b8f5ec4518204bf73b4",
+      "legacy_prompt_hash_mismatch": true,
+      "numeric_shape_checks": {
+        "round": "clarified",
+        "passed": 18,
+        "total": 18,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_700",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1400",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "89 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "149 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_always_wins",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_impossible_win",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_interval": {
+            "lower": 0.65,
+            "upper": 1.0,
+            "lower_inclusive": false,
+            "upper_inclusive": true
+          },
+          "expected_lower": 0.6499999999999999,
+          "boundary_substitution": {
+            "fan_share_a": 0.6499999999999999,
+            "combined_a": 0.49999999999999994,
+            "combined_b": 0.5
+          },
+          "endpoint_substitution": [
+            {
+              "fan_share_a": 0,
+              "combined_a": 0.24,
+              "combined_b": 0.76
+            },
+            {
+              "fan_share_a": 1,
+              "combined_a": 0.64,
+              "combined_b": 0.36
+            }
+          ]
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      }
+    },
+    {
+      "id": "deepseek-new",
+      "raw_file": "deepseek-new.txt",
+      "raw_sha256": "4838aca2796a98f82e71bb1b3b47c82b7841ed9c58fde13a6b5add83163afc24",
+      "canonical_file": "deepseek-new.json",
+      "canonical_sha256": "27a1a6a6eee3fe5c9ac08943ebda36d67b5c7eb6c63e6a0c8cd81bee6e79ba35",
+      "fence_removed": false,
+      "requested_model": "deepseek-v4-pro",
+      "tool": "OpenCode",
+      "protocol": "Chat Completions",
+      "seconds": 294.0,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "new_data",
+        "part": "both",
+        "task_schema_version": 2,
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "dc653a5dcff2d1075b2c4f758e490ef0d229447bedf5358ef968df06e3166098",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "49c97d3116655329c71fcbe99bafebaa2e5e7834ce6e65982dafddcc2b4b5b59"
+      },
+      "actual_prompt_sha256": "49c97d3116655329c71fcbe99bafebaa2e5e7834ce6e65982dafddcc2b4b5b59",
+      "legacy_prompt_hash_mismatch": false,
+      "numeric_shape_checks": {
+        "round": "new_data",
+        "passed": 19,
+        "total": 19,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_650",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1500",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "87 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "174 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_tie_at_zero",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_tie_at_one",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_judge_only_win",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_interval": {
+            "lower": 0.1,
+            "upper": 1.0,
+            "lower_inclusive": false,
+            "upper_inclusive": true
+          },
+          "expected_lower": 0.09999999999999998,
+          "boundary_substitution": {
+            "fan_share_a": 0.09999999999999998,
+            "combined_a": 0.5,
+            "combined_b": 0.5
+          },
+          "endpoint_substitution": [
+            {
+              "fan_share_a": 0,
+              "combined_a": 0.45,
+              "combined_b": 0.55
+            },
+            {
+              "fan_share_a": 1,
+              "combined_a": 0.95,
+              "combined_b": 0.04999999999999999
+            }
+          ]
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      }
+    },
+    {
+      "id": "kimi-new",
+      "raw_file": "kimi-new.txt",
+      "raw_sha256": "9ee8d0e7e80bccaf02f8004f44334bc027524d11be7ad9d7fe8f711f877feefd",
+      "canonical_file": "kimi-new.json",
+      "canonical_sha256": "45310e01f77c7024f9251213a806a118b18a7c481fc485eed67ce07c8f5a3710",
+      "fence_removed": false,
+      "requested_model": "kimi-k2.7-code",
+      "tool": "OpenCode",
+      "protocol": "Chat Completions",
+      "seconds": 241.0,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "new_data",
+        "part": "both",
+        "task_schema_version": 2,
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "dc653a5dcff2d1075b2c4f758e490ef0d229447bedf5358ef968df06e3166098",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "49c97d3116655329c71fcbe99bafebaa2e5e7834ce6e65982dafddcc2b4b5b59"
+      },
+      "actual_prompt_sha256": "49c97d3116655329c71fcbe99bafebaa2e5e7834ce6e65982dafddcc2b4b5b59",
+      "legacy_prompt_hash_mismatch": false,
+      "numeric_shape_checks": {
+        "round": "new_data",
+        "passed": 19,
+        "total": 19,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_650",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1500",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "99 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "168 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_tie_at_zero",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_tie_at_one",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_judge_only_win",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_interval": {
+            "lower": 0.1,
+            "upper": 1.0,
+            "lower_inclusive": false,
+            "upper_inclusive": true
+          },
+          "expected_lower": 0.09999999999999998,
+          "boundary_substitution": {
+            "fan_share_a": 0.09999999999999998,
+            "combined_a": 0.5,
+            "combined_b": 0.5
+          },
+          "endpoint_substitution": [
+            {
+              "fan_share_a": 0,
+              "combined_a": 0.45,
+              "combined_b": 0.55
+            },
+            {
+              "fan_share_a": 1,
+              "combined_a": 0.95,
+              "combined_b": 0.04999999999999999
+            }
+          ]
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      }
+    },
+    {
+      "id": "deepseek-code-repair",
+      "raw_file": "deepseek-code-repair.txt",
+      "raw_sha256": "732f619fb4539b981d45a898fdc0d1bff6a0ebffc6ef67e18e2a6ffe3ccdc9c3",
+      "canonical_file": "deepseek-code-repair.json",
+      "canonical_sha256": "552af4f617a10e6d2cb900274c57d7fd6bc4634948b2f3bbcc1cf1c8dd47550e",
+      "fence_removed": false,
+      "requested_model": "deepseek-v4-pro",
+      "tool": "OpenCode",
+      "protocol": "Chat Completions",
+      "seconds": 81.8,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "stage": "targeted-code-repair",
+        "original_answer_sha256": "4838aca2796a98f82e71bb1b3b47c82b7841ed9c58fde13a6b5add83163afc24",
+        "prompt_sha256": "42163826efa821681ab911e4818fca9b47ea5ff134f2c6d9ccd1f2d58f8a6cbc",
+        "given_failing_inputs": 1
+      },
+      "actual_prompt_sha256": "42163826efa821681ab911e4818fca9b47ea5ff134f2c6d9ccd1f2d58f8a6cbc",
+      "legacy_prompt_hash_mismatch": false
+    },
+    {
+      "id": "glm-assembled",
+      "derived": true,
+      "file": "glm-assembled.json",
+      "sha256": "c626f7cad2ac7f1003ef5a8e376756559081675f7a769f0ed7b9206b080f8402",
+      "lineage": {
+        "round": "clarified",
+        "model": "glm-5.3",
+        "task_sha256": "ecf9779274e96306412bdae45ac0aa499b8dbc261de767a17fb0f37467914905",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "802b045f1a3e7118cd5f3399cdb268b599dccf043e26f8146c8abd8068ac121f",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "source_answer_sha256": [
+          "c92179c2c051b6f700b5ce83017a6be5eefe735a8b36cbbc941e1e4ba8100960",
+          "e48b6947dca0b5d6833704a379eb4a61f19e0a624382e0044f375e112204478e"
+        ],
+        "source_prompt_sha256": [
+          "db56ef3940d3fea188b0c8b66853d7b7282f37f6bbf74f26c05d5109caa25cb9",
+          "9af5344d455644396c38b57b28d744db1c11d9c2a51b97102fd7426f1e4a983d"
+        ],
+        "merged_answer_sha256": "c626f7cad2ac7f1003ef5a8e376756559081675f7a769f0ed7b9206b080f8402",
+        "source_sessions": 2,
+        "numeric_checks_executed": false,
+        "code_executed": false,
+        "latex_compiled": false,
+        "scope": "Mechanical assembly only; original stage files are unchanged. No science or execution claim."
+      },
+      "numeric_shape_checks": {
+        "round": "clarified",
+        "passed": 18,
+        "total": 18,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_700",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1400",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "100 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "154 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_always_wins",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_case_impossible_win",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_interval": {
+            "lower": 0.65,
+            "upper": 1.0,
+            "lower_inclusive": false,
+            "upper_inclusive": true
+          },
+          "expected_lower": 0.6499999999999999,
+          "boundary_substitution": {
+            "fan_share_a": 0.6499999999999999,
+            "combined_a": 0.49999999999999994,
+            "combined_b": 0.5
+          },
+          "endpoint_substitution": [
+            {
+              "fan_share_a": 0,
+              "combined_a": 0.24,
+              "combined_b": 0.76
+            },
+            {
+              "fan_share_a": 1,
+              "combined_a": 0.64,
+              "combined_b": 0.36
+            }
+          ]
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      }
+    }
+  ],
+  "failed_sessions": [
+    {
+      "requested_model": "glm-5.3",
+      "tool": "Codex CLI",
+      "seconds": 471.6,
+      "timed_out": false,
+      "answer_present": false,
+      "reason": "incomplete_response_length"
+    },
+    {
+      "requested_model": "kimi-k2.7-code",
+      "tool": "Codex CLI",
+      "seconds": 207.1,
+      "timed_out": false,
+      "answer_present": false,
+      "reason": "incomplete_response_length"
+    },
+    {
+      "requested_model": "kimi-k3",
+      "tool": "Codex CLI",
+      "seconds": 480.1,
+      "timed_out": true,
+      "answer_present": false,
+      "reason": "timeout"
+    },
+    {
+      "requested_model": "kimi-k2.7-code",
+      "tool": "Codex CLI",
+      "seconds": 224.2,
+      "timed_out": false,
+      "answer_present": false,
+      "reason": "incomplete_response_length"
+    },
+    {
+      "requested_model": "glm-5.3",
+      "tool": "OpenCode",
+      "seconds": 480.1,
+      "timed_out": true,
+      "answer_present": false,
+      "reason": "timeout"
+    }
+  ],
+  "maintainer_execution_and_compile_checks": {
+    "deepseek_clarified_code": {
+      "answer_sha256": "b26f65422262b8ae27244a91b3a85a98b4e063b0911207fe268dd9f9b644ead5",
+      "source_sha256": "132606db84a6641e099f88669ee503c8e0d53937fbf204d374359f91c87bb8d3",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "19/1",
+              "launches": 2,
+              "cost": "37100/1"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "19/1",
+              "launches": 2,
+              "cost": "33300/1"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "1/1",
+              "launches": 4,
+              "cost": "41400/1"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "19/1",
+              "launches": 2,
+              "cost": "370000/9"
+            },
+            {
+              "e_tonnes": "10/1",
+              "launches": 3,
+              "cost": "370000/9"
+            },
+            {
+              "e_tonnes": "1/1",
+              "launches": 4,
+              "cost": "370000/9"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "22/1",
+              "launches": 2,
+              "cost": "39600/1"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "22/1",
+              "launches": 2,
+              "cost": "36300/1"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "2/1",
+              "launches": 4,
+              "cost": "47000/1"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": "22/1",
+              "launches": 2,
+              "cost": "46200/1"
+            },
+            {
+              "e_tonnes": "12/1",
+              "launches": 3,
+              "cost": "46200/1"
+            },
+            {
+              "e_tonnes": "2/1",
+              "launches": 4,
+              "cost": "46200/1"
+            }
+          ],
+          "matches_reference": true
+        }
+      ],
+      "passed": 8,
+      "total": 8,
+      "all_checked_cases_pass": true,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "kimi_clarified_code": {
+      "answer_sha256": "f5b3d7d4bc559f686f34b3812891367cf76e6e013728cd88fa863ae9943b1867",
+      "source_sha256": "14ebb319a1f271a246f5b82b005561b1b2cc2ef8dd9998e12dc9f1f6492eea22",
+      "execution_performed": false,
+      "syntax_error": {
+        "message": "unexpected character after line continuation character",
+        "line": 1,
+        "column": 32
+      }
+    },
+    "deepseek_new_code": {
+      "answer_sha256": "4838aca2796a98f82e71bb1b3b47c82b7841ed9c58fde13a6b5add83163afc24",
+      "source_sha256": "25bb99ac2c4a585cc470823d7ee939a77389c7996a924ac22ded020a20cdb962",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 37100.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 33300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41400.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 10.0,
+              "launches": 3,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41111.11111111111
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 39600.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 36300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 47000.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 12.0,
+              "launches": 3,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 46200.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_expensive_elevator",
+          "cost_expression": "10",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [],
+          "matches_reference": false
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_cheap_elevator",
+          "cost_expression": "1",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [],
+          "matches_reference": false
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "small_demand_no_rocket_needed",
+          "cost_expression": "1",
+          "arguments": [
+            0.05,
+            0.1,
+            250,
+            1
+          ],
+          "plans": [],
+          "matches_reference": false
+        }
+      ],
+      "passed": 8,
+      "total": 11,
+      "all_checked_cases_pass": false,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "kimi_new_code": {
+      "answer_sha256": "9ee8d0e7e80bccaf02f8004f44334bc027524d11be7ad9d7fe8f711f877feefd",
+      "source_sha256": "ad2780b65ff87a2aebe2834e54f3c319dc5d290c1bcd010ae051a732ea814a24",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 37100.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 33300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41400.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 10.0,
+              "launches": 3,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41111.11111111111
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 39600.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 36300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 47000.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 12.0,
+              "launches": 3,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 46200.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_expensive_elevator",
+          "cost_expression": "10",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.0,
+              "launches": 2,
+              "cost": 2.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_cheap_elevator",
+          "cost_expression": "1",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.15,
+              "launches": 1,
+              "cost": 1.15
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "small_demand_no_rocket_needed",
+          "cost_expression": "1",
+          "arguments": [
+            0.05,
+            0.1,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.05,
+              "launches": 0,
+              "cost": 0.05
+            }
+          ],
+          "matches_reference": true
+        }
+      ],
+      "passed": 11,
+      "total": 11,
+      "all_checked_cases_pass": true,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "glm_code_probes": {
+      "answer_sha256": "c626f7cad2ac7f1003ef5a8e376756559081675f7a769f0ed7b9206b080f8402",
+      "source_sha256": "89bd32fe6fc41762774e98ad5dde2b92b36b458cb013663da10f681d38b39e35",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19,
+              "launches": 2,
+              "cost": 37100
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19,
+              "launches": 2,
+              "cost": 33300
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 1,
+              "launches": 4,
+              "cost": 41400
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19,
+              "launches": 2,
+              "cost": "370000/9"
+            },
+            {
+              "e_tonnes": 10,
+              "launches": 3,
+              "cost": "370000/9"
+            },
+            {
+              "e_tonnes": 1,
+              "launches": 4,
+              "cost": "370000/9"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22,
+              "launches": 2,
+              "cost": 39600
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22,
+              "launches": 2,
+              "cost": 36300
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 2,
+              "launches": 4,
+              "cost": 47000
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22,
+              "launches": 2,
+              "cost": 46200
+            },
+            {
+              "e_tonnes": 12,
+              "launches": 3,
+              "cost": 46200
+            },
+            {
+              "e_tonnes": 2,
+              "launches": 4,
+              "cost": 46200
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_expensive_elevator",
+          "cost_expression": "10",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0,
+              "launches": 2,
+              "cost": 2
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_cheap_elevator",
+          "cost_expression": "1",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": "3/20",
+              "launches": 1,
+              "cost": "23/20"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "small_demand_no_rocket_needed",
+          "cost_expression": "1",
+          "arguments": [
+            0.05,
+            0.1,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": "1/20",
+              "launches": 0,
+              "cost": "1/20"
+            }
+          ],
+          "matches_reference": true
+        }
+      ],
+      "passed": 11,
+      "total": 11,
+      "all_checked_cases_pass": true,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "deepseek_repair_probes": {
+      "answer_sha256": "732f619fb4539b981d45a898fdc0d1bff6a0ebffc6ef67e18e2a6ffe3ccdc9c3",
+      "source_sha256": "de26f954c6c957403a07d12549b6e6ff8fde8c68c3f49fe598856f21786d376b",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 37100.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 33300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41400.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 10.0,
+              "launches": 3,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41111.11111111111
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 39600.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 36300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 47000.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 12.0,
+              "launches": 3,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 46200.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_expensive_elevator",
+          "cost_expression": "10",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.0,
+              "launches": 2,
+              "cost": 2.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "quarter_tonne_rocket_cheap_elevator",
+          "cost_expression": "1",
+          "arguments": [
+            0.4,
+            0.15,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.15,
+              "launches": 1,
+              "cost": 1.15
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "small_demand_no_rocket_needed",
+          "cost_expression": "1",
+          "arguments": [
+            0.05,
+            0.1,
+            250,
+            1
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.05,
+              "launches": 0,
+              "cost": 0.05
+            }
+          ],
+          "matches_reference": true
+        }
+      ],
+      "passed": 11,
+      "total": 11,
+      "all_checked_cases_pass": true,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "deepseek_repair_unseen": {
+      "answer_sha256": "732f619fb4539b981d45a898fdc0d1bff6a0ebffc6ef67e18e2a6ffe3ccdc9c3",
+      "source_sha256": "de26f954c6c957403a07d12549b6e6ff8fde8c68c3f49fe598856f21786d376b",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 37100.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 33300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41400.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 10.0,
+              "launches": 3,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41111.11111111111
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 39600.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 36300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 47000.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 12.0,
+              "launches": 3,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 46200.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "fractional_mass_350kg",
+          "cost_expression": "2.5",
+          "arguments": [
+            1.3,
+            0.35,
+            350,
+            0.9
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.25,
+              "launches": 3,
+              "cost": 3.325
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "fractional_mass_275kg",
+          "cost_expression": "6",
+          "arguments": [
+            1.13,
+            0.4,
+            275,
+            0.7
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.03,
+              "launches": 4,
+              "cost": 2.98
+            }
+          ],
+          "matches_reference": true
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "all_checked_cases_pass": true,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "kimi_unseen": {
+      "answer_sha256": "9ee8d0e7e80bccaf02f8004f44334bc027524d11be7ad9d7fe8f711f877feefd",
+      "source_sha256": "ad2780b65ff87a2aebe2834e54f3c319dc5d290c1bcd010ae051a732ea814a24",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 37100.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 33300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41400.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19.0,
+              "launches": 2,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 10.0,
+              "launches": 3,
+              "cost": 41111.11111111111
+            },
+            {
+              "e_tonnes": 1.0,
+              "launches": 4,
+              "cost": 41111.11111111111
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 39600.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 36300.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 47000.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22.0,
+              "launches": 2,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 12.0,
+              "launches": 3,
+              "cost": 46200.0
+            },
+            {
+              "e_tonnes": 2.0,
+              "launches": 4,
+              "cost": 46200.0
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "fractional_mass_350kg",
+          "cost_expression": "2.5",
+          "arguments": [
+            1.3,
+            0.35,
+            350,
+            0.9
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.25,
+              "launches": 3,
+              "cost": 3.325
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "fractional_mass_275kg",
+          "cost_expression": "6",
+          "arguments": [
+            1.13,
+            0.4,
+            275,
+            0.7
+          ],
+          "plans": [
+            {
+              "e_tonnes": 0.03,
+              "launches": 4,
+              "cost": 2.98
+            }
+          ],
+          "matches_reference": true
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "all_checked_cases_pass": true,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "glm_unseen": {
+      "answer_sha256": "c626f7cad2ac7f1003ef5a8e376756559081675f7a769f0ed7b9206b080f8402",
+      "source_sha256": "89bd32fe6fc41762774e98ad5dde2b92b36b458cb013663da10f681d38b39e35",
+      "execution_performed": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "stderr_tail": "",
+      "cases": [
+        {
+          "round": "clarified",
+          "kind": "nominal",
+          "cost_expression": "900",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19,
+              "launches": 2,
+              "cost": 37100
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "700",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19,
+              "launches": 2,
+              "cost": 33300
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "endpoint",
+          "cost_expression": "1400",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 1,
+              "launches": 4,
+              "cost": 41400
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "clarified",
+          "kind": "exact_switch",
+          "cost_expression": "10000/9",
+          "arguments": [
+            37,
+            20,
+            9000,
+            10000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 19,
+              "launches": 2,
+              "cost": "370000/9"
+            },
+            {
+              "e_tonnes": 10,
+              "launches": 3,
+              "cost": "370000/9"
+            },
+            {
+              "e_tonnes": 1,
+              "launches": 4,
+              "cost": "370000/9"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "nominal",
+          "cost_expression": "800",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22,
+              "launches": 2,
+              "cost": 39600
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "650",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22,
+              "launches": 2,
+              "cost": 36300
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "endpoint",
+          "cost_expression": "1500",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 2,
+              "launches": 4,
+              "cost": 47000
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "new_data",
+          "kind": "exact_switch",
+          "cost_expression": "1100",
+          "arguments": [
+            42,
+            25,
+            10000,
+            11000
+          ],
+          "plans": [
+            {
+              "e_tonnes": 22,
+              "launches": 2,
+              "cost": 46200
+            },
+            {
+              "e_tonnes": 12,
+              "launches": 3,
+              "cost": 46200
+            },
+            {
+              "e_tonnes": 2,
+              "launches": 4,
+              "cost": 46200
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "fractional_mass_350kg",
+          "cost_expression": "2.5",
+          "arguments": [
+            1.3,
+            0.35,
+            350,
+            0.9
+          ],
+          "plans": [
+            {
+              "e_tonnes": "1/4",
+              "launches": 3,
+              "cost": "133/40"
+            }
+          ],
+          "matches_reference": true
+        },
+        {
+          "round": "solver_probe",
+          "kind": "fractional_geometry",
+          "id": "fractional_mass_275kg",
+          "cost_expression": "6",
+          "arguments": [
+            1.13,
+            0.4,
+            275,
+            0.7
+          ],
+          "plans": [
+            {
+              "e_tonnes": "3/100",
+              "launches": 4,
+              "cost": "149/50"
+            }
+          ],
+          "matches_reference": true
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "all_checked_cases_pass": true,
+      "limits": "Only frozen positive-cost inputs and exact switches; not a general solver proof or security sandbox."
+    },
+    "deepseek_clarified_latex": {
+      "answer_sha256": "b26f65422262b8ae27244a91b3a85a98b4e063b0911207fe268dd9f9b644ead5",
+      "source_sha256": "c7265e893c11cfc176054d2ffa1e9f91ddc1c7c20f015b1c69bcc4aae2a26d3e",
+      "fixture": {
+        "paper": "A4",
+        "font_pt": 12,
+        "margin_cm": 2.5
+      },
+      "compile_exit_code": 1,
+      "timed_out": false,
+      "overfull": [],
+      "missing_characters": [],
+      "undefined_control_sequence": false,
+      "pdf_present": false,
+      "compile_and_width_checks_pass": false,
+      "limits": "Actual compilation and log-based width/character checks only; source was reviewed separately. Math, overlap, full-paper layout and contest compliance require separate review."
+    },
+    "kimi_clarified_latex": {
+      "answer_sha256": "f5b3d7d4bc559f686f34b3812891367cf76e6e013728cd88fa863ae9943b1867",
+      "source_sha256": "6a4ba03bc7087acecdec394d8d012967a01536315a1f95688f327e171f177242",
+      "fixture": {
+        "paper": "A4",
+        "font_pt": 12,
+        "margin_cm": 2.5
+      },
+      "compile_exit_code": 1,
+      "timed_out": false,
+      "overfull": [],
+      "missing_characters": [],
+      "latex_errors": [
+        "! Undefined control sequence."
+      ],
+      "undefined_control_sequence": true,
+      "pdf_present": false,
+      "compile_and_width_checks_pass": false,
+      "limits": "Actual compilation and log-based width/character checks only; source was reviewed separately. Math, overlap, full-paper layout and contest compliance require separate review."
+    },
+    "glm_latex": {
+      "answer_sha256": "c626f7cad2ac7f1003ef5a8e376756559081675f7a769f0ed7b9206b080f8402",
+      "source_sha256": "c188b27b12378b16aac6d6e7a664acbfac909895a750e6ab8ad3926609b5b867",
+      "fixture": {
+        "paper": "A4",
+        "font_pt": 12,
+        "margin_cm": 2.5
+      },
+      "compile_exit_code": 0,
+      "timed_out": false,
+      "overfull": [],
+      "missing_characters": [],
+      "latex_errors": [],
+      "undefined_control_sequence": false,
+      "pdf_present": true,
+      "page_count": 2,
+      "rendered_pages": 2,
+      "pdf_sha256": "1393320c1238e3810b25a5c3b61c2ed7efc4b0a51f53671a4ca724b663d89c2f",
+      "compile_and_width_checks_pass": true,
+      "limits": "Actual compilation and log-based width/character checks only; source was reviewed separately. Math, overlap, full-paper layout and contest compliance require separate review."
+    },
+    "deepseek_new_latex": {
+      "answer_sha256": "4838aca2796a98f82e71bb1b3b47c82b7841ed9c58fde13a6b5add83163afc24",
+      "source_sha256": "509bea4a4ea5e5bbba40befa718bb75abb8197faa2adab13d9254e2523e4fa2f",
+      "fixture": {
+        "paper": "A4",
+        "font_pt": 12,
+        "margin_cm": 2.5
+      },
+      "compile_exit_code": 0,
+      "timed_out": false,
+      "overfull": [],
+      "missing_characters": [],
+      "latex_errors": [],
+      "undefined_control_sequence": false,
+      "pdf_present": true,
+      "page_count": 1,
+      "rendered_pages": 1,
+      "pdf_sha256": "fec19983686767a2e0831c6e5ca5245ce198c18508e0fccae11e783934539782",
+      "compile_and_width_checks_pass": true,
+      "limits": "Actual compilation and log-based width/character checks only; source was reviewed separately. Math, overlap, full-paper layout and contest compliance require separate review."
+    },
+    "kimi_new_latex": {
+      "answer_sha256": "9ee8d0e7e80bccaf02f8004f44334bc027524d11be7ad9d7fe8f711f877feefd",
+      "source_sha256": "3242fbf762b82c92744371dbe34a7c336241d59a097df3ecabc5a9874c705ad3",
+      "fixture": {
+        "paper": "A4",
+        "font_pt": 12,
+        "margin_cm": 2.5
+      },
+      "compile_exit_code": 0,
+      "timed_out": false,
+      "overfull": [],
+      "missing_characters": [],
+      "latex_errors": [],
+      "undefined_control_sequence": false,
+      "pdf_present": true,
+      "page_count": 2,
+      "rendered_pages": 2,
+      "pdf_sha256": "928f062917a3b5b3fc9be20541cad10905d16a12abe62ba466006ed365259225",
+      "compile_and_width_checks_pass": true,
+      "limits": "Actual compilation and log-based width/character checks only; source was reviewed separately. Math, overlap, full-paper layout and contest compliance require separate review."
+    }
+  },
+  "manual_findings": [
+    "DeepSeek original new-data source uses an integer ceiling shortcut on continuous tonnes; three fractional probes fail. Targeted model repair passes the three probes and two additional undisclosed inputs.",
+    "DeepSeek new-data LaTeX says only n=2,3,4,5 are feasible; larger n remain feasible but dominated. The original prose remains uncorrected in this snapshot.",
+    "Kimi first Chat answer has double-escaped source; numeric content checks pass, but Python cannot parse and TeX cannot compile. New-data source works in checked cases.",
+    "GLM exact fraction strings are mathematical quantities, not incorrect answers; v2 fraction decoding fixes the checker interface. New-data full session timed out.",
+    "Initial Windows prompt manifest hashes differ due to newline conversion; run-reported actual input hashes are retained. New prepare writes exact UTF-8 bytes.",
+    "Some model prose still exposes internal scenario identifiers; compilation/width success is not final editorial acceptance."
+  ],
+  "limits": [
+    "Finite tests do not prove general program correctness or contest quality.",
+    "Task clarification, input changes, tool/protocol changes and stochastic sampling prevent causal model or skill rankings.",
+    "Sources were reviewed and executed/compiled by the maintainer, not the external models.",
+    "No incomplete session is counted as passed."
+  ]
+}

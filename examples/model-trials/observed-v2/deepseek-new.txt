@@ -1,0 +1,54 @@
+{
+  "transport": {
+    "required_tasks": [
+      "Convert rocket capacity from kg to tonnes (10000 kg = 10 t) and keep demand, elevator capacity, and costs in consistent tonne/currency units.",
+      "Formulate the cost model over the integer launch count n >= 0 and continuous elevator tonnage e in [0, 25] subject to n*10 + e >= 42.",
+      "Enumerate every feasible launch count with its minimal feasible elevator tonnage and compute each plan's cost.",
+      "Find every plan achieving the minimum cost at the nominal price and at both endpoint prices, retaining all ties.",
+      "Derive every price in [650, 1500] at which the optimal plan set changes or ties, and list all tied plans there.",
+      "Provide the standard-library Python solver solve_transport(...) returning {e_tonnes, launches, cost} entries.",
+      "Write the LaTeX model fragment, the 70-110 word Summary, and the 130-190 word letter consistent with the computed plans."
+    ],
+    "optional_tasks": [
+      "Stochastic launch/elevator failure modeling and probabilistic robustness analysis (not performed; no probabilities were supplied).",
+      "Parametric sensitivity exploration outside the supplied cost range [650, 1500]."
+    ],
+    "nominal_plans": [
+      {"e_tonnes": 22.0, "launches": 2, "cost": 39600.0}
+    ],
+    "endpoint_plans": [
+      {"cost_per_tonne": 650.0, "plans": [{"e_tonnes": 22.0, "launches": 2, "cost": 36300.0}]},
+      {"cost_per_tonne": 1500.0, "plans": [{"e_tonnes": 2.0, "launches": 4, "cost": 47000.0}]}
+    ],
+    "switches": [
+      {"cost_per_tonne": 1100.0, "plans": [
+        {"e_tonnes": 22.0, "launches": 2, "cost": 46200.0},
+        {"e_tonnes": 12.0, "launches": 3, "cost": 46200.0},
+        {"e_tonnes": 2.0, "launches": 4, "cost": 46200.0}
+      ]}
+    ],
+    "uncertainty_kind": "deterministic_no_probabilities_supplied",
+    "solver_source": "from fractions import Fraction\n\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg,\n                    rocket_cost, cost_per_tonne):\n    R = Fraction(rocket_capacity_kg, 1000)\n    F = Fraction(rocket_cost)\n    c = Fraction(cost_per_tonne)\n    D = Fraction(demand_tonnes)\n    E_cap = Fraction(elevator_capacity_tonnes)\n\n    n_max = (D + R - 1) // R\n    best_cost = None\n    tie_candidates = []\n    for n in range(int(n_max) + 1):\n        e = D - n * R\n        if e < 0:\n            e = Fraction(0)\n        if e > E_cap:\n            continue\n        cost = e * c + n * F\n        if best_cost is None or cost < best_cost:\n            best_cost = cost\n            tie_candidates = [{'e_tonnes': float(e), 'launches': int(n), 'cost': float(cost)}]\n        elif cost == best_cost:\n            tie_candidates.append({'e_tonnes': float(e), 'launches': int(n), 'cost': float(cost)})\n    return tie_candidates",
+    "solver_notes": "All arithmetic uses Python's standard-library Fraction (exact rationals). The switching price is represented exactly as Fraction(1100, 1), i.e. 1100/1, obtained by equating the exact linear costs 22c+22000 = 12c+33000 = 2c+44000; therefore no float tie tolerance is required. For each launch count the enumeration keeps only the minimal feasible elevator tonnage because every cost is strictly positive, so adding elevator tonnage with a fixed launch count can never be optimal. Float inputs, if any, are converted to their exact binary Fractions before comparison. The source listing has not been executed here; the numerical plan values above are the analytic results of comparing those exact linear costs.",
+    "latex_model": "Let $D=42$ t be the demand, $R=\\frac{10\\,000}{1000}=10$ t the per-launch capacity, $E_{\\max}=25$ t the elevator capacity, and $F=11000$ the fixed launch cost. For each integer launch count $n\\ge0$, the least feasible elevator tonnage is\n\\begin{equation}\ne_n=\\max\\{0,\\;D-nR\\},\\qquad e_n\\le E_{\\max}.\n\\end{equation}\nThe cost of the corresponding schedule is\n\\begin{equation}\nC_n=c\\,e_n+F\\,n.\n\\end{equation}\nOnly $n=2,3,4,5$ are feasible: $(n,e_n)=(2,22)$ with $C=22c+22000$; $(3,12)$ with $C=12c+33000$; $(4,2)$ with $C=2c+44000$; and $(5,0)$ with $C=55000$. The optimal plan switches where the three middle plans tie:\n\\begin{equation}\n22c+22000=12c+33000,\n\\end{equation}\n\\begin{equation}\n12c+33000=2c+44000.\n\\end{equation}\nBoth hold at $c=1100$, giving the shared cost $22(1100)+22000=46200$. At the nominal price $c=800$ the optimum is $(e,n)=(22,2)$ with cost $39600$; at $c=650$ it remains $(22,2)$ with cost $36300$; at $c=1500$ it becomes $(2,4)$ with cost $47000$.",
+    "summary": "For demand 42 tonnes, each rocket launch carries up to 10 tonnes and a continuous elevator, capped at 25 tonnes, supplies the rest. At cost 800 per tonne the unique optimum uses 22 elevator tonnes and 2 launches, total cost 39600. At 650 per tonne the same 22/2 plan is optimal, costing 36300; at 1500 per tonne the optimum is 2 elevator tonnes with 4 launches, costing 47000. The optimal plan changes at 1100 per tonne, where the 22/2, 12/3 and 2/4 plans all tie at 46200.",
+    "letter": "Dear Logistics Manager,\n\nWe recommend the following shipment strategy for the 42-tonne requirement. Each rocket launch carries up to 10 tonnes; any remaining tonnes go through the elevator, whose continuous capacity is 25 tonnes. To minimize cost we choose the launch count and elevator tonnage together.\n\nAt the current elevator rate of 800 per tonne, ship 22 tonnes by elevator and use 2 rocket launches; the total cost is 39,600. If the elevator rate drops to 650, keep the same 22/2 plan for a cost of 36,300. If it rises to 1,500, switch to 2 elevator tonnes and 4 launches, costing 47,000. The break point between plans is 1,100 per tonne; there the 22/2, 12/3 and 2/4 schedules each cost 46,200, so any of them is acceptable. At no point is more than 5 launches required. Because unused rocket capacity is permitted, these figures already represent the least-cost allocation; adding elevator tonnes beyond the required minimum only raises cost. Please contact us to update the plan if the elevator rate or the demand changes."
+  },
+  "inference": {
+    "point_share_a": 0.3,
+    "rank_interval_a": {"lower": 0.1, "upper": 1.0, "lower_inclusive": false, "upper_inclusive": true},
+    "rank_case_intervals": [
+      {"case_id": "tie_at_zero", "interval": {"lower": 0.0, "upper": 1.0, "lower_inclusive": false, "upper_inclusive": true}},
+      {"case_id": "tie_at_one", "interval": null},
+      {"case_id": "judge_only_win", "interval": {"lower": 0.0, "upper": 1.0, "lower_inclusive": true, "upper_inclusive": true}}
+    ],
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A zero recorded after a contestant is eliminated is a status placeholder encoding elimination, not a measured zero fan share. It must be excluded from share estimation and does not imply zero underlying support.",
+      "future_na": "An NA marks a week that had not yet occurred, not a missing observation. It carries no information about fan support and must not be treated as a zero."
+    },
+    "results_paragraph": "Week 1 identifies p_A exactly: with judge share 0.9, judge weight 0.5 and combined share 0.6, solving 0.6 = 0.5*0.9 + 0.5*p_A gives p_A = 0.3. In the rank-only week the same judge share and weight imply A outranks B in combined score whenever p_A > 0.1, so the fan-share feasibility set is (0.1, 1], open at 0.1 because equality is a tie and closed at 1. The extra cases refine this: with j_A = 1 and alpha = 0.5 the set is (0, 1]; with j_A = 0 and alpha = 0.5 the requirement p_A > 1 is impossible on [0, 1], so that case is inconsistent with any fan share; with j_A = 0.8 and alpha = 1 the judge-only comparison already favors A regardless of fan share, so all p_A in [0, 1] are feasible. These are identification/feasibility bounds from a single constraint, not statistical confidence intervals; no total votes or sampling distribution was supplied, so absolute vote counts remain unidentifiable.",
+    "latex_model": "For contestant $A$ with judge share $j_A$ and fan share $p_A$,\n\\begin{equation}\ns_A=\\alpha j_A+(1-\\alpha)p_A,\n\\end{equation}\n\\begin{equation}\ns_B=\\alpha(1-j_A)+(1-\\alpha)(1-p_A).\n\\end{equation}\nStrict combined-score ranking means $s_A>s_B$, with\n\\begin{equation}\ns_A-s_B=\\alpha(2j_A-1)+(1-\\alpha)(2p_A-1)>0 .\n\\end{equation}\nWhen $\\alpha<1$ this is equivalent to\n\\begin{equation}\np_A>\\frac{\\frac12-\\alpha j_A}{1-\\alpha},\n\\end{equation}\nwhile $\\alpha=1$ gives $2j_A-1>0$, independent of $p_A$.\nWeek~1 uses $j_A=0.9$, $\\alpha=0.5$, $s_A=0.6$, so $0.6=0.5(0.9)+0.5\\,p_A$ and $p_A=0.3$. For the base rank week the feasibility set is $p_A>0.1$, i.e. $p_A\\in(0.1,\\,1]$. Extra cases: $j_A=1$, $\\alpha=0.5$ gives $p_A>0$; $j_A=0$, $\\alpha=0.5$ gives $p_A>1$, empty on $[0,1]$; $j_A=0.8$, $\\alpha=1$ gives every $p_A\\in[0,1]$."
+  }
+}

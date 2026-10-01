@@ -1,0 +1,34 @@
+{
+  "inference": {
+    "point_share_a": 0.55,
+    "rank_interval_a": {
+      "lower": 0.65,
+      "upper": 1,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "rank_case_intervals": [
+      {
+        "case_id": "always_wins",
+        "interval": {
+          "lower": 0,
+          "upper": 1,
+          "lower_inclusive": true,
+          "upper_inclusive": true
+        }
+      },
+      {
+        "case_id": "impossible_win",
+        "interval": null
+      }
+    ],
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A spreadsheet zero after elimination is a structural status placeholder, not an observed zero-support measurement.",
+      "future_na": "NA means a future week was not held; it is not an observed support value and carries no evidence for or against either contestant."
+    },
+    "results_paragraph": "Week 1 yields p_A=0.55 exactly from the supplied combined score. In the independent rank-only week with j_A=0.4 and alpha=0.6, s_A=0.24+0.4p_A and s_B=1-s_A, so the official strict combined-score ranking requires p_A>0.65; the feasibility set is 0.65<p_A<=1. For always_wins, s_A=0.72+0.2p_A exceeds 0.5 for every p_A in [0,1], so both endpoints are feasible. For impossible_win, s_A=0.14+0.3p_A is at most 0.44, so A can never strictly outrank B; the feasibility set is empty. These rank results are deterministic feasibility sets, not confidence intervals. No total votes, sampling distribution, or repeated observations were supplied, so absolute vote counts are not identifiable and no confidence interval is available. A spreadsheet zero after elimination is a status placeholder, not evidence of zero support; NA for a future week means the week was not held and provides no support information.",
+    "latex_model": "\\[\n\\begin{aligned}\ns_{A,1}&=\\alpha_1 j_{A,1}+(1-\\alpha_1)p_{A,1},\\\\\n0.46&=0.6(0.4)+0.4p_{A,1},\\\\\np_{A,1}&=0.55.\n\\end{aligned}\n\\]\n\n\\[\n\\begin{aligned}\ns_{A,R}&=\\alpha_R j_{A,R}+(1-\\alpha_R)p_{A,R},\\\\\ns_{B,R}&=\\alpha_R(1-j_{A,R})+(1-\\alpha_R)(1-p_{A,R}),\\\\\ns_{A,R}+s_{B,R}&=1.\n\\end{aligned}\n\\]\n\n\\[\n\\begin{aligned}\ns_{A,R}&>s_{B,R}\n\\iff s_{A,R}>\\tfrac{1}{2},\\\\\n0.6(0.4)+0.4p_{A,R}&>\\tfrac{1}{2},\\\\\np_{A,R}&>0.65,\\\\\n\\mathcal{F}_R&=(0.65,1].\n\\end{aligned}\n\\]\n\n\\[\n\\begin{aligned}\n0.8(0.9)+0.2p_{A,\\mathrm{always}}&>\\tfrac{1}{2}\n\\quad\\forall p_{A,\\mathrm{always}}\\in[0,1],\\\\\n\\mathcal{F}_{\\mathrm{always}}&=[0,1].\n\\end{aligned}\n\\]\n\n\\[\n\\begin{aligned}\n0.7(0.2)+0.3p_{A,\\mathrm{impossible}}&\\le0.44<\\tfrac{1}{2}\n\\quad\\forall p_{A,\\mathrm{impossible}}\\in[0,1],\\\\\n\\mathcal{F}_{\\mathrm{impossible}}&=\\varnothing.\n\\end{aligned}\n\\]"
+  }
+}

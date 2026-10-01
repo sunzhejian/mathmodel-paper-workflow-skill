@@ -11,6 +11,8 @@
 5. 根据查实错误做局部修订。例如漏掉切换点上的并列最优方案、把识别集合叫成置信区间、Summary 的建议与情景结果冲突。修订应改善相应决策，不堆通用禁令，不给所有问题强加该案例的模型、单位、题数或输出格式。
 6. 保留基线输入，用独立的新参数或任务复测；如果要判断更新效果，再以同一旧任务做对照重跑。新任务和旧任务难度不同，不能直接把得分差归因于 skill 更新。记录未修复项、失败与未执行项，不把小任务表现外推成完整论文水平或获奖概率。
 
+响应截断时按实际阶段拆分任务，冻结每阶段输入/skill及其字节哈希。不要拼接截断内容冒充完整交付；[merge_trial_stages.py](../scripts/merge_trial_stages.py) 只合并同一任务、上下文、模型和客户端的成功阶段，保留原始答案并记录外层代码围栏的移除。更换客户端/协议或模型版本须单列，不能把速度变化归因于skill改进。
+
 ## 密钥与调用材料
 
 凭据只在本机私有文件或进程环境中读取，不进入提示词、源码、CLI 参数、终端输出、公开报告或 Git。截图凭据只做本地识别，字符无法确认时请求使用者在本机更新文件，不能批量猜测密钥。模型生成的代码在不含凭据的环境执行。
@@ -20,6 +22,18 @@
 ## 仓库提供的离线夹具
 
 原创建模小题位于 [examples/model-trials/tasks.json](../examples/model-trials/tasks.json)。基线含混合运输成本切换与潜在投票推断；新数据版本包含三方案同时最优和不同的识别边界。这不是 COMAP 官方题目，也不是正式论文。源码 [scripts/model_trial.py](../scripts/model_trial.py) 不联网、不读取密钥、不执行模型代码。
+
+第二版[匿名任务](../examples/model-trials/tasks-v2.json)明确综合排名对象，覆盖空集、全区间、严格边界及纯裁判权重；用 `--tasks` 选择，不改写第一版历史任务。v2运输量允许有说明的 `整数/正整数` 精确分数编码，解析器不执行任意表达式；v1仍采用其数字字段口径。显式空集与漏交字段区分，不能把不可行排名硬截成一个比例。
+
+```sh
+python scripts/model_trial.py prepare --tasks examples/model-trials/tasks-v2.json --round clarified --part transport --output qa/trials/transport-01
+python scripts/model_trial.py prepare --tasks examples/model-trials/tasks-v2.json --round clarified --part inference --output qa/trials/inference-01
+# 每个成功模型会话放在对应阶段目录的model子目录后：
+python scripts/merge_trial_stages.py --transport qa/trials/transport-01/model --inference qa/trials/inference-01/model --output qa/trials/assembled-01
+python scripts/model_trial.py grade --tasks examples/model-trials/tasks-v2.json --round clarified --answer qa/trials/assembled-01/answer.json --report qa/trials/assembled-01/numeric.json
+```
+
+提示词按UTF-8字节写出，记录的prompt哈希与文件相同。早期Windows试用曾出现文本换行转换使两者不同，报告保留运行工具读入文件的实际哈希；不能篡改历史记录掩盖差异。
 
 ```sh
 python scripts/model_trial.py prepare --round baseline --output qa/trials/baseline-01
@@ -47,5 +61,24 @@ python scripts/run_codex_trial.py --routes examples/model-trials/providers.json 
 每次只运行一条路线，超时默认480秒，不自动重试；输出目录须是新目录。报告记录输入/答案哈希、请求模型名、推理档位、时长、成功与失败及工具事件数；省略推理全文，脱敏错误信息。调用名不是后台精确模型版本的独立证明，用量是CLI报告而非账单金额。此次任务要求模型只返回文本，CLI使用只读沙箱、工具子进程不继承环境；仍需核查工具事件，不能把提示词当作完整权限隔离。需要程序执行的评测应另设真正隔离的运行环境。
 
 不能比较改变推理档位前后的时间并归因于skill提升；长度截断恢复与模型质量分开记录。不能因机读答复不合法而悄悄修复后给原答复通过成绩；原始文件、人工修复及新的模型重试分别保留。没有真实执行的任务不计作通过。
+
+## 可选客户端与分项验收
+
+[run_opencode_trial.py](../scripts/run_opencode_trial.py) 可使用已安装的OpenCode，以Chat Completions接入同一套餐。当前实际验证版本1.18.34，原有Codex为0.144.1；需要相应CLI选项时先核对帮助。它仅启用所选provider、以环境变量引用密钥、禁用模型工具和分享、采用 `--pure`；不保存密钥或改全局配置。客户端仍不是OS安全沙箱。CLI终止、答案存在和正常stop事件共同判断完整会话；length或超时不能记作成功。[官方provider说明](https://opencode.ai/docs/providers/)、[CLI说明](https://opencode.ai/docs/cli/)、[工具权限](https://opencode.ai/docs/permissions/)是兼容配置依据。
+
+```sh
+python scripts/run_opencode_trial.py --routes examples/model-trials/providers.json --route kimi-coding-plan --prompt qa/trials/transport-01/prompt.txt --output qa/trials/transport-01/model --opencode /path/to/opencode
+```
+
+取得完整原答复后，先实际阅读代码和TeX，再按需使用两个独立检查器。`--reviewed-source`记录源已被审查的前提，不能用旗标代替审查，也不代表安全隔离。
+
+```sh
+python scripts/check_trial_code.py --answer qa/trials/assembled-01/answer.json --tasks examples/model-trials/tasks-v2.json --probes examples/model-trials/solver-probes.json --output qa/trials/code-01 --reviewed-source
+python scripts/check_trial_latex.py --answer qa/trials/assembled-01/answer.json --output qa/trials/latex-01 --reviewed-source --render --compiler /path/to/xelatex
+```
+
+程序检查覆盖指定正成本输入、精确切换点和选用的非整数质量探针，不证明通用求解正确；分数桥接保留分子/分母，不能把检查器的编码错误归于模型。模型代码在不含provider凭据的子进程运行，但此工具不是OS安全沙箱。
+
+公式检查把原始片段直接插入12pt A4夹具，默认2.5cm边距可配置；检查实际编译、缺字和Overfull，并可渲染。外部I/O及动态TeX命令被拒绝；这仍不替代审查。编译成功不等于数学、重叠或整篇版式全部正确。JSON正确、数值正确、代码可运行、公式可编译、人工科学审查分别记录，不合成一个“论文质量满分”。
 
 评测结论写在内部报告；需要公开的维护记录只发布脱敏合成任务与实际结果，清楚区分自动检查、人工审查、代码执行、编译和未验证范围。相同资料只返回正文段落的模型与真正执行完整工具链的代理，其成绩分别说明。边界上的并列最优要明确使用精确数还是浮点容差；参考检查器与求解程序精度口径不一致时，先查接口，不能直接给模型贴错标签。

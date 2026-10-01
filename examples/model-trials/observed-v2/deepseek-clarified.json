@@ -1,0 +1,106 @@
+{
+  "transport": {
+    "required_tasks": [
+      "Build a unit-consistent mixed-integer model minimizing elevator plus fixed-launch cost subject to demand, elevator capacity, rocket capacity, and integer launches.",
+      "Report all nominal optima, both endpoint optima, every switching value in [700, 1400], and every tied plan at each switch.",
+      "Provide standard-library Python solve_transport, solver notes, a LaTeX model fragment, Summary, and a logistics letter."
+    ],
+    "optional_tasks": [
+      "Stochastic launch failures (no probability data supplied).",
+      "Sensitivity analysis outside the supplied cost range."
+    ],
+    "nominal_plans": [
+      {
+        "e_tonnes": 19,
+        "launches": 2,
+        "cost": 37100
+      }
+    ],
+    "endpoint_plans": [
+      {
+        "cost_per_tonne": 700,
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 33300
+          }
+        ]
+      },
+      {
+        "cost_per_tonne": 1400,
+        "plans": [
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41400
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "cost_per_tonne": 1111.111111111111,
+        "cost_per_tonne_exact": "10000/9",
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 41111.11111111111,
+            "cost_exact": "370000/9"
+          },
+          {
+            "e_tonnes": 10,
+            "launches": 3,
+            "cost": 41111.11111111111,
+            "cost_exact": "370000/9"
+          },
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41111.11111111111,
+            "cost_exact": "370000/9"
+          }
+        ]
+      }
+    ],
+    "uncertainty_kind": "deterministic_parametric_switch",
+    "solver_source": "from fractions import Fraction\n\n\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg, rocket_cost, cost_per_tonne):\n    def Q(x):\n        return Fraction(str(x))\n\n    D = Q(demand_tonnes)\n    E = Q(elevator_capacity_tonnes)\n    r = Q(rocket_capacity_kg) / 1000\n    F = Q(rocket_cost)\n    c = Q(cost_per_tonne)\n\n    def ceil_positive(x):\n        if x <= 0:\n            return 0\n        return (x.numerator + x.denominator - 1) // x.denominator\n\n    n_min = ceil_positive((D - E) / r)\n    n_max = ceil_positive(D / r)\n\n    best = None\n    plans = []\n    for n in range(n_min, n_max + 1):\n        e = D - n * r\n        if e < 0:\n            e = Fraction(0, 1)\n        if e > E:\n            continue\n        cost = c * e + F * n\n        if best is None or cost < best:\n            best = cost\n            plans = [{'e_tonnes': e, 'launches': n, 'cost': cost}]\n        elif cost == best:\n            plans.append({'e_tonnes': e, 'launches': n, 'cost': cost})\n    return plans",
+    "solver_notes": "Exact rational arithmetic is used: each numeric argument is converted with Fraction(str(x)), so whole-number inputs and the switch point Fraction(10000, 9) are represented without binary float error. Feasible integer launch candidates are 2, 3, and 4; 0 and 1 violate the elevator cap and any launch count above 4 is dominated by N=4 for c<=1400. The source returns all candidates whose exact cost equals the minimum, including the three-way tie at the switching cost Fraction(370000, 9). Numeric decimals in the JSON switch and plan fields are rounded presentations of those exact fractions.",
+    "latex_model": "Let $N$ be the number of rocket launches and $e$ the elevator tonnage. The rocket capacity is $r=9000\\,\\mathrm{kg}=9\\,\\mathrm{t}$, demand is $D=37\\,\\mathrm{t}$, the elevator cap is $E_{\\max}=20\\,\\mathrm{t}$, the fixed launch cost is $F=10000$, and the unit elevator cost is $c$.\n\n\\begin{equation}\n\\begin{aligned}\n\\min_{e,N}\\quad & c\\,e+F\\,N\\\\\n\\mathrm{s.t.}\\quad & e+9N\\ge 37,\\\\\n&0\\le e\\le 20,\\quad N\\in\\mathbb{Z}_{\\ge0}.\n\\end{aligned}\n\\end{equation}\n\nFeasible elevator use is\n\\begin{equation}\ne_N=\\max\\{0,\\,37-9N\\},\\qquad N\\in\\{2,3,4\\},\n\\end{equation}\nsince $N=0,1$ exceed the elevator cap and any $N\\ge5$ is dominated by $N=4$ for $c\\le1400$.\n\nThe three relevant costs are\n\\begin{equation}\n\\begin{aligned}\nC_{2}&=20000+19c,\\\\\nC_{3}&=30000+10c,\\\\\nC_{4}&=40000+c.\n\\end{aligned}\n\\end{equation}\n\n\\begin{equation}\nC_{2}-C_{3}=C_{3}-C_{4}=9c-10000.\n\\end{equation}\n\n\\begin{equation}\n\\text{optimal }N=\n\\begin{cases}\n2, & c<\\frac{10000}{9},\\\\\n4, & c>\\frac{10000}{9}.\n\\end{cases}\n\\end{equation}\n\nAt $c=\\frac{10000}{9}$, all three plans with $(e,N)=(19,2),(10,3),(1,4)$ tie, with common cost $\\frac{370000}{9}$.\n\nAt $c=700$, the optimum is $e=19,N=2$, cost $33300$. At $c=1400$, the optimum is $e=1,N=4$, cost $41400$. At nominal $c=900$, the optimum is $e=19,N=2$, cost $37100$.",
+    "summary": "At nominal elevator cost 900 per tonne, the optimal plan moves 19 tonnes by elevator and 2 rocket launches, with total cost 37100. The same plan remains optimal at the lower endpoint cost 700 per tonne, costing 33300. At the upper endpoint cost 1400 per tonne, the optimum changes to 1 tonne by elevator and 4 launches, costing 41400. The unique switching value is 10000 divided by 9, where plans (19,2), (10,3), and (1,4) tie at cost 370000 divided by 9. All costs use synthetic currency units.",
+    "letter": "Dear Logistics Manager, The site must be supplied with 37 tonnes. The elevator can contribute at most 20 tonnes, and each rocket launch can carry up to 9 tonnes, so any feasible plan uses at least two launches whenever elevator capacity alone is insufficient. At the current per-tonne elevator rate of 900, the least-cost arrangement is 19 tonnes via elevator and 2 launches, costing 37100. If the elevator rate drops to 700, keep this same plan, whose cost falls to 33300. If the rate rises to 1400, launching more becomes cheaper: use 1 tonne via elevator and 4 launches, costing 41400. The decision changes only at the break-even rate 10000/9; there the three plans with (elevator, launches) equal (19,2), (10,3), and (1,4) tie. Please book capacity for two launches and 19 tonnes of elevator lift at the nominal rate."
+  },
+  "inference": {
+    "point_share_a": 0.55,
+    "rank_interval_a": {
+      "lower": 0.65,
+      "upper": 1,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "rank_case_intervals": [
+      {
+        "case_id": "always_wins",
+        "interval": {
+          "lower": 0,
+          "upper": 1,
+          "lower_inclusive": true,
+          "upper_inclusive": true
+        }
+      },
+      {
+        "case_id": "impossible_win",
+        "interval": null
+      }
+    ],
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "An eliminated contestant's spreadsheet zero is a status placeholder, not an observed zero-support count; it must not be treated as a fan-share estimate.",
+      "future_na": "NA marks a future week not yet held; it is missing or not applicable rather than an observed support value."
+    },
+    "results_paragraph": "The point-identification week gives p_A = (0.46 - 0.6*0.4)/0.4 = 0.55. In the independent rank-only week with j_A = 0.4 and weight 0.6, strict combined-score ranking s_A > s_B is equivalent to p_A > 0.65, so the feasible fan-share set is (0.65, 1]. For case always_wins, the weight is 0.8 and judge share 0.9, so A's combined score exceeds B's for every p_A in [0,1]. For case impossible_win, weight 0.7 and judge share 0.2 require p_A > 1.2, which has no feasible share in [0,1]; the interval is empty, not a confidence interval, and 1.2 is not clipped to 1. Absolute vote counts are not identifiable because no total votes or sampling distribution were supplied, so no statistical confidence interval exists. An eliminated contestant's spreadsheet zero is a status placeholder, and NA indicates a future week not yet held; neither value measures fan support.",
+    "latex_model": "Let $\\bar{s}_{A}$ be the observed combined share in the point-identification week. The combined share uses judge weight $\\alpha$ and fan weight $1-\\alpha$.\n\n\\begin{equation}\n\\bar{s}_{A}=\\alpha j_{A}+(1-\\alpha)p_{A}.\n\\end{equation}\n\n\\begin{equation}\np_{A}\n=\\frac{\\bar{s}_{A}-\\alpha j_{A}}{1-\\alpha}\n=\\frac{0.46-0.6\\cdot0.4}{0.4}\n=0.55.\n\\end{equation}\n\nIn an independent rank-only week with the same $j_{A}=0.4$ and $\\alpha=0.6$, strict combined-score ranking $s_{A}>s_{B}$ requires\n\n\\begin{equation}\n\\begin{aligned}\n\\alpha j_{A}+(1-\\alpha)p_{A}\n&>\\alpha(1-j_{A})\\\\\n&\\quad +(1-\\alpha)(1-p_{A}).\n\\end{aligned}\n\\end{equation}\n\n\\begin{equation}\np_{A}>\\frac{1-2\\alpha j_{A}}{2(1-\\alpha)}.\n\\end{equation}\n\nFor the baseline rank-only values this gives $p_{A}>0.65$. For case always_wins ($\\alpha=0.8$, $j_{A}=0.9$) the inequality holds for every $p_{A}\\in[0,1]$. For case impossible_win ($\\alpha=0.7$, $j_{A}=0.2$) the inequality requires $p_{A}>1.2$, so no $p_{A}\\in[0,1]$ is feasible; the set is empty. The empty set is not a confidence interval, and the threshold $1.2$ is not clipped to $1$."
+  }
+}

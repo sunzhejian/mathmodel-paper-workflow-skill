@@ -1,0 +1,8 @@
+{
+  "scope": "Additional strictly positive-cost continuous-mass cases for a solver claiming a generic input interface. Exact Fraction inputs avoid binary rounding at capacity equality.",
+  "cases": [
+    {"id": "quarter_tonne_rocket_expensive_elevator", "demand_tonnes": 0.4, "elevator_capacity_tonnes": 0.15, "rocket_capacity_kg": 250, "rocket_cost": 1, "cost_per_tonne": 10},
+    {"id": "quarter_tonne_rocket_cheap_elevator", "demand_tonnes": 0.4, "elevator_capacity_tonnes": 0.15, "rocket_capacity_kg": 250, "rocket_cost": 1, "cost_per_tonne": 1},
+    {"id": "small_demand_no_rocket_needed", "demand_tonnes": 0.05, "elevator_capacity_tonnes": 0.1, "rocket_capacity_kg": 250, "rocket_cost": 1, "cost_per_tonne": 1}
+  ]
+}

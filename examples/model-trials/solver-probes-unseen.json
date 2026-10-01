@@ -1,0 +1,7 @@
+{
+  "scope": "New fractional geometry inputs excluded from the code-repair prompt; exact mass inputs are used.",
+  "cases": [
+    {"id": "fractional_mass_350kg", "demand_tonnes": 1.3, "elevator_capacity_tonnes": 0.35, "rocket_capacity_kg": 350, "rocket_cost": 0.9, "cost_per_tonne": 2.5},
+    {"id": "fractional_mass_275kg", "demand_tonnes": 1.13, "elevator_capacity_tonnes": 0.4, "rocket_capacity_kg": 275, "rocket_cost": 0.7, "cost_per_tonne": 6}
+  ]
+}

@@ -1,0 +1,104 @@
+```json
+{
+  "transport": {
+    "required_tasks": [
+      "Formulate a unit-consistent mixed-integer cost-minimization model with continuous elevator quantity and integer rocket launches.",
+      "Compute the nominal optimum at c=900.",
+      "Compute endpoint optima at c=700 and c=1400.",
+      "Find all optimal-plan switching values within [700,1400] and the tied plans."
+    ],
+    "optional_tasks": [
+      "Stochastic launch or elevator failure modeling (no probabilities supplied)."
+    ],
+    "nominal_plans": [
+      {
+        "e_tonnes": 19,
+        "launches": 2,
+        "cost": 37100
+      }
+    ],
+    "endpoint_plans": [
+      {
+        "cost_per_tonne": 700,
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 33300
+          }
+        ]
+      },
+      {
+        "cost_per_tonne": 1400,
+        "plans": [
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41400
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "cost_per_tonne": "10000/9",
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 10,
+            "launches": 3,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41111.11111111111
+          }
+        ]
+      }
+    ],
+    "uncertainty_kind": "parametric unit-cost sensitivity; no probability distributions supplied.",
+    "solver_source": "from fractions import Fraction\\n\\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg, rocket_cost, cost_per_tonne):\\n    \\\"\\\"\\\"Return all cost-minimizing logistics plans for the given elevator price.\\\"\\\"\\\"\\n    D = Fraction(demand_tonnes)\\n    E = Fraction(elevator_capacity_tonnes)\\n    r = Fraction(rocket_capacity_kg, 1000)\\n    F = Fraction(rocket_cost)\\n    c = Fraction(cost_per_tonne)\\n    ratio = D / r\\n    max_n = -(-ratio.numerator // ratio.denominator) + 2\\n    best_cost = None\\n    best_plans = []\\n    for n in range(max_n + 1):\\n        e_needed = D - r * n\\n        if e_needed < 0:\\n            e_needed = Fraction(0)\\n        if e_needed > E:\\n            continue\\n        cost = c * e_needed + F * n\\n        if best_cost is None or cost < best_cost:\\n            best_cost = cost\\n            best_plans = [{'e_tonnes': float(e_needed), 'launches': n, 'cost': float(cost)}]\\n        elif cost == best_cost:\\n            best_plans.append({'e_tonnes': float(e_needed), 'launches': n, 'cost': float(cost)})\\n    return best_plans",
+    "solver_notes": "The solver enumerates integer launch counts and, for each, sets elevator tonnes to the minimum feasible value. All arithmetic uses Python's fractions.Fraction, so switching prices are exact rationals represented as p/q strings. The exact switching price inside [700,1400] is 10000/9. Returned plan costs are cast to float for the API; ties are detected by exact Fraction equality. No stochastic failure probabilities were supplied, so no reliability analysis is performed. The code has not been executed in this response.",
+    "latex_model": "The mixed-integer program uses tonnes throughout; rocket capacity is $9000\\\\,\\\\mathrm{kg}=9\\\\,\\\\mathrm{t}$.\\n\\\\begin{align}\\n\\\\min_{e,n}\\\\;& C(c)=c\\\\,e+F\\\\,n,\\\\\\\\\\n\\\\text{s.t.}\\\\;& e+9n\\\\ge 37,\\\\\\\\\\n&0\\\\le e\\\\le 20,\\\\\\\\\\n&n\\\\in\\\\mathbb{Z}_{\\\\ge0}.\\n\\\\end{align}\\nAt an optimum the demand constraint is binding, so $e=\\\\max\\\\{0,37-9n\\\\}$. Feasibility requires $37-9n\\\\le20$, i.e., $n\\\\ge2$. The relevant affine cost functions are\\n\\\\begin{align}\\nC_2(c)&=19c+20000,\\\\\\\\\\nC_3(c)&=10c+30000,\\\\\\\\\\nC_4(c)&=c+40000,\\\\\\\\\\nC_5(c)&=50000.\\n\\\\end{align}\\nPairwise equalities give the switching prices\\n\\\\begin{align}\\nC_2=C_3=C_4 &\\\\Rightarrow c=\\\\frac{10000}{9},\\\\\\\\\\nC_4=C_5 &\\\\Rightarrow c=10000.\\n\\\\end{align}\\nOnly $c=10000/9$ lies in the examined range $[700,1400]$. Thus the optimal policy on that range is\\n\\\\begin{align}\\nc<\\\\frac{10000}{9}&:\\\\ (e,n)=(19,2),\\\\\\\\\\nc=\\\\frac{10000}{9}&:\\\\ (e,n)\\\\in\\\\{(19,2),(10,3),(1,4)\\\\},\\\\\\\\\\n\\\\frac{10000}{9}<c\\\\le1400&:\\\\ (e,n)=(1,4).\\n\\\\end{align}",
+    "summary": "A unit-consistent mixed-integer model minimizes total logistics cost by choosing elevator tonnes e and integer rocket launches n, with one rocket carrying 9 tonnes. Demand 37 tonnes and elevator capacity 20 tonnes make n=0 and n=1 infeasible. Candidate optima are (e,n)=(19,2),(10,3),(1,4),(0,5). At the nominal elevator price c=900, the cheapest plan is 19 tonnes by elevator and 2 rocket launches, costing 37 100. Within the examined price range [700,1400] the only optimal-plan switch occurs at c=10000/9, where three plans tie. Endpoint optima are (19,2) at c=700 and (1,4) at c=1400.",
+    "letter": "Dear Logistics Manager,\\n\\nWe modeled cargo delivery to the lunar base as a cost-minimizing mix of elevator capacity and rocket launches. Each rocket carries 9 tonnes, and the elevator can move at most 20 tonnes. To meet the 37-tonne demand we need at least two rocket launches.\\n\\nAt the nominal elevator price of 900 per tonne, the optimal plan is 19 tonnes via elevator and 2 rocket launches, totaling 37 100. If the elevator price falls to 700, the same plan remains best. If it rises to 1400, the optimal plan shifts to 1 tonne by elevator and 4 rocket launches, costing 41 400.\\n\\nWithin the examined range [700,1400] the decision changes at a single threshold price of 10000/9 per tonne. There the three plans 19 tonnes with 2 launches, 10 tonnes with 3 launches, and 1 tonne with 4 launches all tie. Please use this threshold when negotiating elevator tariffs.\\n\\nSincerely,\\nModeling Team"
+  },
+  "inference": {
+    "point_share_a": 0.55,
+    "rank_interval_a": {
+      "lower": 0.65,
+      "upper": 1,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "rank_case_intervals": [
+      {
+        "case_id": "always_wins",
+        "interval": {
+          "lower": 0,
+          "upper": 1,
+          "lower_inclusive": true,
+          "upper_inclusive": true
+        }
+      },
+      {
+        "case_id": "impossible_win",
+        "interval": null
+      }
+    ],
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "Spreadsheet zero after elimination records a contestant's removed status; it is not a measured fan share and must not be treated as a zero-support observation.",
+      "future_na": "NA denotes a future week that was not held; it is not a missing share to impute."
+    },
+    "results_paragraph": "In week 1 the judge share and combined share identify a unique fan share because the scoring rule is linear with known weights; the point estimate is p_A=0.55. A rank-only comparison of combined scores is not a confidence interval: no sampling distribution was supplied and no total votes are available, so it identifies only the feasible set of fan shares consistent with the observed ordering. With the original judge share 0.4 and weight 0.6, A strictly outranks B if and only if p_A>0.65, giving the open interval (0.65,1]. In the always_wins case the judge advantage is so large that every fan share in [0,1] keeps A ahead. In the impossible_win case the threshold would require p_A>1.2, which is incompatible with a fan share in [0,1]; the interval is therefore empty. Spreadsheet zeros after elimination mark a contestant's removed status rather than a measured zero share, and NA marks a future week that was not held, not a missing observation to impute.",
+    "latex_model": "Let $j_A$ denote A's judge share and $p_A$ A's fan share. In week~1,\\n\\\\begin{equation}\\ns_A^{(1)}=\\\\alpha j_A+(1-\\\\alpha)p_A.\\n\\\\end{equation}\\nThe observed combined share identifies the fan share exactly:\\n\\\\begin{equation}\\np_A=\\\\frac{s_A^{(1)}-\\\\alpha j_A}{1-\\\\alpha}\\n=\\\\frac{0.46-0.6\\\\cdot0.4}{0.4}=0.55.\\n\\\\end{equation}\\nFor an independent rank-only week, $s_A^{(r)}>s_B^{(r)}$ gives\\n\\\\begin{align}\\n\\\\alpha j_A+(1-\\\\alpha)p_A\\n&>\\\\alpha(1-j_A)+(1-\\\\alpha)(1-p_A)\\\\\\\\\\n&=1-\\\\alpha j_A-(1-\\\\alpha)p_A,\\n\\\\end{align}\\nhence\\n\\\\begin{equation}\\np_A>\\\\frac{1-2\\\\alpha j_A}{2(1-\\\\alpha)}.\\n\\\\end{equation}\\nWith $j_A=0.4$ and $\\\\alpha=0.6$, the threshold is $0.65$, so the feasibility set is $(0.65,1]$. For the extra cases, the always\\\\_wins case has threshold $-1.1$ and feasible set $[0,1]$; the impossible\\\\_win case has threshold $1.2$ and empty feasible set."
+  }
+}
+```

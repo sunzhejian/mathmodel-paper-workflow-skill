@@ -92,6 +92,9 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [真实模型行为评测](references/model-trials.md) / [离线夹具](examples/model-trials/tasks.json) | 匿名解题任务、参考计算、原始答复、局部修订与新数据复测；单列人工审查与未执行项 |
 | [单次 Codex 试用](scripts/run_codex_trial.py) / [提示词与数值检查](scripts/model_trial.py) | 只在使用者授权时调用一条指定模型路线；密钥不写配置或报告，失败不自动切换付费端点 |
 | [2026-10-01真实试用记录](docs/model-trials-20261001.md) | 豆包与GLM的原始合成答案、已改善的JSON/零值问题、仍失败的排名推断与公式版式；不据此预测获奖 |
+| [DeepSeek/GLM/Kimi第二轮](docs/model-trials-20261001-families.md) | 明确排名、空集和严格边界；连续质量程序故障、模型修复与两个新输入复测；原始失败不抹去 |
+| [分阶段合并](scripts/merge_trial_stages.py) / [OpenCode试用](scripts/run_opencode_trial.py) | 截断后的有限恢复；保留客户端、协议和原答复差异，不混合不同模型结果 |
+| [程序实跑](scripts/check_trial_code.py) / [公式实编译](scripts/check_trial_latex.py) | 审查源后核对正成本输入、精确切换、连续量探针、原片段编译与宽度；分开记录验收范围 |
 | [模板决策校验](scripts/validate_template_decisions.py) | 保存用户选择后验证模板与数据源，后续修订避免重复询问 |
 | [流程图模板对照图](scripts/preview_diagram_templates.py) | 从子模块预览生成本地四图对照，供使用者选择，不发布上游素材 |
 | [图表与排版](references/figures-and-layout.md) | 中文字体、可见图宽、线稿透视、标注避让、留白 |

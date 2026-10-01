@@ -136,3 +136,5 @@ Windows 若找不到 `soffice`，使用安装目录中的 `soffice.com` 或直�
 先按[真实模型行为评测](../references/model-trials.md)准备匿名任务，再将套餐支持的公开地址、模型名称和密钥环境变量名称写入路线配置。**配置文件不写密钥**，通过本机私有方式在父进程加载；不使用打印环境变量的命令来证明配置成功。千问 Token Plan、火山 Agent Plan、火山 Coding Plan 的地址分开使用，示例位于 [providers.json](../examples/model-trials/providers.json)。套餐和模型变化时以厂商当前官方文档为准，不能从名称或密钥前缀推断全部权限。
 
 `run_codex_trial.py` 每次仅执行指定路线并保存脱敏结果；不会修改全局模型配置，不直接充当API服务，鉴权失败不会换用按量付费地址。当前测试要求模型返回匿名解题片段，再由维护者核对、执行和编译；这与让模型自主跑完实际论文项目是不同的测试范围。
+
+若实际需要另一种兼容客户端，可按 [OpenCode官方安装/CLI说明](https://opencode.ai/docs/cli/)安装或使用已有版本，先运行 `opencode --version` 与 `opencode run --help`；本轮使用1.18.34。它不是运行仓库基本检查的依赖，不应为了普通论文修订强制安装。`run_opencode_trial.py`采用临时进程配置和套餐Chat端点，密钥仍由环境变量引用。安装与接口是否可用、源代码是否可运行、公式是否可编译分别核对，详情见[分项评测](../references/model-trials.md#可选客户端与分项验收)。

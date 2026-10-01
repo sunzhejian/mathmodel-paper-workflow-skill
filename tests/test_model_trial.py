@@ -86,5 +86,57 @@ class ModelTrialTests(unittest.TestCase):
         self.assertTrue(witness['inside_proposed_interval'])
         self.assertFalse(witness['original_ranking_holds'])
 
+    def test_rank_sets_can_include_zero_or_be_empty(self):
+        self.assertEqual(trial.expected_rank_interval({'judge_weight':0.8,'judge_share_a':0.9}),{'lower':0.0,'upper':1.0,'lower_inclusive':True,'upper_inclusive':True})
+        self.assertIsNone(trial.expected_rank_interval({'judge_weight':0.7,'judge_share_a':0.2}))
+
+    def test_exact_zero_and_one_ties_preserve_strictness(self):
+        interval=trial.expected_rank_interval({'judge_weight':0.5,'judge_share_a':1})
+        self.assertEqual(interval['lower'],0)
+        self.assertFalse(interval['lower_inclusive'])
+        self.assertIsNone(trial.expected_rank_interval({'judge_weight':0.5,'judge_share_a':0}))
+
+    def test_judge_only_rank_does_not_divide_by_zero(self):
+        self.assertTrue(trial.expected_rank_interval({'judge_weight':1,'judge_share_a':0.8})['lower_inclusive'])
+        self.assertIsNone(trial.expected_rank_interval({'judge_weight':1,'judge_share_a':0.5}))
+
+    def test_empty_rank_case_must_be_explicit_not_missing(self):
+        path=ROOT/'examples/model-trials/tasks-v2.json'
+        absent=trial.grade({},'clarified',path)
+        self.assertFalse(next(x for x in absent['findings'] if x['check']=='rank_case_impossible_win')['passed'])
+        explicit=trial.grade({'inference':{'rank_case_intervals':[{'case_id':'impossible_win','interval':None}]}},'clarified',path)
+        self.assertTrue(next(x for x in explicit['findings'] if x['check']=='rank_case_impossible_win')['passed'])
+
+    def test_split_prompt_only_contains_the_selected_task(self):
+        text,manifest=trial.prompt('clarified',ROOT/'examples/model-trials/tasks-v2.json','inference')
+        self.assertEqual(manifest['part'],'inference')
+        self.assertIn('TASK inference:',text)
+        self.assertNotIn('TASK transport:',text)
+        self.assertNotIn('"demand_tonnes": 37',text)
+
+    def test_written_prompt_matches_its_recorded_byte_hash(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as folder:
+            output=Path(folder)/'prompt-stage'
+            result=subprocess.run([sys.executable,'-X','utf8',str(ROOT/'scripts/model_trial.py'),'prepare','--round','baseline','--output',str(output)],capture_output=True,text=True,encoding='utf-8',timeout=30)
+            self.assertEqual(result.returncode,0)
+            manifest=json.loads((output/'manifest.json').read_text())
+            self.assertEqual(manifest['prompt_sha256'],hashlib.sha256((output/'prompt.txt').read_bytes()).hexdigest())
+
+    def test_exact_fraction_encoding_is_scoped_and_does_not_evaluate_expressions(self):
+        self.assertAlmostEqual(trial.numeric_value('10000/9',True),10000/9)
+        for value in ['1/0','sum([1,2])','2**10','0.5',True]:
+            with self.assertRaises(ValueError):trial.numeric_value(value,True)
+        with self.assertRaises(ValueError):trial.numeric_value('10000/9',False)
+
+    def test_rocket_only_switch_has_its_own_exact_price(self):
+        from fractions import Fraction
+        data={'demand_tonnes':30,'elevator_capacity_tonnes':18,'rocket_capacity_kg':8000,'rocket_cost':8000,'cost_range':[800,1500]}
+        self.assertEqual(trial.exact_switch_values(data),[Fraction(1000),Fraction(4000,3)])
+
+    def test_fractional_mass_at_capacity_is_feasible(self):
+        data={'demand_tonnes':0.4,'elevator_capacity_tonnes':0.15,'rocket_capacity_kg':250,'rocket_cost':1}
+        self.assertEqual(trial.optimal_plans(data,1),[{'e_tonnes':0.15,'launches':1,'cost':1.15}])
+
 
 if __name__=='__main__': unittest.main()
