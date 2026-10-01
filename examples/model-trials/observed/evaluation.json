@@ -1,0 +1,986 @@
+{
+  "date": "2026-10-01",
+  "tool_version": "Codex CLI 0.144.1",
+  "task_sessions": 8,
+  "completed_answer_bundles": 6,
+  "excluded_failures": [
+    {
+      "route": "Qwen Token Plan",
+      "requested_model": "qwen3.8-max",
+      "failure": "InvalidApiKey; not evaluated for modeling ability"
+    },
+    {
+      "route": "Volcano Coding Plan",
+      "requested_model": "glm-5.3",
+      "effort": "medium",
+      "failure": "Incomplete response returned, reason: length; no final answer"
+    }
+  ],
+  "records": [
+    {
+      "id": "baseline-doubao",
+      "round": "baseline",
+      "file": "examples/model-trials/observed/baseline-doubao.json",
+      "answer_sha256": "e135644a8a782796bb59e261dfd20787f093f689abbd8c7ec997d72d75cdc1f2",
+      "requested_model": "doubao-seed-2.1-pro",
+      "reasoning_effort": "medium",
+      "seconds": 303.8,
+      "parse_valid": true,
+      "artificial_format_repair": false,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "baseline",
+        "task_sha256": "3da6932789e736ee9fdef7b0914fc878801ccbb60f2969be39ac622d12d32c42",
+        "context_sha256": {
+          "SKILL.md": "0817965ab05104c702546283305266ed57cb5ea254259e0446bb61faa16870fd",
+          "references/evidence-and-writing.md": "75dc049cf7760d9cbdcf65d16610e1238ad0e7f2627131166eb501825fd783cc",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "1b50b576d25b70ebb77da256b8d7edf2917fdbf61d93bb69a72f3bfa82fed1ed"
+      },
+      "checks": {
+        "round": "baseline",
+        "passed": 16,
+        "total": 16,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_800",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1100",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "101 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "141 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_lower": 0.3666666666666667,
+          "boundary_substitution": {
+            "fan_share_a": 0.3666666666666667,
+            "combined_a": 0.5,
+            "combined_b": 0.5
+          }
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      },
+      "reviewed_artifacts": {
+        "reviewed_solver_cases": 8,
+        "all_correct": true,
+        "results": [
+          {
+            "inputs": [
+              30,
+              18,
+              8000,
+              8000,
+              800
+            ],
+            "plans": [
+              {
+                "e_tonnes": 14.0,
+                "launches": 2,
+                "cost": 27200.0
+              }
+            ]
+          },
+          {
+            "inputs": [
+              30,
+              18,
+              8000,
+              8000,
+              900
+            ],
+            "plans": [
+              {
+                "e_tonnes": 14.0,
+                "launches": 2,
+                "cost": 28600.0
+              }
+            ]
+          },
+          {
+            "inputs": [
+              30,
+              18,
+              8000,
+              8000,
+              1000
+            ],
+            "plans": [
+              {
+                "e_tonnes": 14.0,
+                "launches": 2,
+                "cost": 30000.0
+              },
+              {
+                "e_tonnes": 6.0,
+                "launches": 3,
+                "cost": 30000.0
+              }
+            ]
+          },
+          {
+            "inputs": [
+              30,
+              18,
+              8000,
+              8000,
+              1100
+            ],
+            "plans": [
+              {
+                "e_tonnes": 6.0,
+                "launches": 3,
+                "cost": 30600.0
+              }
+            ]
+          },
+          {
+            "inputs": [
+              37,
+              20,
+              9000,
+              10000,
+              700
+            ],
+            "plans": [
+              {
+                "e_tonnes": 19.0,
+                "launches": 2,
+                "cost": 33300.0
+              }
+            ]
+          },
+          {
+            "inputs": [
+              37,
+              20,
+              9000,
+              10000,
+              900
+            ],
+            "plans": [
+              {
+                "e_tonnes": 19.0,
+                "launches": 2,
+                "cost": 37100.0
+              }
+            ]
+          },
+          {
+            "inputs": [
+              37,
+              20,
+              9000,
+              10000,
+              1111.111111111111
+            ],
+            "plans": [
+              {
+                "e_tonnes": 19.0,
+                "launches": 2,
+                "cost": 41111.11111111111
+              },
+              {
+                "e_tonnes": 10.0,
+                "launches": 3,
+                "cost": 41111.11111111111
+              },
+              {
+                "e_tonnes": 1.0,
+                "launches": 4,
+                "cost": 41111.11111111111
+              }
+            ]
+          },
+          {
+            "inputs": [
+              37,
+              20,
+              9000,
+              10000,
+              1400
+            ],
+            "plans": [
+              {
+                "e_tonnes": 1.0,
+                "launches": 4,
+                "cost": 41400.0
+              }
+            ]
+          }
+        ],
+        "secret_env_present": false,
+        "latex_exit_code": 0,
+        "latex_pdf_present": true
+      }
+    },
+    {
+      "id": "baseline-glm-original",
+      "round": "baseline",
+      "file": "examples/model-trials/observed/baseline-glm-original.txt",
+      "answer_sha256": "194db5c0b9a991eaf4cb5b8607fdc90095bc31043935f676d4203ec5775f70b5",
+      "requested_model": "glm-5.3",
+      "reasoning_effort": "low",
+      "seconds": 288.5,
+      "parse_valid": false,
+      "artificial_format_repair": false,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "baseline",
+        "task_sha256": "3da6932789e736ee9fdef7b0914fc878801ccbb60f2969be39ac622d12d32c42",
+        "context_sha256": {
+          "SKILL.md": "0817965ab05104c702546283305266ed57cb5ea254259e0446bb61faa16870fd",
+          "references/evidence-and-writing.md": "75dc049cf7760d9cbdcf65d16610e1238ad0e7f2627131166eb501825fd783cc",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "1b50b576d25b70ebb77da256b8d7edf2917fdbf61d93bb69a72f3bfa82fed1ed"
+      },
+      "reviewed_artifacts": {
+        "execution_exit_code": 0,
+        "cases_checked": 8,
+        "cases_passed": 8,
+        "latex_exit_code": 0,
+        "overfull": false,
+        "missing_character": false
+      }
+    },
+    {
+      "id": "baseline-glm-format-repaired",
+      "round": "baseline",
+      "file": "examples/model-trials/observed/baseline-glm-format-repaired.json",
+      "answer_sha256": "5c260f1d7cde743114dcb15145cf4b9a10809253e79791391b6fecb46c9962ef",
+      "requested_model": "glm-5.3",
+      "reasoning_effort": "low",
+      "seconds": 288.5,
+      "parse_valid": true,
+      "artificial_format_repair": true,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "baseline",
+        "task_sha256": "3da6932789e736ee9fdef7b0914fc878801ccbb60f2969be39ac622d12d32c42",
+        "context_sha256": {
+          "SKILL.md": "0817965ab05104c702546283305266ed57cb5ea254259e0446bb61faa16870fd",
+          "references/evidence-and-writing.md": "75dc049cf7760d9cbdcf65d16610e1238ad0e7f2627131166eb501825fd783cc",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "1b50b576d25b70ebb77da256b8d7edf2917fdbf61d93bb69a72f3bfa82fed1ed"
+      },
+      "checks": {
+        "round": "baseline",
+        "passed": 16,
+        "total": 16,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_800",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1100",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "95 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "130 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_lower": 0.3666666666666667,
+          "boundary_substitution": {
+            "fan_share_a": 0.3666666666666667,
+            "combined_a": 0.5,
+            "combined_b": 0.5
+          }
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      },
+      "reviewed_artifacts": {
+        "execution_exit_code": 0,
+        "cases_checked": 8,
+        "cases_passed": 8,
+        "latex_exit_code": 0,
+        "overfull": false,
+        "missing_character": false
+      }
+    },
+    {
+      "id": "holdout-doubao",
+      "round": "holdout",
+      "file": "examples/model-trials/observed/holdout-doubao.json",
+      "answer_sha256": "a63b3699f33f49cd7bdc79441a32e9ed9cfd03d0dd671f46da6e722431a35bbc",
+      "requested_model": "doubao-seed-2.1-pro",
+      "reasoning_effort": "low",
+      "seconds": 318.9,
+      "parse_valid": true,
+      "artificial_format_repair": false,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "holdout",
+        "task_sha256": "3da6932789e736ee9fdef7b0914fc878801ccbb60f2969be39ac622d12d32c42",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "f0edd0b717a98d0b2bfae2c4448619082c00da6c9e9914637a2a9382749067dc",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "294483dd5b3d8d72f592e14ec4df0f67cb8061e5b5c936f3b7ed1a2715bc7bfe"
+      },
+      "checks": {
+        "round": "holdout",
+        "passed": 15,
+        "total": 16,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_700",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1400",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "106 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "155 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": false,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_lower": 0.6499999999999999,
+          "boundary_substitution": {
+            "fan_share_a": 0.6499999999999999,
+            "combined_a": 0.49999999999999994,
+            "combined_b": 0.5
+          },
+          "counterexample": {
+            "fan_share_a": 0.575,
+            "combined_a": 0.47,
+            "combined_b": 0.53,
+            "inside_proposed_interval": true,
+            "original_ranking_holds": false
+          }
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      },
+      "reviewed_artifacts": {
+        "execution_exit_code": 0,
+        "cases_checked": 8,
+        "cases_passed": 8,
+        "latex_exit_code": 1,
+        "overfull": false,
+        "missing_character": false
+      }
+    },
+    {
+      "id": "holdout-glm",
+      "round": "holdout",
+      "file": "examples/model-trials/observed/holdout-glm.json",
+      "answer_sha256": "dfaf8221c29424ddf2b43491b5bd82e02e32bf0c88fe74246d1b9d75b2143bc8",
+      "requested_model": "glm-5.3",
+      "reasoning_effort": "low",
+      "seconds": 301.4,
+      "parse_valid": true,
+      "artificial_format_repair": false,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "holdout",
+        "task_sha256": "3da6932789e736ee9fdef7b0914fc878801ccbb60f2969be39ac622d12d32c42",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "f0edd0b717a98d0b2bfae2c4448619082c00da6c9e9914637a2a9382749067dc",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "294483dd5b3d8d72f592e14ec4df0f67cb8061e5b5c936f3b7ed1a2715bc7bfe"
+      },
+      "checks": {
+        "round": "holdout",
+        "passed": 16,
+        "total": 16,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_700",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1400",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "88 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "135 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_lower": 0.6499999999999999,
+          "boundary_substitution": {
+            "fan_share_a": 0.6499999999999999,
+            "combined_a": 0.49999999999999994,
+            "combined_b": 0.5
+          }
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      },
+      "reviewed_artifacts": {
+        "execution_exit_code": 0,
+        "cases_checked": 8,
+        "cases_passed": 8,
+        "latex_exit_code": 0,
+        "overfull": true,
+        "missing_character": false
+      }
+    },
+    {
+      "id": "baseline-retest-glm",
+      "round": "baseline",
+      "file": "examples/model-trials/observed/baseline-retest-glm.json",
+      "answer_sha256": "5bd24a726d83f363453c4f2f04728de801a078bc60ecc56abf8851dfa0a6afe7",
+      "requested_model": "glm-5.3",
+      "reasoning_effort": "low",
+      "seconds": 344.0,
+      "parse_valid": true,
+      "artificial_format_repair": false,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "baseline",
+        "task_sha256": "3da6932789e736ee9fdef7b0914fc878801ccbb60f2969be39ac622d12d32c42",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "f0edd0b717a98d0b2bfae2c4448619082c00da6c9e9914637a2a9382749067dc",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "cdf22fb01a5da22161d4ddb65107ddf9b173d49fff49b7bae6ce92f0a88ecb17"
+      },
+      "checks": {
+        "round": "baseline",
+        "passed": 16,
+        "total": 16,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_800",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1100",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "83 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "153 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_lower": 0.3666666666666667,
+          "boundary_substitution": {
+            "fan_share_a": 0.3666666666666667,
+            "combined_a": 0.5,
+            "combined_b": 0.5
+          }
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      },
+      "reviewed_artifacts": {
+        "execution_exit_code": 0,
+        "cases_checked": 8,
+        "cases_passed": 7,
+        "latex_exit_code": 0,
+        "overfull": true,
+        "missing_character": false
+      }
+    },
+    {
+      "id": "holdout-retest-doubao",
+      "round": "holdout",
+      "file": "examples/model-trials/observed/holdout-retest-doubao.json",
+      "answer_sha256": "306cab62e5632e99514e88dac0f2b71cbe2e08597863f9898e752923b40b37f8",
+      "requested_model": "doubao-seed-2.1-pro",
+      "reasoning_effort": "low",
+      "seconds": 286.6,
+      "parse_valid": true,
+      "artificial_format_repair": false,
+      "tool_events": 0,
+      "prompt_manifest": {
+        "round": "holdout",
+        "task_sha256": "3da6932789e736ee9fdef7b0914fc878801ccbb60f2969be39ac622d12d32c42",
+        "context_sha256": {
+          "SKILL.md": "ad74c6c0d13262c5befd8ec8d035db7a5297468760d44972423edd93926c6675",
+          "references/evidence-and-writing.md": "802b045f1a3e7118cd5f3399cdb268b599dccf043e26f8146c8abd8068ac121f",
+          "references/mcm-icm.md": "7bb93ced6ff435c757a1943527078e1284d001957ed7c47d0b4e70eec214dfa2"
+        },
+        "prompt_sha256": "90b5d82b0991802489ebfd91ec29086c3e84efb9342b01310cb5476be33c972e"
+      },
+      "checks": {
+        "round": "holdout",
+        "passed": 15,
+        "total": 16,
+        "findings": [
+          {
+            "check": "nominal_optimum",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_700",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "endpoint_1400",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "switches_and_all_ties",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "summary_length",
+            "passed": true,
+            "detail": "104 words; content needs separate review"
+          },
+          {
+            "check": "letter_length",
+            "passed": true,
+            "detail": "148 words; content needs separate review"
+          },
+          {
+            "check": "transport_solver_source_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_latex_model_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "transport_uncertainty_kind_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "exact_share",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "rank_identification_set",
+            "passed": false,
+            "detail": ""
+          },
+          {
+            "check": "no_absolute_vote_claim",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "no_unsupported_confidence_interval",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "data_semantics_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_paragraph_present",
+            "passed": true,
+            "detail": ""
+          },
+          {
+            "check": "inference_model_present",
+            "passed": true,
+            "detail": ""
+          }
+        ],
+        "rank_diagnostics": {
+          "ranking_interpretation": "Combined score s_A > s_B, using the supplied weighting definition",
+          "expected_lower": 0.6499999999999999,
+          "boundary_substitution": {
+            "fan_share_a": 0.6499999999999999,
+            "combined_a": 0.49999999999999994,
+            "combined_b": 0.5
+          },
+          "counterexample": {
+            "fan_share_a": 0.575,
+            "combined_a": 0.47,
+            "combined_b": 0.53,
+            "inside_proposed_interval": true,
+            "original_ranking_holds": false
+          }
+        },
+        "limits": "Numeric/shape checks only. Code execution, LaTeX compilation, narrative agreement, task classification and scientific interpretation require independent review."
+      },
+      "reviewed_artifacts": {
+        "execution_exit_code": 0,
+        "cases_checked": 8,
+        "cases_passed": 8,
+        "latex_exit_code": 0,
+        "overfull": true,
+        "missing_character": false
+      }
+    }
+  ],
+  "manual_findings": {
+    "baseline-glm-original": "Literal newlines make JSON invalid; after format-only repair, numerical checks pass. Original prose equates post-elimination zero with no support, which is unsupported.",
+    "holdout-doubao": "Uses fan-share ranking instead of weighted combined-score ranking; lower bound 0.5 rather than 0.65. The original LaTeX fragment fails direct compilation.",
+    "holdout-glm": "Numerical/JSON/structural-zero checks pass; formula long lines exceed the 12pt A4, 2.5cm-margin fixture.",
+    "baseline-retest-glm": "Original JSON and structural-zero explanation improved on the same task. Fraction-based code returns a unique optimum for the rounded float switch, and three optima with Fraction(10000,9); input precision contract needs to be explicit. Formula long line exceeds fixture.",
+    "holdout-retest-doubao": "Rank error persists; mathematical environment now compiles but formula long line exceeds fixture. Not a passed modeling deliverable."
+  },
+  "limits": [
+    "Original synthetic tasks, not official COMAP problems or contest scores.",
+    "Numeric checker includes shape/presence tests and does not establish scientific quality.",
+    "CLI has its own system prompt and installed-skill metadata; only the three recorded skill files were actively supplied, and no model tools were called.",
+    "Few stochastic runs, different recovery effort, and revised contexts do not prove a general model ranking or causal improvement.",
+    "Code and compilation checks were performed by the maintainer after manual source review, not by the external models.",
+    "Ranking interpretation is explicitly combined-score ranking; real ambiguous problems require clarification."
+  ]
+}

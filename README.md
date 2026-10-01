@@ -1,6 +1,6 @@
 # 数学建模论文与材料工作流 Skill
 
-面向中文数学建模竞赛的 Codex skill：可以**从题面和附件开始完成模型、求解、论文及相关材料**，也可以接续现稿，只修论文、审查模型、制作图示或处理排版。工作围绕逐问证据展开，将程序与原精度结果、摘要与公式、数据图和线稿、分页优化、附录保留及支撑材料验收连接起来。缺少题面、数据或运行证据时会标明缺口，不把演示结果写进正式论文。
+面向数学建模竞赛的 Codex skill，支持**国赛中文和美赛英文**：可以从题面和附件开始完成模型、求解、论文及相关材料，也可以接续现稿，只修论文、审查模型、制作图示或处理排版。工作围绕逐问证据展开，将程序与原精度结果、摘要与公式、数据图和线稿、分页优化、附录保留及支撑材料验收连接起来。缺少题面、数据或运行证据时会标明缺口，不把演示结果写进正式论文。
 
 它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、项目已有的 mma-paper** 等技能。前四个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
@@ -89,6 +89,9 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [模板选择](references/template-selection.md) / [模板盘点](scripts/template_inventory.py) | 向使用者询问论文和流程图模板，区分数据图的实际适用性 |
 | [MCM/ICM 美赛路线](references/mcm-icm.md) / [双引擎模板](assets/templates/en) | 已核对的2027规则、项目适配模板、真实编译边界与美赛开发项 |
 | [美赛初始化](scripts/prepare_mcm_template.py) / [PDF检查](scripts/check_mcm_pdf.py) | 新目录建稿，检查摘要、方案/AI报告边界与每页页眉；不覆写用户论文 |
+| [真实模型行为评测](references/model-trials.md) / [离线夹具](examples/model-trials/tasks.json) | 匿名解题任务、参考计算、原始答复、局部修订与新数据复测；单列人工审查与未执行项 |
+| [单次 Codex 试用](scripts/run_codex_trial.py) / [提示词与数值检查](scripts/model_trial.py) | 只在使用者授权时调用一条指定模型路线；密钥不写配置或报告，失败不自动切换付费端点 |
+| [2026-10-01真实试用记录](docs/model-trials-20261001.md) | 豆包与GLM的原始合成答案、已改善的JSON/零值问题、仍失败的排名推断与公式版式；不据此预测获奖 |
 | [模板决策校验](scripts/validate_template_decisions.py) | 保存用户选择后验证模板与数据源，后续修订避免重复询问 |
 | [流程图模板对照图](scripts/preview_diagram_templates.py) | 从子模块预览生成本地四图对照，供使用者选择，不发布上游素材 |
 | [图表与排版](references/figures-and-layout.md) | 中文字体、可见图宽、线稿透视、标注避让、留白 |

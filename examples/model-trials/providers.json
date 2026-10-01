@@ -1,0 +1,17 @@
+{
+  "qwen-token-plan": {
+    "base_url": "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1",
+    "model": "qwen3.8-max",
+    "env_key": "MM_QWEN_API_KEY"
+  },
+  "volcano-agent-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/plan/v3",
+    "model": "doubao-seed-2.1-pro",
+    "env_key": "MM_ARK_AGENT_API_KEY"
+  },
+  "volcano-coding-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+    "model": "glm-5.3",
+    "env_key": "MM_ARK_CODING_API_KEY"
+  }
+}

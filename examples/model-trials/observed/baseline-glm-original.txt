@@ -1,0 +1,88 @@
+{
+  "transport": {
+    "required_tasks": [
+      "Minimize elevator and launch costs for the 30-tonne demand.",
+      "Use continuous elevator tonnage up to 18 tonnes and integer launches of up to 8 tonnes each.",
+      "Report nominal, endpoint, switching, and tied plans.",
+      "Write the Summary and logistics-manager letter.",
+      "Provide the executable standard-library Python solver."
+    ],
+    "optional_tasks": [
+      "Stochastic launch-failure modeling; not used because no probabilities or observations are supplied."
+    ],
+    "nominal_plans": [
+      {
+        "e_tonnes": 14.0,
+        "launches": 2,
+        "cost": 28600.0
+      }
+    ],
+    "endpoint_plans": [
+      {
+        "cost_per_tonne": 800.0,
+        "plans": [
+          {
+            "e_tonnes": 14.0,
+            "launches": 2,
+            "cost": 27200.0
+          }
+        ]
+      },
+      {
+        "cost_per_tonne": 1100.0,
+        "plans": [
+          {
+            "e_tonnes": 6.0,
+            "launches": 3,
+            "cost": 30600.0
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "cost_per_tonne": 1000.0,
+        "plans": [
+          {
+            "e_tonnes": 14.0,
+            "launches": 2,
+            "cost": 30000.0
+          },
+          {
+            "e_tonnes": 6.0,
+            "launches": 3,
+            "cost": 30000.0
+          }
+        ]
+      }
+    ],
+    "uncertainty_kind": "deterministic_cost_sensitivity",
+    "solver_source": "import math\n\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg, rocket_cost, cost_per_tonne):\n    demand = float(demand_tonnes)\n    elevator_capacity = float(elevator_capacity_tonnes)\n    rocket_capacity_tonnes = float(rocket_capacity_kg) / 1000.0\n    launch_cost = float(rocket_cost)\n    tonne_cost = float(cost_per_tonne)\n    values = (demand, elevator_capacity, rocket_capacity_tonnes, launch_cost, tonne_cost)\n    if not all(math.isfinite(value) for value in values):\n        raise ValueError('all inputs must be finite')\n    if demand < 0.0 or elevator_capacity < 0.0:\n        raise ValueError('demand and elevator capacity must be nonnegative')\n    if rocket_capacity_tonnes <= 0.0:\n        raise ValueError('rocket capacity must be positive')\n    if launch_cost <= 0.0 or tonne_cost <= 0.0:\n        raise ValueError('rocket_cost and cost_per_tonne must be positive')\n    if demand == 0.0:\n        return [{'e_tonnes': 0.0, 'launches': 0, 'cost': 0.0}]\n    minimum_launches = 0 if demand <= elevator_capacity else math.ceil((demand - elevator_capacity) / rocket_capacity_tonnes)\n    maximum_launches = math.ceil(demand / rocket_capacity_tonnes)\n    candidates = []\n    for launches in range(minimum_launches, maximum_launches + 1):\n        elevator_tonnes = max(demand - launches * rocket_capacity_tonnes, 0.0)\n        if elevator_tonnes > elevator_capacity:\n            continue\n        cost = tonne_cost * elevator_tonnes + launch_cost * launches\n        candidates.append({'e_tonnes': elevator_tonnes, 'launches': launches, 'cost': cost})\n    if not candidates:\n        raise ValueError('no feasible plan')\n    best_cost = min(plan['cost'] for plan in candidates)\n    return [plan for plan in candidates if math.isclose(plan['cost'], best_cost, rel_tol=1e-12, abs_tol=1e-12)]",
+    "latex_model": "\\[\n\\min_{e,n} C=c\\,e+F\\,n\\quad\\text{s.t.}\\quad 0\\le e\\le E,\\ n\\in\\mathbb{Z}_{\\ge0},\\ e+\\frac{R}{1000}n\\ge D.\n\\]\nHere \\(D=30\\,\\mathrm{t}\\), \\(E=18\\,\\mathrm{t}\\), \\(R=8000\\,\\mathrm{kg}=8\\,\\mathrm{t}\\), \\(F=8000\\), and \\(c\\in[800,1100]\\).",
+    "summary": "We minimize elevator cost plus fixed launch cost for 30 tonnes of cargo. The elevator may carry 18 tonnes; each launch may carry 8 tonnes. At 900 per tonne, the cheapest plan sends 14 tonnes by elevator and 2 rocket launches, costing 28,600. At 800 per tonne, the same plan costs 27,200. At 1,000 per tonne, 14 tonnes plus 2 launches and 6 tonnes plus 3 launches tie at 30,000. At 1,100 per tonne, 6 tonnes plus 3 launches costs 30,600. Thus the operating rule switches from two to three launches as elevator cost rises.",
+    "letter": "Dear Logistics Manager,\nFor the 30-tonne requirement, the least-cost nominal plan is 14 tonnes by elevator and two rocket launches, for 28,600. The elevator cannot cover the full requirement, and one launch leaves more than its 18-tonne capacity, so two launches are the minimum feasible mix at the stated capacities.\nThe recommendation changes with elevator price. At 800 per tonne, keep 14 tonnes by elevator and two launches, costing 27,200. At 1,000, that mix and the alternative of 6 tonnes by elevator with three launches both cost 30,000, so either is optimal. At 1,100, use 6 tonnes by elevator and three launches, costing 30,600. These are cost-minimizing plans under the stated fixed launch cost and capacities; no reliability adjustment is included because failure probabilities were not supplied.\nSincerely,\nPlanning Team"
+  },
+  "inference": {
+    "point_share_a": 0.5333333333333333,
+    "rank_interval_a": {
+      "lower": 0.3666666666666667,
+      "upper": 1.0,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A zero recorded after elimination means no remaining votes or support for that contestant at that stage; it is a real zero, not missing.",
+      "future_na": "NA for a week not yet held means no observation exists yet; it is not a vote count or share and should not be replaced by zero."
+    },
+    "results_paragraph": "Week 1 identifies A's fan share as 8/15, approximately 0.5333. In the separate rank-only week, using the two-contestant complements \\(j_B=1-j_A\\) and \\(p_B=1-p_A\\), strict precedence requires \\(0.28+0.6p_A>0.12+0.6(1-p_A)\\), so \\(p_A\\in(11/30,1]\\). Thus A must receive more than 36.67% of fan votes and may receive all of them. The weeks are distinct, so the week-1 estimate is not carried forward. Without a fan-vote total, absolute votes are unidentifiable; without a sampling model, no confidence interval is available.",
+    "latex_model": "\\[
+p_A=\\frac{0.6-0.4(0.7)}{0.6}=\\frac{8}{15}
+\\]\n\\[
+j_B=1-j_A,\\quad p_B=1-p_A
+\\]\n\\[
+0.4(0.7)+0.6p_A>0.4(0.3)+0.6(1-p_A)\\Rightarrow \\frac{11}{30}<p_A\\le 1.
+\\]"
+  }
+}

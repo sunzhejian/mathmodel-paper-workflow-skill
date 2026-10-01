@@ -1,0 +1,84 @@
+{
+  "transport": {
+    "required_tasks": [
+      "Build a unit-consistent deterministic optimization model",
+      "Find every nominal-cost optimal plan",
+      "Find optimal plans at both cost-range endpoints",
+      "Find every switching cost and all plans tied there",
+      "Write a 70-110 word Summary",
+      "Write a 130-190 word letter to a logistics manager",
+      "Provide executable standard-library Python source returning all tied optima"
+    ],
+    "optional_tasks": [
+      "Stochastic failure analysis was not modeled because no failure probabilities, observations, or reliability data were supplied"
+    ],
+    "nominal_plans": [
+      {
+        "e_tonnes": 14,
+        "launches": 2,
+        "cost": 28600
+      }
+    ],
+    "endpoint_plans": [
+      {
+        "cost_per_tonne": 800,
+        "plans": [
+          {
+            "e_tonnes": 14,
+            "launches": 2,
+            "cost": 27200
+          }
+        ]
+      },
+      {
+        "cost_per_tonne": 1100,
+        "plans": [
+          {
+            "e_tonnes": 6,
+            "launches": 3,
+            "cost": 30600
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "cost_per_tonne": 1000,
+        "plans": [
+          {
+            "e_tonnes": 14,
+            "launches": 2,
+            "cost": 30000
+          },
+          {
+            "e_tonnes": 6,
+            "launches": 3,
+            "cost": 30000
+          }
+        ]
+      }
+    ],
+    "uncertainty_kind": "deterministic; launch or elevator failure risk is unquantified because no probabilities or observations were supplied",
+    "solver_source": "import math\n\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg, rocket_cost, cost_per_tonne):\n    # Return every cost-minimizing feasible plan; positive costs ensure a finite list.\n    if demand_tonnes < 0 or elevator_capacity_tonnes < 0 or rocket_capacity_kg <= 0:\n        raise ValueError('demand and capacities must be feasible, with positive rocket capacity')\n    if rocket_cost <= 0 or cost_per_tonne <= 0:\n        raise ValueError('positive unit and launch costs are required')\n\n    rocket_capacity_tonnes = rocket_capacity_kg / 1000.0\n    remaining_without_elevator = max(0.0, demand_tonnes - elevator_capacity_tonnes)\n    minimum_launches = math.ceil(remaining_without_elevator / rocket_capacity_tonnes)\n    rocket_only_launches = math.ceil(max(0.0, demand_tonnes) / rocket_capacity_tonnes)\n\n    candidates = []\n    for launches in range(minimum_launches, rocket_only_launches + 1):\n        elevator_tonnes = max(0.0, demand_tonnes - launches * rocket_capacity_tonnes)\n        cost = cost_per_tonne * elevator_tonnes + rocket_cost * launches\n        candidates.append({'e_tonnes': elevator_tonnes, 'launches': launches, 'cost': cost})\n\n    minimum_cost = min(plan['cost'] for plan in candidates)\n    tolerance = 1e-12 * max(1.0, abs(minimum_cost))\n    return [plan for plan in candidates if math.isclose(plan['cost'], minimum_cost, rel_tol=0.0, abs_tol=tolerance)]\n",
+    "latex_model": "\\[\n\\begin{aligned}\n\\min_{e,n}\\quad C(e,n)&=c\\,e+8000n &&\\text{(currency units)},\\\\\ne+\\frac{8000}{1000}n&\\ge 30 &&\\text{(tonnes)},\\\\\n0\\le e\\le 18,\\quad n&\\in\\mathbb Z_{\\ge0}.\n\\end{aligned}\n\\]",
+    "summary": "The terminal must move 30 t using an elevator limited to 18 t at 900 units per tonne and rockets carrying 8 t per launch at 8,000 units each. Let e be elevator tonnes and n launches; minimize 900e+8000n subject to e+8n≥30, 0≤e≤18, n∈Z≥0. At least two launches are required. Nominally, two launches and 14 elevator tonnes cost 28,600 units, beating three launches with 6 tonnes (29,400) and four rocket-only launches (32,000). The two-launch plan remains optimal at 800 per tonne, while three launches are optimal at 1,100. The plans tie at 1,000; failure risk cannot be assessed without probability data.",
+    "letter": "Dear Logistics Manager,\n\nFor the 30-tonne shipment, I recommend reserving two rocket launches and sending the remaining 14 tonnes by elevator under the nominal rate. Each rocket carries 8 tonnes, so two launches provide 16 tonnes; the elevator’s 18-tonne capacity covers the 14-tonne balance. The total is 16,000 for launches plus 12,600 for elevator service, or 28,600 currency units. Three launches with 6 elevator tonnes would cost 29,400, and four rocket-only launches would cost 32,000.\n\nThe recommendation is rate-sensitive: two launches are best from 800 through just below 1,000 units per elevator tonne. At exactly 1,000, the two- and three-launch plans both cost 30,000. Above that, through 1,100, use three launches and 6 elevator tonnes. With no failure probabilities or observations, this assumes scheduled capacity is available; a contingency policy should be added if reliability data becomes available.\n\nSincerely,\nModeling Team"
+  },
+  "inference": {
+    "point_share_a": 0.5333333333333333,
+    "rank_interval_a": {
+      "lower": 0.3666666666666667,
+      "upper": 1,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A zero after elimination is a structural post-eligibility value: the contestant can no longer receive votes, so it should not be treated as an ordinary observed zero share from an active contest.",
+      "future_na": "NA for a week not yet held means the observation does not exist yet; it is not a zero vote share and should remain missing until the week occurs."
+    },
+    "results_paragraph": "In week one, the exact combined share identifies A’s fan share as p_A=(0.6-0.4×0.7)/0.6=8/15, or 53.33%. In the separate rank-only week, A strictly outranks B only when s_A>0.5; with the same judge share and weight, this requires p_A>11/30. Thus the feasible interval is 36.67%<p_A≤100%, with the lower endpoint excluded because it gives a tie. Absolute vote counts cannot be recovered without the fan-vote total, and no confidence interval is available without sampling assumptions or repeated observations.",
+    "latex_model": "\\[\ns_A=\\alpha j_A+(1-\\alpha)p_A,\\qquad s_B=1-s_A;\n\\]\n\\[\np_A^{(1)}=\\frac{0.6-0.4(0.7)}{0.6}=\\frac{8}{15},\\qquad s_A>s_B\\iff p_A>\\frac{0.5-0.4(0.7)}{0.6}=\\frac{11}{30}.\n\\]"
+  }
+}

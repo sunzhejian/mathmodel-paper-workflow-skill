@@ -1,1 +1,4 @@
 * text=auto eol=lf
+# Preserve original anonymous model-answer bytes and their recorded SHA-256.
+examples/model-trials/observed/*.json -text whitespace=cr-at-eol
+examples/model-trials/observed/*.txt -text whitespace=cr-at-eol

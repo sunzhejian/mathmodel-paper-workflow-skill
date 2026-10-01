@@ -1,0 +1,89 @@
+{
+  "transport": {
+    "required_tasks": [
+      "Formulate a unit-consistent elevator-and-rocket transport model",
+      "Report all nominal optimal plans",
+      "Report both endpoint-scenario optima",
+      "Report all in-range switching values and tied plans",
+      "Provide a generic standard-library Python solver",
+      "Write a 70-110 word Summary",
+      "Write a 130-190 word logistics-manager letter"
+    ],
+    "optional_tasks": [
+      "Consider stochastic rocket failures; not modeled because no probabilities or observations were supplied"
+    ],
+    "nominal_plans": [
+      {
+        "e_tonnes": 19.0,
+        "launches": 2,
+        "cost": 37100.0
+      }
+    ],
+    "endpoint_plans": [
+      {
+        "cost_per_tonne": 700.0,
+        "plans": [
+          {
+            "e_tonnes": 19.0,
+            "launches": 2,
+            "cost": 33300.0
+          }
+        ]
+      },
+      {
+        "cost_per_tonne": 1400.0,
+        "plans": [
+          {
+            "e_tonnes": 1.0,
+            "launches": 4,
+            "cost": 41400.0
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "cost_per_tonne": 1111.1111111111111,
+        "plans": [
+          {
+            "e_tonnes": 19.0,
+            "launches": 2,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 10.0,
+            "launches": 3,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 1.0,
+            "launches": 4,
+            "cost": 41111.11111111111
+          }
+        ]
+      }
+    ],
+    "uncertainty_kind": "deterministic parametric cost sensitivity; stochastic failures not modeled because no probabilities or observations were supplied",
+    "solver_source": "from math import ceil\n\ndef _ceil_at_least(value, divisor):\n    if value <= 0:\n        return 0\n    estimate = ceil(value / divisor)\n    tolerance = 1e-12 * max(1.0, abs(value))\n    while estimate > 0 and (estimate - 1) * divisor >= value - tolerance:\n        estimate -= 1\n    return estimate\n\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg, rocket_cost, cost_per_tonne):\n    demand = float(demand_tonnes)\n    elevator_capacity = float(elevator_capacity_tonnes)\n    rocket_capacity = float(rocket_capacity_kg) / 1000.0\n    fixed_cost = float(rocket_cost)\n    unit_cost = float(cost_per_tonne)\n    if demand < 0 or elevator_capacity < 0 or rocket_capacity <= 0 or fixed_cost < 0 or unit_cost < 0:\n        raise ValueError('demand, capacities, and costs must be nonnegative, with positive rocket capacity')\n    if fixed_cost == 0:\n        raise ValueError('zero fixed launch cost can create infinitely many tied plans')\n    if demand == 0:\n        return [{'e_tonnes': 0.0, 'launches': 0, 'cost': 0.0}]\n    min_launches = _ceil_at_least(demand - elevator_capacity, rocket_capacity)\n    max_launches = _ceil_at_least(demand, rocket_capacity)\n    scale = max(1.0, demand, elevator_capacity, rocket_capacity)\n    tolerance = 1e-12 * scale\n    candidates = []\n    for launches in range(min_launches, max_launches + 1):\n        e_tonnes = max(0.0, demand - launches * rocket_capacity)\n        if e_tonnes > elevator_capacity + tolerance:\n            continue\n        remaining = demand - e_tonnes\n        if remaining < -tolerance or remaining > launches * rocket_capacity + tolerance:\n            continue\n        cost = unit_cost * e_tonnes + fixed_cost * launches\n        candidates.append({'e_tonnes': float(e_tonnes), 'launches': int(launches), 'cost': float(cost)})\n    if not candidates:\n        raise ValueError('no feasible plan')\n    best_cost = min(plan['cost'] for plan in candidates)\n    cost_tolerance = max(1e-9, abs(best_cost) * 1e-12)\n    tied = [plan for plan in candidates if abs(plan['cost'] - best_cost) <= cost_tolerance]\n    tied.sort(key=lambda plan: plan['launches'])\n    return tied",
+    "latex_model": "\\[\nD=37\\,\\mathrm{t},\\quad E=20\\,\\mathrm{t},\\quad R=9000\\,\\mathrm{kg}=9\\,\\mathrm{t},\\quad F=10000\\,\\text{currency units},\\quad c\\in[700,1400]\\,\\text{currency units/t}.\n\\]\n\\[\n\\min_{e,n,\\{r_i\\}} ce+Fn,\\quad e+\\sum_{i=1}^{n}r_i\\ge D,\\quad 0\\le e\\le E,\\quad 0\\le r_i\\le R,\\quad n\\in\\mathbb{Z}_{\\ge0}.\n\\]\n\\[\n\\text{Because }c,F\\ge0\\text{, choose }e+\\sum_{i=1}^{n}r_i=D;\\text{ for fixed }n,\\ e(n)=\\max(0,D-nR).\n\\]",
+    "summary": "We minimize elevator tonnage cost plus fixed rocket-launch cost while meeting 37 tonnes exactly. With a 20-tonne elevator and 9-tonne rockets, the nominal optimum at 900 per tonne uses 19 elevator tonnes and 2 launches, costing 37,100. At 700 per tonne the same plan costs 33,300 and remains optimal; at 1,400 the optimum switches to 1 elevator tonne and 4 launches, costing 41,400. The 2-, 3-, and 4-launch plans tie at 1,111.11 per tonne, each costing 41,111.11. No stochastic failure model is used because no probabilities were supplied.",
+    "letter": "Dear Logistics Manager,\nFor the 37-tonne requirement, use the elevator for 19 tonnes and launch two rockets at the nominal elevator rate of 900 per tonne. Total cost is 37,100 synthetic currency units; each rocket carries 9 tonnes, so unused capacity is permitted but not needed here. This is the unique cost-minimizing plan at the nominal rate.\nIf elevator charges fall to 700 per tonne, keep the same plan; total cost falls to 33,300. If charges rise to 1,400 per tonne, shift to one elevator tonne and four launches, totaling 41,400. At 1,111.11 per tonne, the two-, three-, and four-launch plans are tied at 41,111.11, so operational convenience may break the tie. Launch failures were not modeled because no probabilities were supplied. Please confirm current pricing and rocket availability before final scheduling.\nSincerely,\nModeling Team"
+  },
+  "inference": {
+    "point_share_a": 0.55,
+    "rank_interval_a": {
+      "lower": 0.65,
+      "upper": 1.0,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A zero recorded after elimination is a structural placeholder for a contestant no longer eligible; it is not an observed zero fan vote and should not be treated as evidence of zero support.",
+      "future_na": "NA for a week not yet held means no observation exists yet; it is missing or not applicable, not zero and not evidence about support."
+    },
+    "results_paragraph": "Week 1 identifies A's fan share as 0.55: with judge weight 0.60 and judge share 0.40, the observed 0.46 leaves 0.22 to be supplied by the 0.40 fan-weighted term. Treating the rank-only week as distinct and using the two-contestant judge-share identity j_B=1-j_A, strict ranking gives 0.65<p_A<=1; the week-1 value 0.55 is not imposed. This is an identification interval, not a confidence interval. Absolute votes are not identifiable because no fan-vote total is supplied. A zero after elimination is a structural placeholder, not observed zero support; NA for an unheld week means the observation does not yet exist.",
+    "latex_model": "\\[\np_A^{(1)}=\\frac{s_A-\\alpha j_A}{1-\\alpha}=\\frac{0.46-0.6\\times0.4}{0.4}=0.55\n\\]\n\\[\ns_A^{(2)}=\\alpha j_A+(1-\\alpha)p_A^{(2)},\\quad s_B^{(2)}=\\alpha(1-j_A)+(1-\\alpha)(1-p_A^{(2)})\n\\]\n\\[\ns_A^{(2)}>s_B^{(2)},\\quad 0\\le p_A^{(2)}\\le1\\Rightarrow 0.65<p_A^{(2)}\\le1.\n\\]"
+  }
+}

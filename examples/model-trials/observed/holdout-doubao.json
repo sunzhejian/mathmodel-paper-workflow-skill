@@ -1,0 +1,89 @@
+{
+  "transport": {
+    "required_tasks": [
+      "Formulate a deterministic unit-aware cost-minimization model",
+      "Find all nominal optimal plans",
+      "Find endpoint scenario optima",
+      "Find every switching value and all tied plans within the cost range",
+      "Write a 70-110 word Summary",
+      "Write a 130-190 word letter to a logistics manager",
+      "Provide executable standard-library Python source returning every tied optimum"
+    ],
+    "optional_tasks": [
+      "Stochastic failure analysis was not used because no probabilities, observations, or failure data were supplied"
+    ],
+    "nominal_plans": [
+      {
+        "e_tonnes": 19,
+        "launches": 2,
+        "cost": 37100
+      }
+    ],
+    "endpoint_plans": [
+      {
+        "cost_per_tonne": 700,
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 33300
+          }
+        ]
+      },
+      {
+        "cost_per_tonne": 1400,
+        "plans": [
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41400
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "cost_per_tonne": 1111.111111111111,
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 10,
+            "launches": 3,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41111.11111111111
+          }
+        ]
+      }
+    ],
+    "uncertainty_kind": "Deterministic model; elevator-price sensitivity is evaluated over the supplied range, while failure risk remains unquantified because no probabilities or observations were supplied.",
+    "solver_source": "import math\n\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg, rocket_cost, cost_per_tonne):\n    rocket_tonnes = rocket_capacity_kg / 1000.0\n    if rocket_tonnes <= 0.0 or rocket_cost <= 0.0 or demand_tonnes < 0.0 or elevator_capacity_tonnes < 0.0 or cost_per_tonne < 0.0:\n        raise ValueError(\"valid capacities, demand, and nonnegative prices are required\")\n    min_launches = math.ceil(max(0.0, demand_tonnes - elevator_capacity_tonnes) / rocket_tonnes)\n    max_launches = math.ceil(demand_tonnes / rocket_tonnes)\n    best_cost = None\n    plans = []\n    for launches in range(min_launches, max_launches + 1):\n        e_tonnes = max(0.0, demand_tonnes - launches * rocket_tonnes)\n        if e_tonnes > elevator_capacity_tonnes:\n            continue\n        cost = cost_per_tonne * e_tonnes + rocket_cost * launches\n        plan = {\"e_tonnes\": e_tonnes, \"launches\": launches, \"cost\": cost}\n        if best_cost is None or cost < best_cost:\n            best_cost = cost\n            plans = [plan]\n        elif math.isclose(cost, best_cost, rel_tol=1e-12, abs_tol=1e-9):\n            plans.append(plan)\n    return plans\n",
+    "latex_model": "\\begin{aligned} \\min_{e,n} C(e,n) &= ce+Fn, \\\\ 0\\le e\\le E,\\quad n&\\in\\mathbb Z_{\\ge0},\\quad e+\\rho n\\ge D \\end{aligned}\n\nD=37\\,\\mathrm{t}, E=20\\,\\mathrm{t}, \\rho=9000\\,\\mathrm{kg}=9\\,\\mathrm{t}, F=10000, c\\in[700,1400].\nC_2=19c+20000,\\ C_3=10c+30000,\\ C_4=c+40000,\\ C_5=50000;\\quad c^*=10000/9.",
+    "summary": "We determine the minimum-cost mix of a continuous elevator allocation and integer rocket launches for 37 tonnes. The elevator carries at most 20 tonnes at 900 units per tonne; each rocket carries 9 tonnes for 10,000 units. Nominally, 19 elevator tonnes plus two rockets cost 37,100 units. The only switch in 700–1,400 occurs at 1,111.11 units per tonne, where (19 t, 2 launches), (10 t, 3), and (1 t, 4) all cost 41,111.11 units. Two launches are optimal below the switch; four launches and one elevator tonne are optimal above it. Endpoint optima cost 33,300 and 41,400 units. With no failure data, the analysis is deterministic.",
+    "letter": "Dear Logistics Manager,\n\nI evaluated delivery options for moving 37 tonnes under the stated capacities and costs. The elevator can contribute at most 20 tonnes, and each rocket carries 9 tonnes for a fixed 10,000-unit charge.\n\nAt the current elevator price of 900 units per tonne, the cheapest plan assigns 19 tonnes to the elevator and uses two rockets. Its total cost is 37,100 units. This plan is robust for elevator prices from the lower endpoint of 700 through 1,111.11 units per tonne. At 700, it costs 33,300 units.\n\nIf the elevator price rises above 1,111.11, shift to one elevator tonne and four rockets; at the upper endpoint of 1,400, this costs 41,400 units. At the switching price itself, three plans—19 tonnes with two rockets, 10 tonnes with three, and one tonne with four—are equally costly at 41,111.11 units. No failure probabilities were provided, so these recommendations assume every scheduled delivery succeeds.\n\nSincerely,\nModeling Team"
+  },
+  "inference": {
+    "point_share_a": 0.55,
+    "rank_interval_a": {
+      "lower": 0.5,
+      "upper": 1,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A zero after elimination is a structural state value: the contestant is no longer eligible to receive votes. It is not an ordinary observed zero vote count or missing observation.",
+      "future_na": "NA for a week not yet held means that no observation exists. It must not be interpreted as zero, a vote share, or missing-at-random data."
+    },
+    "results_paragraph": "In week one, 0.46 = 0.6(0.4) + 0.4p_A, so p_A = 0.55. In the distinct rank-only week, A strictly outranks B when p_A > 1 - p_A, while p_A remains in [0,1]; therefore the feasible fan-share set is 0.5 < p_A ≤ 1. Under the same judge inputs, this corresponds to combined shares 0.44 < s_A ≤ 0.64, but that is a feasibility interval rather than a confidence interval. No absolute vote count is identifiable without a fan-vote total, and no sampling-based confidence interval is available.",
+    "latex_model": "s_A=\\alpha j_A+(1-\\alpha)p_A,\\quad p_A+p_B=1,\\quad p_A,p_B\\in[0,1];\n0.46=0.6(0.4)+0.4p_A\\Rightarrow p_A=0.55;\nA\\succ B\\Rightarrow p_A>1-p_A\\Rightarrow 0.5<p_A\\le1."
+  }
+}

@@ -128,3 +128,11 @@ Windows 若找不到 `soffice`，使用安装目录中的 `soffice.com` 或直�
 | MATLAB、COMSOL、Stata、Origin 启动或许可失败 | 先按各厂商账号/许可证说明处理，不换用虚构验证记录 |
 
 环境验证只回答“工具能否启动”；论文交付仍需按[证据链](../references/evidence-and-writing.md)、[逐页验收](../references/build-and-delivery.md)和[支撑包复现](../references/reproduction-guide.md)分别检查。
+
+## 7. 可选：用模型套餐测试本 skill
+
+这是开发与行为评测用途，不是求解赛题的必装依赖。只有使用者明确要求调用模型时才启用。可用已安装的 Codex CLI；安装入口和基础用法见[官方文档](https://developers.openai.com/codex/cli/reference)。先检查 `codex --version` 与 `codex exec --help`，本仓库单次试用器的实际验证版本为0.144.1，需要 `--ignore-user-config`、`--ephemeral` 和配置覆盖等选项。
+
+先按[真实模型行为评测](../references/model-trials.md)准备匿名任务，再将套餐支持的公开地址、模型名称和密钥环境变量名称写入路线配置。**配置文件不写密钥**，通过本机私有方式在父进程加载；不使用打印环境变量的命令来证明配置成功。千问 Token Plan、火山 Agent Plan、火山 Coding Plan 的地址分开使用，示例位于 [providers.json](../examples/model-trials/providers.json)。套餐和模型变化时以厂商当前官方文档为准，不能从名称或密钥前缀推断全部权限。
+
+`run_codex_trial.py` 每次仅执行指定路线并保存脱敏结果；不会修改全局模型配置，不直接充当API服务，鉴权失败不会换用按量付费地址。当前测试要求模型返回匿名解题片段，再由维护者核对、执行和编译；这与让模型自主跑完实际论文项目是不同的测试范围。

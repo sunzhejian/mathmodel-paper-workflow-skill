@@ -1,0 +1,89 @@
+{
+  "transport": {
+    "required_tasks": [
+      "Formulate a unit-consistent deterministic elevator-versus-rocket cost model",
+      "Find all optimal plans at the nominal elevator cost",
+      "Find optimal plans at both endpoints of the elevator-cost range",
+      "Find every interior switching value and all plans tied there",
+      "Write a 70-110 word Summary",
+      "Write a 130-190 word letter to a logistics manager",
+      "Provide executable standard-library Python source returning all tied optimal plans"
+    ],
+    "optional_tasks": [
+      "Stochastic failure analysis was not performed because no failure probabilities, observations, or delay data were supplied"
+    ],
+    "nominal_plans": [
+      {
+        "e_tonnes": 19,
+        "launches": 2,
+        "cost": 37100
+      }
+    ],
+    "endpoint_plans": [
+      {
+        "cost_per_tonne": 700,
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 33300
+          }
+        ]
+      },
+      {
+        "cost_per_tonne": 1400,
+        "plans": [
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41400
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "cost_per_tonne": 1111.1111111111111,
+        "plans": [
+          {
+            "e_tonnes": 19,
+            "launches": 2,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 10,
+            "launches": 3,
+            "cost": 41111.11111111111
+          },
+          {
+            "e_tonnes": 1,
+            "launches": 4,
+            "cost": 41111.11111111111
+          }
+        ]
+      }
+    ],
+    "uncertainty_kind": "Deterministic; stochastic launch or elevator failures are not modeled because no probabilities or observations were supplied",
+    "solver_source": "import math\n\ndef solve_transport(demand_tonnes, elevator_capacity_tonnes, rocket_capacity_kg, rocket_cost, cost_per_tonne):\n    rocket_capacity_tonnes = rocket_capacity_kg / 1000.0\n    if demand_tonnes < 0 or elevator_capacity_tonnes < 0 or rocket_capacity_tonnes <= 0 or rocket_cost <= 0 or cost_per_tonne < 0:\n        raise ValueError('invalid nonnegative/positive input')\n\n    def ceil_nonnegative(value):\n        return 0 if value <= 0 else math.ceil(value - 1e-12)\n\n    required_from_rockets = max(0.0, demand_tonnes - elevator_capacity_tonnes)\n    min_launches = ceil_nonnegative(required_from_rockets / rocket_capacity_tonnes)\n    max_launches = ceil_nonnegative(demand_tonnes / rocket_capacity_tonnes)\n\n    plans = []\n    for launches in range(min_launches, max_launches + 1):\n        e_tonnes = max(0.0, demand_tonnes - launches * rocket_capacity_tonnes)\n        cost = e_tonnes * cost_per_tonne + launches * rocket_cost\n        plans.append({'e_tonnes': e_tonnes, 'launches': launches, 'cost': cost})\n\n    best_cost = min(plan['cost'] for plan in plans)\n    tolerance = 1e-12 * max(1.0, abs(best_cost))\n    return [plan for plan in plans if abs(plan['cost'] - best_cost) <= tolerance]",
+    "latex_model": "\\[\n\\begin{aligned}\n&\\min_{e,n} C(e,n)=c\\,e+10000n,\\quad e\\in[0,20]\\text{ t},\\ n\\in\\mathbb Z_{\\ge0},\\quad e+9n\\ge37\\text{ t},\\\\\n&e(n)=\\max(0,37-9n),\\ n=2,\\ldots,5,\\quad C_2=20000+19c,\\ C_3=30000+10c,\\ C_4=40000+c,\\ C_5=50000,\\\\\n&C_2=C_3=C_4\\iff c=\\frac{10000}{9}\\approx1111.11,\\qquad c\\in[700,1400].\n\\end{aligned}\n\\]",
+    "summary": "The transport system must move 37 tonnes using a 20-tonne elevator and 9-tonne rocket launches. At the nominal elevator rate of 900 per tonne and 10,000 per launch, the least-cost plan uses two launches and 19 elevator tonnes, costing 37,100. The same plan is optimal at the lower endpoint rate of 700, where it costs 33,300. Raising the rate to 1,400 makes four launches plus one elevator tonne optimal, costing 41,400. The only switch is 1,111.11 per tonne: two-, three-, and four-launch plans all cost 41,111.11. Five launches are never optimal in the stated range. Demand is met, and unused rocket capacity is allowed.",
+    "letter": "Dear Logistics Manager,\n\nFor the 37-tonne shipment, I recommend two rocket launches and 19 tonnes on the elevator at the current rate of 900 currency units per tonne. Each launch carries up to nine tonnes, so two launches provide 18 tonnes; the elevator supplies the remaining 19 tonnes within its 20-tonne limit. This plan costs 37,100 units and meets demand exactly.\n\nThe decision is sensitive to elevator pricing. At 700 per tonne, the same two-launch plan costs 33,300. If the rate reaches 1,400, the optimum shifts to four launches plus one elevator tonne, costing 41,400. At the crossover rate of 1,111.11 per tonne, the two-, three-, and four-launch plans tie at 41,111.11, so operational factors can choose among them. Five launches cost 50,000 and are not recommended.\n\nThese results assume every launch and elevator movement succeeds; failure-based contingency would require probability and delay data.\n\nSincerely,\nOperations Modeling Team"
+  },
+  "inference": {
+    "point_share_a": 0.55,
+    "rank_interval_a": {
+      "lower": 0.5,
+      "upper": 1,
+      "lower_inclusive": false,
+      "upper_inclusive": true
+    },
+    "absolute_votes_identifiable": false,
+    "confidence_interval_available": false,
+    "data_semantics": {
+      "eliminated_zero": "A zero recorded after elimination is a structural status zero: the contestant is no longer eligible, so it is not an observed measure of zero fan support or a regular missing value.",
+      "future_na": "NA for a week not yet held means the observation does not exist yet; it is neither zero votes nor evidence of low support and must not be imputed."
+    },
+    "results_paragraph": "In week 1, the exact combined-share identity gives p_A=(0.46-0.6×0.4)/0.4=0.55, so A's fan share is identified exactly. In the separate rank-only week, the statement A strictly outranks B implies only p_A>1-p_A; with p_A∈[0,1], the feasible fan-share interval is (0.5,1]. This set is a deterministic identification region, not a confidence interval, and the absence of a fan-vote total prevents identification of absolute votes. A post-elimination zero is a structural ineligibility/status zero rather than observed zero support, while NA for an unheld future week denotes a not-yet-existing observation and must not be treated as zero.",
+    "latex_model": "\\[\n\\begin{aligned}\np_A&=\\frac{s_A-\\alpha j_A}{1-\\alpha}=\\frac{0.46-0.6(0.4)}{0.4}=0.55,\\\\\np_A&>p_B=1-p_A\\quad\\Longleftrightarrow\\quad p_A\\in(0.5,1].\n\\end{aligned}\n\\]"
+  }
+}
