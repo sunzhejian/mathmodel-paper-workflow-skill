@@ -91,6 +91,19 @@ class TemplateDecisionTests(unittest.TestCase):
         ])
         self.assertIn("ambiguous paper language", result["findings"][0])
 
+    def test_ordinary_mathorcup_config_does_not_confirm_bigdata(self):
+        config = self.project / ".mathmodel/paper/config.json"
+        value = {"template":{"id":"mathorcup","entryFile":"main.tex","source":"builtin"}}
+        config.write_text(json.dumps(value), encoding="utf-8")
+        folder = self.skill / "assets/templates/zh/mathorcup-bigdata-latex"
+        folder.mkdir(parents=True)
+        (folder / "main.tex").write_text("Big Data template", encoding="utf-8")
+        result = self.write([{"kind":"paper","target":"main","choice":"mathorcup-bigdata-latex","basis":"project-config"}])
+        self.assertTrue(any("no longer matches config" in item for item in result["findings"]))
+        result = self.write([{"kind":"paper","target":"main","choice":"mathorcup-bigdata-latex","basis":"user"}])
+        self.assertTrue(result["passed"], result["findings"])
+        self.assertEqual(json.loads(config.read_text(encoding="utf-8")), value)
+
 
 if __name__ == "__main__":
     unittest.main()

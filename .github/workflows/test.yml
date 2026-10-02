@@ -36,5 +36,10 @@ jobs:
           tar -xJf "$RUNNER_TEMP/mcm-typst.tar.xz" -C "$RUNNER_TEMP/mcm-typst-runtime"
           printf 'MATHMODEL_TYPST_EXE=%s\n' "$RUNNER_TEMP/mcm-typst-runtime/typst-x86_64-unknown-linux-musl/typst" >> "$GITHUB_ENV"
       - run: python -m pip install -r requirements.txt
+      - name: Pinned Chinese font for Big Data template checks
+        shell: bash
+        run: |
+          python scripts/fetch_cjk_test_font.py --output "$RUNNER_TEMP/mathmodel-cjk-fonts"
+          printf 'MATHMODEL_CJK_FONT_DIR=%s\n' "$RUNNER_TEMP/mathmodel-cjk-fonts" >> "$GITHUB_ENV"
       - run: python scripts/check_vendor_skills.py --check-index
       - run: python -m unittest discover -s tests -v

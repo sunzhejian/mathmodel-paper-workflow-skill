@@ -1,6 +1,6 @@
 # 数学建模论文与材料工作流 Skill
 
-面向数学建模竞赛的 Codex skill，支持**国赛中文和美赛英文**：可以从题面和附件开始完成模型、求解、论文及相关材料，也可以接续现稿，只修论文、审查模型、制作图示或处理排版。工作围绕逐问证据展开，将程序与原精度结果、摘要与公式、数据图和线稿、分页优化、附录保留及支撑材料验收连接起来。缺少题面、数据或运行证据时会标明缺口，不把演示结果写进正式论文。
+面向数学建模竞赛的 Codex skill，支持**国赛中文、美赛英文及 MathorCup 大数据预备适配**：可以从题面和附件开始完成模型、求解、论文及相关材料，也可以接续现稿，只修论文、审查模型、制作图示或处理排版。工作围绕逐问证据展开，将程序与原精度结果、摘要与公式、数据图和线稿、分页优化、附录保留及支撑材料验收连接起来。缺少题面、数据或运行证据时会标明缺口，不把演示结果写进正式论文。
 
 它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、项目已有的 mma-paper** 等技能。前四个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
@@ -72,6 +72,8 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 
 国赛 CUMCM 匿名正文保留真正的论文标题，但不显示题号、参赛队号抬头。赛题号和队号仍可留在项目配置中；`pdf_workflow.py audit --cumcm-anonymous --project-config ...` 可对编译后的 PDF 做文字层检查，首页仍需目视核对。
 
+**MathorCup 大数据竞赛**已单独提供[中文 LaTeX/Typst 预备适配](references/mathorcup-bigdata.md)，保留首页匿名队号/赛道表格、自动目录、正文居中阿拉伯页码和独立附录边界。当前目标为2026赛项，论文格式基线是已核验的2025规则；2026专用格式尚未取得确认，模板盘点和检查结果均显示预备状态。它与普通 MathorCup、国赛和美赛分开选择。
+
 新任务中调用：
 
 > 使用 $mathmodel-paper-workflow，根据我指定的最新版论文和求解结果继续修改。正文四边 2.5 cm，摘要、正文、AI 声明和文献最多 31 页；附录内容不动，补连续页码。检查公式、图文遮挡及超过 20% 的页尾连续留白。
@@ -109,6 +111,9 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [证据驱动扩写](references/longform-paper.md) | 用户要求最低页数时的内容预算与页数范围验收 |
 | [模板选择](references/template-selection.md) / [模板盘点](scripts/template_inventory.py) | 向使用者询问论文和流程图模板，区分数据图的实际适用性 |
 | [MCM/ICM 美赛路线](references/mcm-icm.md) / [双引擎模板](assets/templates/en) | 已核对的2027规则、项目适配模板、真实编译边界与美赛开发项 |
+| [MathorCup 大数据赛](references/mathorcup-bigdata.md) / [中文双引擎适配](assets/templates/zh) | 2026赛项与2025格式基线分开记录；首页、动态目录、正文页码及附录 |
+| [大数据赛初始化](scripts/prepare_mathorcup_bigdata_template.py) / [编译稿检查](scripts/check_mathorcup_bigdata_pdf.py) | 新目录建稿，核对正文边界、页数、赛道和页脚；保留当届格式待确认状态 |
+| [大数据模板合成预览](scripts/preview_mathorcup_bigdata.py) / [便携中文字体](scripts/fetch_cjk_test_font.py) | 实际编译与逐页渲染；固定开源字体及许可证哈希校验，无系统字体安装 |
 | [美赛初始化](scripts/prepare_mcm_template.py) / [PDF检查](scripts/check_mcm_pdf.py) | 新目录建稿，检查摘要、方案/AI报告边界与每页页眉；不覆写用户论文 |
 | [真实模型行为评测](references/model-trials.md) / [离线夹具](examples/model-trials/tasks.json) | 匿名解题任务、参考计算、原始答复、局部修订与新数据复测；单列人工审查与未执行项 |
 | [单次 Codex 试用](scripts/run_codex_trial.py) / [提示词与数值检查](scripts/model_trial.py) | 只在使用者授权时调用一条指定模型路线；密钥不写配置或报告，失败不自动切换付费端点 |

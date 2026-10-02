@@ -1,0 +1,8 @@
+{
+  "contest_family": "mathorcup-bigdata",
+  "label": "MathorCup 大数据竞赛（2026预备适配）",
+  "contest_year": 2026,
+  "format_rules_year": 2025,
+  "rules_status": "provisional",
+  "reference": "references/mathorcup-bigdata.md"
+}

@@ -74,6 +74,36 @@ class TemplateInventoryTests(unittest.TestCase):
             self.assertEqual(result["data_figure_templates"], [])
             self.assertFalse(result["vendor_templates_present"])
 
+    def test_bigdata_has_separate_family_and_dated_rule_status(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            project = root / "project"
+            config = project / ".mathmodel/paper"
+            config.mkdir(parents=True)
+            original = '{"template":{"id":"mathorcup","entryFile":"main.tex","source":"builtin"}}'
+            (config / "config.json").write_text(original, encoding="utf-8")
+            skill = root / "skill"
+            for name, entry in [("mathorcup-bigdata", "main.typ"), ("mathorcup-bigdata-latex", "main.tex")]:
+                source = skill / "assets/templates/zh" / name
+                source.mkdir(parents=True)
+                (source / entry).write_text("synthetic template", encoding="utf-8")
+                (source / "profile.json").write_text(json.dumps({"contest_family":"mathorcup-bigdata",
+                    "format_rules_year":2025,"rules_status":"provisional","contest_year":2026}), encoding="utf-8")
+            ordinary = skill / "vendor/MathModelAgent/skills/5writing/templates/zh/mathorcup-latex"
+            ordinary.mkdir(parents=True)
+            (ordinary / "main.tex").write_text("ordinary MathorCup", encoding="utf-8")
+            result = MODULE.inspect(project, skill)
+            self.assertEqual(result["configured"]["matching_variants"], ["mathorcup-latex"])
+            candidates = [x for x in result["available"] if x.get("contest_family") == "mathorcup-bigdata"]
+            self.assertEqual(len(candidates), 2)
+            self.assertTrue(all(x["rules_status"] == "provisional" and x["format_rules_year"] == 2025 for x in candidates))
+            cli = subprocess.run([sys.executable, "-X", "utf8", str(SCRIPT), "--project-root", str(project),
+                                  "--skill-root", str(skill), "--category", "paper", "--family", "mathorcup-bigdata"],
+                                 capture_output=True, text=True, encoding="utf-8")
+            self.assertEqual(cli.returncode, 0, cli.stderr)
+            self.assertEqual({x["id"] for x in json.loads(cli.stdout)["choices"]}, {"mathorcup-bigdata", "mathorcup-bigdata-latex"})
+            self.assertEqual((config / "config.json").read_text(encoding="utf-8"), original)
+
 
 if __name__ == "__main__":
     unittest.main()

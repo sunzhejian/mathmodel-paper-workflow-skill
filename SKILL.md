@@ -1,6 +1,6 @@
 ---
 name: mathmodel-paper-workflow
-description: 从赛题和附件完成可复现建模、求解与数学建模竞赛论文及材料，支持国赛中文和美赛英文；也可接续现稿核对证据、扩写、修订图表排版、保留附录及验收交付。适用于数模全流程与论文修订。
+description: 从赛题和附件完成可复现建模、求解与数学建模竞赛论文及材料，支持国赛中文、美赛英文及MathorCup大数据预备适配；也可接续现稿核对证据、扩写、修订图表排版、保留附录及验收交付。适用于数模全流程与论文修订。
 ---
 
 # 数学建模论文与材料工作流
@@ -22,6 +22,7 @@ description: 从赛题和附件完成可复现建模、求解与数学建模竞�
 ## 选择本次需要的步骤
 
 - **美赛 MCM/ICM**：先读[美赛路线](references/mcm-icm.md)，核对年份、英文 Summary Sheet、方案页数口径、题面指定memo/letter、队号页眉与AI报告。新稿优先使用本项目双引擎适配版；已有论文不自动替换。编译后用 `check_mcm_pdf.py` 核对侧文件边界及页眉，再做科学内容与视觉检查。
+- **MathorCup 大数据竞赛**：读[大数据赛路线](references/mathorcup-bigdata.md)。单列 `mathorcup-bigdata` 家族，核对年份与初/复赛阶段；当前双引擎模板按2025格式做2026预备适配，盘点与检查报告必须保留规则年份及预备状态。保留官方样表的匿名队号/赛道表格、动态目录与正文起始页码，不能套用国赛首页或美赛页眉。
 - **用户需要搭环境、安装编程/排版/绘图工具**：读[工具安装与第一次使用](docs/toolchain.md)，先区分 Git/Python 基础依赖与按路线选择的数值库、TeX/Typst、draw.io、Word 或商业软件；给出官方安装入口和验证命令，不把“安装成功”记为模型已验证。
 - **多轮反馈、每问公式或检查失败**：读 [修订细则](references/revision-playbook.md)，按需使用反馈记录与逐问证据模板；遇到具体失败查 [恢复手册](references/failure-recovery.md)。简单修改不强制建完整台账。
 - **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。本仓库的固定上游项目文件位于 [vendor](vendor/README.md)：先运行 `git submodule update --init --recursive`，再用 `python scripts/check_vendor_skills.py` 核对提交及入口。只读取当前阶段所需的本地 `SKILL.md` 和其引用文件；子模块存在不等于技能已执行。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。
@@ -79,6 +80,11 @@ python scripts/prepare_mcm_template.py --engine latex --output paper-mcm-new
 
 # 美赛实际编译PDF与模板导出的边界侧文件；检查报告不会改写正文。
 python scripts/check_mcm_pdf.py paper-mcm-new/build/main.pdf --metadata paper-mcm-new/build/main.mcm.json --year 2027 --report qa/mcm-round-01/check.json
+
+# MathorCup 大数据赛预备模板；2026正式格式尚须核对，不能将预备版称为官方模板。
+python -X utf8 scripts/template_inventory.py --project-root project --category paper --family mathorcup-bigdata
+python -X utf8 scripts/prepare_mathorcup_bigdata_template.py --engine latex --output paper-bigdata-new
+python -X utf8 scripts/check_mathorcup_bigdata_pdf.py paper-bigdata-new/build/main.pdf --metadata paper-bigdata-new/build/main.bigdata.json --year 2026 --report qa/bigdata-round-01/check.json
 ```
 
 `audit` 测量版心内整行宽度连续无内容的竖向区间，报告页尾及最大空白带。**不是总白色像素比例，也不能自动证明没有文字重叠。** 它跳过范围外附录，检测疑似未编译公式，输出逐页预览。超标退出码 1，输入错误 2；未提供留白限制时只报告，不发明门槛。

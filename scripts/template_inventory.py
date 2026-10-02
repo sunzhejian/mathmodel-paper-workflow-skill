@@ -68,12 +68,21 @@ def inspect(project_root: Path, skill_root: Path = SKILL) -> dict:
                         item = {"language": language.name, "id": candidate.name, "engine": engine,
                                 "entry": (candidate/entry).relative_to(skill_root).as_posix(),
                                 "template_source": "project-adaptation"}
+                        profile_file = candidate / "profile.json"
+                        if profile_file.is_file():
+                            profile = json.loads(profile_file.read_text(encoding="utf-8-sig"))
+                            if not isinstance(profile, dict):
+                                raise ValueError("Template profile must be an object")
+                            for key in ("contest_family", "label", "contest_year", "format_rules_year", "rules_status", "reference"):
+                                if key in profile:
+                                    item[key] = profile[key]
                         choices[(language.name, candidate.name, engine)] = item
     available = [choices[key] for key in sorted(choices)]
     if selected and isinstance(selected["id"], str):
+        base = selected["id"].removesuffix("-latex")
         selected["matching_variants"] = [
             item["id"] for item in available
-            if item["id"] in {selected["id"], selected["id"] + "-latex"}
+            if item["id"] in {base, base + "-latex"}
             and (selected["engine"] is None or item["engine"] == selected["engine"])
         ]
     diagram_root = skill_root / "vendor/sci-box/skills/scibox-diagram"
@@ -117,6 +126,7 @@ def main() -> int:
     parser.add_argument("--language", choices=("zh", "en"), help="Filter paper template variants")
     parser.add_argument("--configured-family", action="store_true",
                         help="Show only paper variants matching the configured contest id")
+    parser.add_argument("--family", help="Filter an explicitly selected family, e.g. mathorcup-bigdata; does not change config")
     args = parser.parse_args()
     try:
         result = inspect(args.project_root, args.skill_root)
@@ -125,7 +135,10 @@ def main() -> int:
         return 2
     if args.language:
         result["available"] = [item for item in result["available"] if item["language"] == args.language]
-    if args.configured_family and result["configured"] and isinstance(result["configured"]["id"], str):
+    if args.family:
+        base = args.family.removesuffix("-latex")
+        result["available"] = [item for item in result["available"] if item["id"] in {base, base + "-latex"}]
+    elif args.configured_family and result["configured"] and isinstance(result["configured"]["id"], str):
         base = result["configured"]["id"].removesuffix("-latex")
         result["available"] = [item for item in result["available"]
                                if item["id"] in {base, base + "-latex"}]
