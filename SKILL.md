@@ -26,6 +26,7 @@ description: 从赛题和附件完成可复现建模、求解与数学建模竞�
 - **多轮反馈、每问公式或检查失败**：读 [修订细则](references/revision-playbook.md)，按需使用反馈记录与逐问证据模板；遇到具体失败查 [恢复手册](references/failure-recovery.md)。简单修改不强制建完整台账。
 - **多技能协作或完整复现**：读 [技能协作](references/skill-orchestration.md) 和 [复现手册](references/reproduction-guide.md)。本仓库的固定上游项目文件位于 [vendor](vendor/README.md)：先运行 `git submodule update --init --recursive`，再用 `python scripts/check_vendor_skills.py` 核对提交及入口。只读取当前阶段所需的本地 `SKILL.md` 和其引用文件；子模块存在不等于技能已执行。需要可运行示例时执行 `python scripts/run_demo.py --output qa/demo`。
 - **模型、数值、摘要或措辞**：读 [证据与写作](references/evidence-and-writing.md)。建立每问“输入—假设—方程—算法—输出—验证”对应后写结论。只做排版时不擅自重算或替换模型。
+- **清理写作穿帮、润色或处理防御性表达**：读[论文表达](references/paper-voice.md)。保留有依据的强调、科学反驳、适用范围和真实不确定性；清理制作痕迹与重复辩解。按原稿证据修改，不将更强的语气当成更强的结论。
 - **图、公式、线稿、分页**：读 [图表与排版](references/figures-and-layout.md)。先修标注和图文顺序，再量化留白；优先编辑矢量源。
 - **需要选论文/流程图/科研图模板**：读 [模板选择](references/template-selection.md)，运行 `scripts/template_inventory.py` 列出本机实际存在的候选，按用途向使用者问少量关键问题；已指定模板不强行改。
 - **模板选择已答复或项目存在旧记录**：运行 `scripts/validate_template_decisions.py` 检查所选入口和真实数据路径；记录冲突时按用户最新指示修订，不把配置默认值当成用户确认。
@@ -67,8 +68,8 @@ python scripts/package_support.py support-root support-files.json support.zip
 # 交付前核对正文、原附录、最终 PDF、检查报告和支撑包是否来自同一版。
 python scripts/verify_delivery.py body.pdf original.pdf final.pdf qa/layout.json qa/appendix.json --support-zip support.zip --support-root support-root --report qa/delivery.json
 
-# 在论文源中筛查高确定性的工作过程用语；仍需人工通读题注和正文。
-python scripts/check_paper_voice.py paper/main.tex paper/sections
+# 筛查制作痕迹并单列人工复核候选；不把正常强调或科学限定当禁词。
+python -X utf8 scripts/check_paper_voice.py paper/main.tex paper/sections --json
 
 # 检查本次必需文件及每问代码/结果；原附录可不存在。先按实际范围改清单。
 python scripts/check_project_delivery.py reports/project-delivery.json --project-root . --report qa/round-01/inventory.json
@@ -88,6 +89,8 @@ python scripts/check_mcm_pdf.py paper-mcm-new/build/main.pdf --metadata paper-mc
 
 `check_project_delivery.py` 的 `inventory_complete` 只表示声明的非空文件完整、保留源哈希一致；它不执行运行命令，也不证明文件内容、模型或格式合格。输出清单由用户实际要求决定，不能把可选 Word/商业软件变成强制项。
 
+`check_paper_voice.py` 报告制作指令/助手自述候选和需判断的内部记录引用，均不自动改文。`review_required=true` 须人工复核；`passed` 仅表示未命中高确定性规则。代码、注释和按约定排除的附录不作为正文语气判断；范围选择与退出码见[论文表达](references/paper-voice.md#自动筛查的用法与边界)。
+
 ## 每轮完成标准
 
 - 变更对应用户反馈；新增分析有数据或推导支持，不以套话填页。
@@ -96,7 +99,7 @@ python scripts/check_mcm_pdf.py paper-mcm-new/build/main.pdf --metadata paper-mc
 - 编译没有未解决引用、缺字、明显越界；重点页原尺寸查看，正文逐页检查。
 - 图例、引线、尺寸线和文字互不遮挡；公式及黑框不裁切；标题后有正文。
 - 图表就近放在完整段落之后，同一问的结果不被下一问标题隔开。
-- 标题、图题、表题和摘要只表达研究对象、方法与结果；“一行一符号”等排版指令留在制作记录，不写成读者可见的题注。对自动筛查结果逐条复核。
+- 标题、图题、表题和摘要只表达研究对象、方法与结果；制作指令留在后台。重要结果可强调，有依据的反驳与必要限定保留；自动筛查逐条复核，润色前后核对数字、范围和主张强度。
 - 国赛匿名首页直接从论文标题开始；编译后查看第一页并运行匿名字段检查，不能把项目配置中的题号、队号行带进正文。
 - PDF 与被要求的 Word 分别核验；仅检查 PDF 就只报告 PDF 合格。
 - 原附录按约定保留，新增页码连续；源、图和支撑包对应同一最终版本。

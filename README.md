@@ -80,6 +80,12 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 
 这是示例配置；页数、边距与阈值遵循具体用户和比赛要求，不是固定标准。可与已有数学建模技能配合，也可独立使用。
 
+## 清理制作痕迹与多余防御
+
+**重要模型、参数和结果可以强调，必要的科学反驳与适用条件也保留。** 润色先判断一句话是否提供证据、范围或推理，再处理制作指令、内部记录、空泛辩解和证据不足的主张。例如，“数值收敛不能替代独立数据检验”属于必要论证；“模型优点是文件已经回读、清单已经检查”需要回到真正的模型证据。
+
+这里吸收 [anti-defensive-writing](https://github.com/Kiterlin/anti-defensive-writing) 的作用分类与证据限定方法，形成自包含的[数模表达规则和示例](references/paper-voice.md)。`check_paper_voice.py` 分开提示明确制作痕迹与人工复核候选，支持排除保护附录、忽略常见代码块和注释；不自动删除真实限制或 AI 使用披露。措辞筛查不生成 AIGC 分数，最终仍核对科学内容和编译稿。
+
 ## 内容
 
 | 文件 | 用途 |
@@ -99,6 +105,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [失败恢复](references/failure-recovery.md) | 14 类常见故障的定位、修改和复验动作 |
 | [修订记录](assets/revision-record.md) / [逐问证据表](assets/question-evidence.csv) | 多轮修订时按需复制使用 |
 | [证据与写作](references/evidence-and-writing.md) | 数值追溯、摘要、逐问模型、符号及文献 |
+| [论文表达](references/paper-voice.md) | 制作痕迹、多余防御与科学论证的区分；保留强调、必要限定和真实披露 |
 | [证据驱动扩写](references/longform-paper.md) | 用户要求最低页数时的内容预算与页数范围验收 |
 | [模板选择](references/template-selection.md) / [模板盘点](scripts/template_inventory.py) | 向使用者询问论文和流程图模板，区分数据图的实际适用性 |
 | [MCM/ICM 美赛路线](references/mcm-icm.md) / [双引擎模板](assets/templates/en) | 已核对的2027规则、项目适配模板、真实编译边界与美赛开发项 |
@@ -117,7 +124,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [支撑包工具](scripts/package_support.py) | 显式白名单、路径检查、哈希与 ZIP 回读 |
 | [交付一致性门禁](scripts/verify_delivery.py) | 核对正文、附录来源、最终 PDF、检查报告及支撑 ZIP 属于同一版 |
 | [项目交付清单](examples/project-delivery.json) / [文件检查](scripts/check_project_delivery.py) | 根据实际选择查漏，核对逐问代码/结果与保留源哈希；支持没有旧附录的新稿 |
-| [论文口吻筛查](scripts/check_paper_voice.py) | 在 TeX/Markdown 源中标出明显的工作过程用语，供人工复核 |
+| [论文口吻筛查](scripts/check_paper_voice.py) | TeX/Markdown 制作痕迹分级定位，报告人工复核项及实际文件范围；支持保护附录 |
 | [可运行合成案例](scripts/run_demo.py) | 独立计算、正反例检查、附录拼接、打包回读 |
 | [核验记录](docs/validation.md) | 本轮测试、讲解图检查与自动验收边界 |
 | [开发计划](docs/roadmap.md) | 基于官方竞赛要求和开源长处的开发顺序；明确后台检查不进入论文正文 |
