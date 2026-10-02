@@ -1,0 +1,23 @@
+{
+  "template_id": "rf-tpe-surface",
+  "title": "参数网格与响应曲面",
+  "data": "response-grid.csv",
+  "x": {
+    "key": "x",
+    "label": "参数 X",
+    "unit": "1"
+  },
+  "y": {
+    "key": "y",
+    "label": "参数 Y",
+    "unit": "1"
+  },
+  "z": {
+    "key": "z",
+    "label": "响应 Z",
+    "unit": "1"
+  },
+  "schema_version": 1,
+  "data_kind": "synthetic",
+  "source_note": "Deterministic synthetic illustration; no model training, optimizer or competition evidence."
+}

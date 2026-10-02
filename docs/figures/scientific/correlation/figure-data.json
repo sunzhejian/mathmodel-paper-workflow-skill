@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "template_id": "correlation-pairgrid",
+  "data_kind": "synthetic",
+  "implementation": "original project data adapter; upstream style references are separate",
+  "source_note": "Deterministic synthetic illustration; no model training, optimizer or competition evidence.",
+  "font": {
+    "source_sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+    "variable_weights_instantiated": [
+      400,
+      700
+    ],
+    "family": "Noto Sans SC",
+    "source_modified": false,
+    "installed_systemwide": false
+  },
+  "input_sha256": "3b2c04f260474a9830f9cf66446ed7b82091bfac83c9a12168ae5d8aecc2fff4",
+  "contract_sha256": "b2f12ccf8ba6d1d37d51e580b2f806d086495d6979a9fb58dbc6a6b1a38b9ea2",
+  "renderer_sha256": "b56d575026bf318903968c7de6dcb1a45713a8b0df0691823344e7564139c2e6",
+  "numpy_version": "2.5.3",
+  "matplotlib_version": "3.11.2",
+  "statistics": {
+    "n": 180,
+    "columns": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "correlation_method": "Pearson",
+    "correlation": [
+      [
+        1.0,
+        0.6782396225801349,
+        -0.7279442992488985,
+        0.037203257027403756
+      ],
+      [
+        0.6782396225801348,
+        1.0,
+        -0.5304628296403556,
+        0.13103186612681872
+      ],
+      [
+        -0.7279442992488984,
+        -0.5304628296403556,
+        1.0,
+        0.0060117286443495685
+      ],
+      [
+        0.037203257027403756,
+        0.13103186612681872,
+        0.0060117286443495685,
+        1.0
+      ]
+    ],
+    "fit_or_significance_test": "none",
+    "standardized": false
+  },
+  "outputs": {
+    "png": {
+      "file": "figure.png",
+      "sha256": "92e6d43331e3631c285375cff309390726bba18e858f70f490d7a2edf12663c2"
+    },
+    "pdf": {
+      "file": "figure.pdf",
+      "sha256": "41fb10726e20ae67ad73a7a37fdbba27671e192d6d890077557e7d37ba20ef8f"
+    },
+    "svg": {
+      "file": "figure.svg",
+      "sha256": "ddf0b12b516384c6c3c14bdbd6c6971b67b262570888eefa75c8ed4d39491501"
+    }
+  },
+  "scope": "Declared CSV data and figure calculations; not data authenticity, model training or paper acceptance"
+}

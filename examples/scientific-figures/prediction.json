@@ -1,0 +1,17 @@
+{
+  "template_id": "prediction-marginal-grid",
+  "title": "预测与参考值：分布及误差",
+  "data": "predictions.csv",
+  "unit": "1",
+  "roles": {
+    "model": "model",
+    "split": "split",
+    "sample_id": "sample_id",
+    "actual": "actual",
+    "predicted": "predicted"
+  },
+  "comparison": true,
+  "schema_version": 1,
+  "data_kind": "synthetic",
+  "source_note": "Deterministic synthetic illustration; no model training, optimizer or competition evidence."
+}

@@ -1,0 +1,3 @@
+# Optional plotting route; base workflow tools remain usable without Matplotlib.
+-r requirements.txt
+matplotlib>=3.8,<4

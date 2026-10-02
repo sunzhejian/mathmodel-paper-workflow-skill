@@ -15,6 +15,7 @@ DIAGRAM_LABELS = {
     "stageflow-3col": "三栏阶段流程：阶段推进与分支",
     "taskflow-land": "横版任务流水线：多任务步骤与方法",
 }
+DATA_ADAPTER_TEMPLATES = {"correlation-pairgrid", "prediction-marginal-grid", "rf-tpe-surface"}
 
 
 def inspect(project_root: Path, skill_root: Path = SKILL) -> dict:
@@ -110,7 +111,9 @@ def inspect(project_root: Path, skill_root: Path = SKILL) -> dict:
             data_figures.append({"id": name, "label": label.strip(),
                                  "script": script.relative_to(skill_root).as_posix(),
                                  "preview": preview.relative_to(skill_root).as_posix() if preview.is_file() else None,
-                                 "default_data": "simulated; replace and verify before paper use"})
+                                 "default_data": "simulated; replace and verify before paper use",
+                                 "data_adapter": "scripts/render_scientific_data.py" if name in DATA_ADAPTER_TEMPLATES and (skill_root / "scripts/render_scientific_data.py").is_file() else None,
+                                 "adapter_note": "CSV role contract required; metrics are computed and sparse surfaces rejected" if name in DATA_ADAPTER_TEMPLATES else "Original template is style-only until data and statistics are adapted"})
     return {"project_root": str(project_root), "configured": selected,
             "available": available, "diagram_templates": diagrams,
             "data_figure_templates": data_figures,

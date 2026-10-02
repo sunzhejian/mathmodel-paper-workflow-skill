@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "template_id": "prediction-marginal-grid",
+  "data_kind": "synthetic",
+  "implementation": "original project data adapter; upstream style references are separate",
+  "source_note": "Deterministic synthetic illustration; no model training, optimizer or competition evidence.",
+  "font": {
+    "source_sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+    "variable_weights_instantiated": [
+      400,
+      700
+    ],
+    "family": "Noto Sans SC",
+    "source_modified": false,
+    "installed_systemwide": false
+  },
+  "input_sha256": "5cbf0078b49f03bfad511b23f89cd1ee92dec2c2dabb8d0bb13e12fd56921532",
+  "contract_sha256": "dd79100d3c3cdd74dda2f23afc4c951236583c1afea7ac1bd8a87c96e26058a1",
+  "renderer_sha256": "b56d575026bf318903968c7de6dcb1a45713a8b0df0691823344e7564139c2e6",
+  "numpy_version": "2.5.3",
+  "matplotlib_version": "3.11.2",
+  "statistics": {
+    "metrics": {
+      "示例方案 A": {
+        "train": {
+          "n": 140,
+          "rmse": 2.6248600434152523,
+          "mae": 2.1276093688526387,
+          "r2": 0.9587918479750603
+        },
+        "test": {
+          "n": 70,
+          "rmse": 4.6497144527203345,
+          "mae": 3.8098268951784786,
+          "r2": 0.908443680182566
+        }
+      },
+      "示例方案 B": {
+        "train": {
+          "n": 140,
+          "rmse": 2.070988566070115,
+          "mae": 1.6251573624616995,
+          "r2": 0.9743477042979786
+        },
+        "test": {
+          "n": 70,
+          "rmse": 2.571152190257408,
+          "mae": 2.0531070290131423,
+          "r2": 0.9720043000921649
+        }
+      }
+    },
+    "comparison": true,
+    "kde": "Gaussian KDE with Silverman bandwidth; constant groups omit the curve"
+  },
+  "outputs": {
+    "png": {
+      "file": "figure.png",
+      "sha256": "7fd282c4121ffb764fa8454149d027c854b00a3a14bd5f2c12278dfebe6c60df"
+    },
+    "pdf": {
+      "file": "figure.pdf",
+      "sha256": "fdafd0d8346b4084e2e69bd8da02615420afea98e6d540ed7e4e20fbad8cf65a"
+    },
+    "svg": {
+      "file": "figure.svg",
+      "sha256": "ba69f29f04892fcd913df864b351e56367cc4c6105da78e45c83687055cd66c5"
+    }
+  },
+  "scope": "Declared CSV data and figure calculations; not data authenticity, model training or paper acceptance"
+}

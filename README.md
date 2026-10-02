@@ -20,6 +20,16 @@ DeepSeek原程序把整数上取整技巧套到连续吨数，漏算小吨位运
 
 这些是列明小任务的验证示例，不能换算为比赛评级或完整论文质量。查看[详细测试说明](docs/model-trials-20261001-families.md)、[原始答复与检测记录](examples/model-trials/observed-v2/evaluation.json)；图提供[可编辑draw.io和矢量文件](docs/figures)，由[生成脚本](scripts/generate_trial_figures.py)读取实际数据生成。
 
+## 科研绘图示例
+
+数据分析和求解结果需要图件时，skill 会主动从科研绘图库选择能解释结论的组合图、分布图或响应表示。当前固定入口有11个样式脚本，其中相关矩阵、预测边缘分布及参数响应已有[CSV数据入口](scripts/render_scientific_data.py)：图中指标重算，坐标和单位来自合同，模拟数据明确标注。
+
+| 多变量关系与分布 | 预测边缘分布与误差 | 参数响应网格 |
+| --- | --- | --- |
+| [![相关矩阵合成示例](docs/figures/scientific/correlation/figure.png)](docs/figures/scientific/correlation/figure.png) | [![预测误差合成示例](docs/figures/scientific/prediction/figure.png)](docs/figures/scientific/prediction/figure.png) | [![参数响应合成示例](docs/figures/scientific/surface/figure.png)](docs/figures/scientific/surface/figure.png) |
+
+点击看大图。这三图是**合成数据的布局与数据接口示例**，未训练预测模型或执行TPE；提供[CSV与合同](examples/scientific-figures)、[生成脚本](scripts/generate_advanced_figure_examples.py)及[矢量文件](docs/figures)。[主动选图规则](references/advanced-figures.md)说明11种模板的输入条件、原脚本风险和实际调用顺序；界面95款不被记成95个已经接通的入口。
+
 ## 三张图看懂流程
 
 ### 1. 技能协作
@@ -124,6 +134,8 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [模板决策校验](scripts/validate_template_decisions.py) | 保存用户选择后验证模板与数据源，后续修订避免重复询问 |
 | [流程图模板对照图](scripts/preview_diagram_templates.py) | 从子模块预览生成本地四图对照，供使用者选择，不发布上游素材 |
 | [图表与排版](references/figures-and-layout.md) | 中文字体、可见图宽、线稿透视、标注避让、留白 |
+| [主动科研绘图](references/advanced-figures.md) / [CSV数据渲染](scripts/render_scientific_data.py) | 11种布局按证据主动选择；三类数据入口、指标重算、网格/点云与矢量输出 |
+| [科研图合成示例](scripts/generate_advanced_figure_examples.py) / [可选绘图依赖](requirements-figures.txt) | 冻结合成CSV与合同，生成可编辑代码和PNG/PDF/SVG，不作为论文结果 |
 | [编译与交付](references/build-and-delivery.md) | 原附录接回、PDF/Word验收及支撑包 |
 | [PDF 工具](scripts/pdf_workflow.py) | 留白/公式检查、渲染、附录保留和可选页码 |
 | [支撑包工具](scripts/package_support.py) | 显式白名单、路径检查、哈希与 ZIP 回读 |

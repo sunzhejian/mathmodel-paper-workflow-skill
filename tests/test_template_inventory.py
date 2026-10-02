@@ -104,6 +104,26 @@ class TemplateInventoryTests(unittest.TestCase):
             self.assertEqual({x["id"] for x in json.loads(cli.stdout)["choices"]}, {"mathorcup-bigdata", "mathorcup-bigdata-latex"})
             self.assertEqual((config / "config.json").read_text(encoding="utf-8"), original)
 
+    def test_figure_inventory_distinguishes_style_from_data_adapter(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = root / "skill"
+            base = skill / "vendor/MathModelAgent/skills/mathmodel-figure-templates"
+            (base / "references").mkdir(parents=True)
+            (base / "scripts/templates").mkdir(parents=True)
+            (base / "references/figure-catalog.md").write_text(
+                "| `correlation-pairgrid` | `make_grid.py` | Correlation |\n"
+                "| `paired-raincloud` | `make_cloud.py` | Raincloud |\n", encoding="utf-8")
+            for name in ("make_grid.py", "make_cloud.py"):
+                (base / "scripts/templates" / name).write_text("", encoding="utf-8")
+            (skill / "scripts").mkdir()
+            (skill / "scripts/render_scientific_data.py").write_text("original adapter", encoding="utf-8")
+            candidates = {x["id"]: x for x in MODULE.inspect(root, skill)["data_figure_templates"]}
+            self.assertEqual(candidates["correlation-pairgrid"]["data_adapter"], "scripts/render_scientific_data.py")
+            self.assertIsNone(candidates["paired-raincloud"]["data_adapter"])
+            (skill / "scripts/render_scientific_data.py").unlink()
+            self.assertTrue(all(x["data_adapter"] is None for x in MODULE.inspect(root, skill)["data_figure_templates"]))
+
 
 if __name__ == "__main__":
     unittest.main()

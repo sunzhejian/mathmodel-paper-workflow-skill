@@ -1,0 +1,30 @@
+{
+  "template_id": "correlation-pairgrid",
+  "title": "多变量关系与分布",
+  "data": "features.csv",
+  "columns": [
+    {
+      "key": "a",
+      "label": "变量 A",
+      "unit": "1"
+    },
+    {
+      "key": "b",
+      "label": "变量 B",
+      "unit": "1"
+    },
+    {
+      "key": "c",
+      "label": "变量 C",
+      "unit": "1"
+    },
+    {
+      "key": "d",
+      "label": "变量 D",
+      "unit": "1"
+    }
+  ],
+  "schema_version": 1,
+  "data_kind": "synthetic",
+  "source_note": "Deterministic synthetic illustration; no model training, optimizer or competition evidence."
+}

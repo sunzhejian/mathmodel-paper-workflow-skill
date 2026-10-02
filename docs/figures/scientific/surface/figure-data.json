@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "template_id": "rf-tpe-surface",
+  "data_kind": "synthetic",
+  "implementation": "original project data adapter; upstream style references are separate",
+  "source_note": "Deterministic synthetic illustration; no model training, optimizer or competition evidence.",
+  "font": {
+    "source_sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+    "variable_weights_instantiated": [
+      400,
+      700
+    ],
+    "family": "Noto Sans SC",
+    "source_modified": false,
+    "installed_systemwide": false
+  },
+  "input_sha256": "8eabdc95a64a20c50ff2886b875c2246516c777710647e2e22466d3fd7d33ff9",
+  "contract_sha256": "5b18071c6ee03826806a305e2ca1015d5a921d518e8538e779740ae3a99c723f",
+  "renderer_sha256": "b56d575026bf318903968c7de6dcb1a45713a8b0df0691823344e7564139c2e6",
+  "numpy_version": "2.5.3",
+  "matplotlib_version": "3.11.2",
+  "statistics": {
+    "samples": 90,
+    "grid_shape": [
+      10,
+      9
+    ],
+    "minimum": 0.27199616064899473,
+    "maximum": 0.6875,
+    "optimizer_run_by_renderer": false,
+    "surface": "faces connect supplied grid nodes; no analytical blending or fitted objective"
+  },
+  "outputs": {
+    "png": {
+      "file": "figure.png",
+      "sha256": "13484f495c7f2f39aeca4a7db49a7065bea3371d1ff5f372d5622d7639b905b9"
+    },
+    "pdf": {
+      "file": "figure.pdf",
+      "sha256": "dbc4f71815f639b809ba06fbd4517547488dd6e6d844e773d12e848b0f600d2c"
+    },
+    "svg": {
+      "file": "figure.svg",
+      "sha256": "d02d54f34794413fd62246edf44d43f3bdcd5b2e2871cd45210eabca665363fc"
+    }
+  },
+  "scope": "Declared CSV data and figure calculations; not data authenticity, model training or paper acceptance"
+}

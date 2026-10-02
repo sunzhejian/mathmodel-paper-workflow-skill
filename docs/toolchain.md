@@ -91,6 +91,8 @@ LaTeX 与 Typst 模板不可仅通过改扩展名互换；选定一个引擎后�
 
 ## 4. 图示与 Word 检查
 
+**科研数据图：**采用本仓库三类CSV入口时，在选中的项目Python环境安装 `python -m pip install -r requirements-figures.txt`。原图库样式可按[主动科研绘图](../references/advanced-figures.md)调用；正式图使用真实CSV与角色合同，再用 `render_scientific_data.py` 输出PNG、PDF/SVG、计算值及可编辑源码。中文可传已有字体，或使用 `fetch_cjk_test_font.py` 在指定目录取得固定开源字体及许可证；不安装到系统。界面图款、原模板演示和已接通数据入口分开列明。
+
 **可编辑示意图：**从 [draw.io Desktop 官方发布页](https://github.com/jgraph/drawio-desktop/releases)安装对应系统版本。打开 `.drawio` 核对文字、箭头、遮挡弧线和图例，再导出 PDF/PNG；命令行可在可执行文件已加入 PATH 时运行，例如：
 
 ```sh
