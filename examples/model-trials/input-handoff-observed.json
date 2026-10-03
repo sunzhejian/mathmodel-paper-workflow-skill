@@ -98,5 +98,11 @@
     "skipped": 0
   },
   "evidence_disclosure": "Original inputs, raw answers and detailed read logs remain in private research directories. Public metadata is not an independently reproducible release of the real contest dataset. Generic adapters and synthetic tests are reproducible from the repository.",
-  "vision_scope": "Page image delivery does not establish provider vision or independent formula comprehension; this was not graded as passed"
+  "vision_scope": "Page image delivery does not establish provider vision or independent formula comprehension; this was not graded as passed",
+  "followup_path_boundary_verification": {
+    "canonical_parent_before_audit_containment": true,
+    "explicit_alias_regression_added": true,
+    "local_unit_tests": {"run": 335, "passed": 335, "skipped": 0},
+    "model_intake_was_not_rerun_for_this_path_only_fix": true
+  }
 }

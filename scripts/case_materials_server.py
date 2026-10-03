@@ -298,6 +298,10 @@ class CaseMaterialsServer:
         if audit_log is not None:
             path = Path(audit_log).absolute()
             parent = real_root(path.parent)
+            # Use the checked, canonical parent for containment comparisons.
+            # Windows short/long aliases (and lexical '..') can otherwise name
+            # the immutable packet with a different path spelling.
+            path = parent / path.name
             if path.exists() or path.is_symlink() or path.suffix.lower() != ".jsonl":
                 raise ToolError("Audit log must be a new host-selected JSONL file")
             if path.is_relative_to(self.materials) or path.is_relative_to(self.project_root):

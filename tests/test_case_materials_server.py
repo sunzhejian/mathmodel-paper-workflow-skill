@@ -26,7 +26,7 @@ class ServerTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.base = Path(self.temp.name)
+        self.base = Path(self.temp.name).resolve()
         self.packet = self.base / "packet"
         self.project = self.base / "project"
         self.packet.mkdir()
@@ -520,6 +520,14 @@ class ServerTests(unittest.TestCase):
             with self.subTest(log=log.name), self.assertRaises(m.ToolError):
                 self.recreate(audit_log=log)
         self.assertEqual(existing.read_text(), "retain")
+
+    def test_audit_parent_alias_cannot_bypass_immutable_packet_boundary(self):
+        staging=self.base / 'staging'
+        staging.mkdir()
+        alias=staging / '..' / 'packet' / 'audit.jsonl'
+        with self.assertRaisesRegex(m.ToolError,'outside the immutable packet'):
+            self.recreate(audit_log=alias)
+        self.assertFalse((self.packet / 'audit.jsonl').exists())
 
     def test_mcp_initialization_schemas_readonly_and_no_shell_tool(self):
         request = lambda method, params={}: {"jsonrpc": "2.0", "id": 1, "method": method, "params": params}
