@@ -442,6 +442,37 @@ class ProjectToolTests(unittest.TestCase):
         self.assertEqual(args[args.index("--root") + 1], str(self.workspace.resolve()))
         self.assertTrue((self.workspace / "main.pdf").is_file())
 
+    def test_fragmented_relation_is_refused_before_compiler_and_source_is_unchanged(self):
+        text='#set text(font: ("Times New Roman", "SimSun"))\n#show heading: set text(font: "SimHei")\n' + '$ u_t $#text(" = ")$ y_t $#text(" + ")$ q_t $\n'
+        source=self.workspace/'main.typ'
+        source.write_text(text,encoding='utf-8')
+        before=source.read_bytes()
+        with patch.object(self.server,'run') as run:
+            result=self.result('compile_and_check')
+        self.assertFalse(result['passed'])
+        self.assertFalse(result['compiled'])
+        self.assertEqual(result['formula_status'],'fail')
+        self.assertEqual(source.read_bytes(),before)
+        run.assert_not_called()
+
+    def test_pdf_formula_failure_cannot_replace_existing_accepted_output(self):
+        (self.workspace/'main.typ').write_text('#set text(font: ("Times New Roman", "SimSun"))\n#show heading: set text(font: "SimHei")\n'+self.prose,encoding='utf-8')
+        accepted=self.workspace/'main.pdf'
+        accepted.write_bytes(b'previous accepted output')
+        with patch.object(self.server,'run',side_effect=self.fake_run), patch.object(m.guard,'pdf_font_check',return_value={'passed':True,'pages':21}), patch.object(m.formula_guard,'check_pdf',return_value={'status':'fail','passed':False,'review_required':True,'issues':[{'code':'pdf_fragmented_equation_run','severity':'error'}]}):
+            result=self.result('compile_and_check')
+        self.assertFalse(result['passed'])
+        self.assertEqual(result['formula_status'],'fail')
+        self.assertEqual(accepted.read_bytes(),b'previous accepted output')
+
+    def test_formula_warning_is_reported_without_claiming_mathematical_certification(self):
+        (self.workspace/'main.typ').write_text('#set text(font: ("Times New Roman", "SimSun"))\n#show heading: set text(font: "SimHei")\n'+self.prose,encoding='utf-8')
+        with patch.object(self.server,'run',side_effect=self.fake_run), patch.object(m.guard,'pdf_font_check',return_value={'passed':True,'pages':21}), patch.object(m.formula_guard,'check_pdf',return_value={'status':'review','passed':False,'review_required':True,'issues':[{'code':'pdf_numbered_atomic_run','severity':'warning'}]}):
+            result=self.result('compile_and_check')
+        self.assertEqual(result['formula_status'],'review')
+        self.assertTrue(result['formula_review_required'])
+        self.assertIn('warnings require review',result['scope'])
+
     def test_wrong_top_level_font_cannot_pass_from_incidental_font_resources(self):
         (self.workspace / "main.typ").write_text('#set text(font: "Wrong")\n' + self.prose, encoding="utf-8")
         with patch.object(self.server, "run") as run:

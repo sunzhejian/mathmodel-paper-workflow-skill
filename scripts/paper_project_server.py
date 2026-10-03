@@ -33,6 +33,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 import rendering_guard as guard
 import summary_guard
+import check_formula_integrity as formula_guard
 
 PROJECT_ROOT = SCRIPT_DIR.parent
 PROTOCOL_VERSION = "2025-06-18"
@@ -753,6 +754,11 @@ class ProjectServer:
     def compile_and_check(self) -> dict:
         contract = self.contract()
         source = self.path("main.typ")
+        formula_source_check = formula_guard.check_source(self.read(source), "main.typ")
+        if formula_source_check['status']=='fail':
+            return {'passed':False,'compiled':False,'formula_status':'fail',
+                    'formula_source_check':formula_source_check,
+                    'reason':'Repair fragmented mathematical relations in the responsible writing source before compilation; do not modify unrelated manuscripts'}
         images, issues = self.image_checks(contract)
         incompatible = [image for image in images if not image["direct_embedding_ready"]]
         if incompatible or issues:
@@ -776,11 +782,16 @@ class ProjectServer:
             result = guard.pdf_font_check(output, contract)
             summary_contract = contract.get("summary")
             summary_check = summary_guard.check_pdf(output, summary_contract) if summary_contract is not None else None
+            formula_pdf_check = formula_guard.check_pdf(output)
+            formula_status = ('fail' if formula_pdf_check['status']=='fail' else
+                              'review' if formula_source_check['status']=='review' or formula_pdf_check['status']=='review' else 'pass')
             font_and_page_passed = bool(result["passed"])
             result = {**result, "font_and_page_check_passed": font_and_page_passed,
                       "summary_contract": summary_contract, "summary_check": summary_check,
                       "summary_check_required": summary_contract is not None,
-                      "passed": font_and_page_passed and (summary_check is None or bool(summary_check["passed"]))}
+                      'formula_source_check':formula_source_check,'formula_pdf_check':formula_pdf_check,
+                      'formula_status':formula_status,'formula_review_required':formula_status=='review',
+                      "passed": font_and_page_passed and (summary_check is None or bool(summary_check["passed"])) and formula_status!='fail'}
             # A failed candidate must not replace a previously accepted output.
             if result["passed"]:
                 self.path("main.pdf", existing=False)
@@ -791,7 +802,7 @@ class ProjectServer:
                 "path": "main.pdf" if result["passed"] else None, "compiler_warnings": warnings,
                 "images": images, "source_scan_issues": issues,
                 "next_step":"report_results; rendering-contract steps complete, other acceptance scopes remain separate" if result['passed'] else 'address_failed_check',
-                "scope": "Actual compilation, font family presence, chosen page minimum and any declared summary boundary only; no full layout, diagram meaning or scientific acceptance"}
+                "scope": "Actual compilation, font family/page/declared summary checks and refusal of supported severe formula-fragmentation patterns; formula warnings require review. No full layout, diagram meaning or mathematical/scientific certification"}
 
     def event(self, name: str, result: dict, is_error: bool) -> None:
         summary = {key: result[key] for key in ("passed", "changed", "compiled", "output_accepted", "pages", "replacements", "ready_for_compile_check", "scientific_text_preserved") if key in result}
@@ -800,6 +811,8 @@ class ProjectServer:
         if isinstance(result.get("summary_check"), dict):
             summary["summary_passed"] = result["summary_check"].get("passed")
             summary["summary_status"] = result["summary_check"].get("status")
+        for key in ('formula_status','formula_review_required'):
+            if key in result:summary[key]=result[key]
         if name in {'read_project_file','read_workspace_file'}:
             for key in ('path','returned_range','total_lines','truncated','sha256','returned_content_sha256','sanitized'):
                 if key in result:

@@ -2,7 +2,10 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import os
+import tempfile
 import unittest
+from unittest.mock import patch, Mock
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 spec=importlib.util.spec_from_file_location('opencode_trial',ROOT/'scripts/run_opencode_trial.py')
@@ -48,6 +51,54 @@ class OpenCodeTrialTests(unittest.TestCase):
         self.assertNotIn('paper_project_*',result['permission'])
         with self.assertRaises(ValueError):
             trial.tool_config(cfg,16000,project_tools={'name':'case_materials','command':['python'],'extra':'unexpected'})
+
+    def test_workflow_task_only_allows_its_selected_reviewed_interface(self):
+        cfg={'model':'example','base_url':'https://example.org','env_key':'SYNTHETIC_KEY'}
+        result=trial.tool_config(cfg,16000,project_tools={'name':'workflow_project','command':['python','workflow_project_server.py']})
+        self.assertEqual(result['permission'],{'*':'deny','workflow_project_*':'allow'})
+        self.assertEqual(set(result['mcp']),{'workflow_project'})
+
+    def test_responses_uses_official_sdk_without_changing_selected_tools(self):
+        cfg={'model':'example','base_url':'https://example.org','env_key':'SYNTHETIC_KEY'}
+        result=trial.tool_config(cfg,8000,'low',{'name':'workflow_project','command':['python','server.py']},'responses')
+        self.assertEqual(result['provider']['trial']['npm'],'@ai-sdk/openai')
+        self.assertEqual(result['permission'],{'*':'deny','workflow_project_*':'allow'})
+        self.assertEqual(result['provider']['trial']['options']['apiKey'],'{env:SYNTHETIC_KEY}')
+        with self.assertRaises(ValueError):trial.tool_config(cfg,8000,protocol='unreviewed-protocol')
+
+    def _record_trial(self, answer, tool_events=0):
+        events=[{'type':'text','part':{'text':answer}}]
+        events.extend({'type':'tool_use'} for _ in range(tool_events))
+        events.append({'type':'step_finish','part':{'reason':'stop'}})
+        proc=Mock(returncode=0)
+        proc.communicate.return_value=('\n'.join(json.dumps(e) for e in events),'')
+        cfg={'model':'example','base_url':'https://example.org','env_key':'SYNTHETIC_KEY'}
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            prompt=root/'prompt.txt'
+            prompt.write_text('Read the source through the selected interface.',encoding='utf-8')
+            with patch.dict(os.environ,{'SYNTHETIC_KEY':'synthetic-secret'}),patch.object(trial.subprocess,'Popen',return_value=proc):
+                report=trial.run_trial('synthetic-opencode',cfg,prompt,root/'run',8000,
+                                       project_tools={'name':'workflow_project','command':['python','server.py']},protocol='responses')
+            self.assertEqual((root/'run'/'answer.txt').read_text(encoding='utf-8'),answer)
+            self.assertEqual(json.loads((root/'run'/'run.json').read_text(encoding='utf-8')),report)
+            self.assertNotIn('synthetic-secret',json.dumps(report))
+            return report
+
+    def test_text_pretending_to_call_a_tool_is_preserved_but_not_accepted(self):
+        report=self._record_trial('<seed:tool_call><function name="bash">read sources</function></seed:tool_call>')
+        self.assertTrue(report['successful_session'])
+        self.assertTrue(report['simulated_tool_call_text_detected'])
+        self.assertTrue(report['unexecuted_tool_intent'])
+        self.assertFalse(report['answer_delivery_valid'])
+        self.assertFalse(report['task_accepted'])
+
+    def test_real_client_completion_does_not_certify_artifacts_or_science(self):
+        report=self._record_trial('The input inventory was read.',tool_events=2)
+        self.assertTrue(report['answer_delivery_valid'])
+        self.assertEqual(report['tool_events'],2)
+        self.assertFalse(report['unexecuted_tool_intent'])
+        self.assertFalse(report['task_accepted'])
 
 
 if __name__=='__main__':unittest.main()

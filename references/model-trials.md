@@ -141,13 +141,15 @@ python scripts/run_codex_trial.py --routes examples/model-trials/providers.json 
 
 ## 可选客户端与分项验收
 
-[run_opencode_trial.py](../scripts/run_opencode_trial.py) 可使用已安装的 OpenCode，以 Chat Completions 接入同一套餐。当前实际验证版本 1.18.34，原有 Codex 为 0.144.1；需要相应 CLI 选项时先核对帮助。它仅启用所选 provider、以环境变量引用密钥、禁用分享、采用 `--pure`；不保存密钥或改全局配置。默认 `text-only` 禁用全部模型工具并保存 `answer.json`。客户端仍不是 OS 安全沙箱。CLI 终止、答案存在和正常 `stop` 事件共同判断完整会话；`length` 或超时不能记作成功。[官方 provider 说明](https://opencode.ai/docs/providers/)、[CLI 说明](https://opencode.ai/docs/cli/)、[工具权限](https://opencode.ai/docs/permissions/)是兼容配置依据。
+[run_opencode_trial.py](../scripts/run_opencode_trial.py) 可使用已安装的 OpenCode，显式选择 `--protocol chat` 或 `--protocol responses` 接入同一授权套餐。默认保留 Chat Completions 的 `@ai-sdk/openai-compatible`；Responses 使用 `@ai-sdk/openai`，不改 endpoint、凭据或模型。当前实际验证版本 1.18.34，原有 Codex 为 0.144.1；需要相应 CLI 选项时先核对帮助。它仅启用所选 provider、以环境变量引用密钥、禁用分享、采用 `--pure`；不保存密钥或改全局配置。默认 `text-only` 禁用全部模型工具并保存 `answer.json`。客户端仍不是 OS 安全沙箱。CLI 终止、答案存在和正常 `stop` 事件共同判断完整会话；`length` 或超时不能记作成功。[官方 provider 说明](https://opencode.ai/docs/providers/)、[CLI 说明](https://opencode.ai/docs/cli/)、[工具权限](https://opencode.ai/docs/permissions/)是兼容配置依据。
+
+火山 Agent Plan 的端点、两种协议与 OpenCode SDK 配置见[官方接入说明](https://docs.volcengine.com/docs/ark/agent-plan-enterprise-opencode?lang=zh)。[路线示例](../examples/model-trials/providers.json)列出本轮实际请求的 DeepSeek、GLM、Kimi Agent Plan 路线，供已获授权且账户确有支持时选择；不替使用者订阅，不从 Coding Plan 自动切换套餐，更不降到普通按量付费端点。套餐限额按真实错误中的重置时间处理，停止无意义重试；接续用保存的同版材料和产物，不重复运行已完成且未变更的阶段。请求模型名不证明后台精确版本。
 
 ```sh
 python scripts/run_opencode_trial.py --routes examples/model-trials/providers.json --route kimi-coding-plan --prompt qa/trials/transport-01/prompt.txt --output qa/trials/transport-01/model --opencode /path/to/opencode
 ```
 
-工具模式使用 `--project-tools` 指定已审查的 MCP 启动 JSON。其结构只接受 `name` 与逐项 `command` 数组，`name` 为 `paper_project` 或 `case_materials`，每次只选一个；JSON 不含任何凭据。以下是排版项目接口，路径须替换为本机真实路径，`--workspace` 指向仓库外独立准备的项目：
+工具模式使用 `--project-tools` 指定已审查的 MCP 启动 JSON。其结构只接受 `name` 与逐项 `command` 数组，`name` 为 `paper_project`、`case_materials` 或 `workflow_project`，每次只选一个；JSON 不含任何凭据。以下是排版项目接口，路径须替换为本机真实路径，`--workspace` 指向仓库外独立准备的项目：
 
 ```json
 {
@@ -169,9 +171,9 @@ python scripts/run_opencode_trial.py --routes examples/model-trials/providers.js
 python scripts/run_opencode_trial.py --routes examples/model-trials/providers.json --route kimi-coding-plan --prompt /path/to/project-task.txt --output qa/trials/project-01 --project-tools /path/to/project-tools.json --effort low
 ```
 
-材料接口的启动 JSON 和命令见[完整材料交接](case-materials.md#给其他-ai-的只读入口)，使用 `--materials` 指向完整材料包。运行器按所选接口只允许 `paper_project_*` 或 `case_materials_*`，其他工具保持 `deny`；报告新增 `selected_tool_interface`，材料模式为 `case-materials-task`，排版模式为 `project-tool-task`。保存 `answer.txt`，不把工具任务最终说明当成 `answer.json` 的解题数据。
+材料接口的启动 JSON 和命令见[完整材料交接](case-materials.md#给其他-ai-的只读入口)，使用 `--materials` 指向完整材料包。[完整项目试用接口](workflow-project-trials.md)另外允许模型写入自己的代码与材料，并仅执行宿主审阅批准的完整代码树。运行器按所选接口只允许其 `*_` 工具前缀，其他工具保持 `deny`；报告记录 `selected_tool_interface`，材料模式为 `case-materials-task`，排版模式为 `project-tool-task`，完整项目为 `workflow-project-task`。保存 `answer.txt`，不把工具任务最终说明当成 `answer.json` 的解题数据。
 
-`--effort low` 可选，报告标记为客户端配置，不能保证 provider 内部推理档位。`successful_session` 只表示客户端完整返回，不能表示项目通过；排版任务还须检查工作区 `project-tool-events.jsonl` 的实际读取/执行/错误/修订记录及最终检查报告和 PDF，材料任务须核对完整文件清单及读回范围收据。工具事件数本身不证明使用正确，同一版产物才能参与验收。
+`--effort low` 可选，报告标记为客户端配置，不能保证 provider 内部推理档位。`successful_session` 只表示客户端完整返回，不能表示项目通过。文本中的 `<seed:tool_call>` 等调用样式且没有真实工具事件时，会标为 `unexecuted_tool_intent`，`answer_delivery_valid=false`，保留原答复但不计为完成调用；该检测是列明格式的启发式筛查。`task_accepted` 始终待独立任务验收，不由客户端成功自动赋真。排版任务还须检查工作区 `project-tool-events.jsonl` 的实际读取/执行/错误/修订记录及最终检查报告和 PDF，材料任务须核对完整文件清单及读回范围收据。工具事件数本身不证明使用正确，同一版产物才能参与验收。
 
 取得完整原答复后，先实际阅读代码和TeX，再按需使用两个独立检查器。`--reviewed-source`记录源已被审查的前提，不能用旗标代替审查，也不代表安全隔离。
 

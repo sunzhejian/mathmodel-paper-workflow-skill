@@ -83,6 +83,28 @@ python -X utf8 scripts/prepare_case_materials.py --manifest /path/to/project/sou
 
 `prepared` 的 CLI 退出码为0；`prepared_with_limitations` 为2，表示已保存材料但存在明确解析限制；失败为1。所有成功材料仍有 `review_required=true`，文件存在、哈希一致及角色齐全均不证明题文数学语义完整或求解正确。原始输入身份与角色来自宿主 manifest 声明；`reference_answer_status` 明确保留未自动检验状态，工具不自动识别旧答案或保证文件确属原始空模板。带 DOC 的原件包可能完整而状态仍有限，不能丢弃原 DOC 来把状态改成“通过”。
 
+## 扫描资料与旧工作簿
+
+先看原件和真实内容，再决定读取方法。PDF 提取器返回分页标记或少量页码，仍可能整页是扫描图；`projected`、文件存在、非零字节或文字导出退出码为0都不能证明取得了表中数据。检查实际表头、记录、单位与来源页；对所需的每一份来源说明已读取及未覆盖范围。
+
+可选 [extract_scanned_pdf.py](../scripts/extract_scanned_pdf.py) 将原 PDF 转成可核对的页面 PNG、完整原生文本/识别文字和 OCR 框/分数：
+
+```sh
+python -X utf8 scripts/extract_scanned_pdf.py original.pdf --output data/transcriptions/new-01 --backend auto --dpi 144
+# 明确只需部分页时才指定；这份收据不代表读完原 PDF。
+python -X utf8 scripts/extract_scanned_pdf.py original.pdf --output data/transcriptions/new-02 --pages 1,3-5 --backend auto --dpi 180
+```
+
+默认处理全部页，页号从1开始；只写新目录，保存原件前后 SHA。页面与总像素预算超限会停止，代理须根据原件尺寸明确选择分辨率、分页处理或提高预算，不能悄悄丢页。工具只惰性探测已安装的 RapidOCR 与已存在的 ONNX；不会安装软件或下载模型。没有可用后端时仍保留原页，标记 `limited`，所需 OCR 依赖由当前任务另行准备。
+
+兼容现代 `boxes/txts/scores` 属性返回及已知的旧 `(rows, elapsed)` 元组，核对形状、文本和有限分数；不将现代 dataclass 按两项元组拆包。依赖版本、实际返回结构及烟测结果都属于运行证据；仅导入成功不能证明中文表格和数值读取正确。
+
+`extracted_unverified` 的退出码为0，只表示声明页完成原文/识别转写；后端缺失或空识别为 `limited`/2，非法结构或处理失败为 `failed`/1。`numeric_values_verified`、`reading_order_verified`、`formula_transcription_verified` 仍为 false。工具不选科学字段、不改数字、不合并表格或计算模型；代理必须对照页图重建并核验题目需要的输入，记录其来源坐标、单位和缺口。原生文本长度只是 OCR 是否需要的启发式判断，不能当作完整页覆盖证明。
+
+XLS/XLSX/DOC 等旧格式先核对文件类型与实际阅读器状态。使用者也打不开的加密工作簿保持原件与限制记录，不猜测密码、不移除加密来凑齐数据。题目允许多来源时，可用已提供的可读官方 PDF 或另有授权的原始来源补齐；不足的数值不填成已观测数据。源清单分别统计唯一原文件和工作表引用行；核对真实表头，不按文件名或第几个 sheet 猜全国/省级口径。地区名称中的排版空格可以有可追溯的标签规范化，数值、行政区划和跨年可比性须另行验证。
+
+已冻结的试验输入不原地追加或重写；补充转写另存新目录与来源收据。确需让模型读取补充资料时，由宿主在新材料合同或明确的只读入口中提供，并记录新旧输入范围。原件准备/转写与模型建立科学输入矩阵分别署明责任，不能把宿主整理的结果冒充模型独立求解。
+
 ## 给其他 AI 的只读入口
 
 [`case_materials_server.py`](../scripts/case_materials_server.py)以已准备材料包启动，只读提供材料清单、文本分段、项目参考、题面页图及读取收据：

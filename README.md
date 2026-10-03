@@ -4,11 +4,13 @@
 
 它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、Sivia、项目已有的 mma-paper** 等技能。前五个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
+当前默认[按阶段使用参考项目](references/upstream-assisted-mode.md)：实际读当前需要的入口与引用，把具体方法落实到本题，再核对产物。使用者只调用本 skill；代理记录阅读与采用范围，不把文件存在或提到项目名当成使用，也不自动省去仍有价值的参考。
+
 **在自己的项目中使用**：向当前代理/IDE提供赛题和附件并调用此 skill，由代理建立内部要求清单，使用该环境已有的读写、运行、绘图与编译工具完成任务。核心工作流不要求指定模型账户、IDE、MCP或商业软件；用户项目可使用 Git，素材留在授权项目目录。已有环境直接复用，缺项按任务补最小必要能力。便携发行包的优先计划见[开发方向](docs/roadmap.md#下一轮开发顺序)，未验证的模型/后端不列为已经支持。
 
 **运行仓库演示或维护工具**：看[工具安装与第一次使用](docs/toolchain.md)，准备演示所需的 Git、Python 和依赖后，用同一解释器运行 `scripts/run_demo.py --output qa/demo`。它会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；无需 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。演示与真实用户赛题分别核验，详细产物见[复现手册](references/reproduction-guide.md)。
 
-本轮已解除材料助手对用户 Git 项目的误限制，保留原件和 skill 分发目录保护；336 项本地测试通过。标准源码归档仍不包含 vendor 子模块内部内容，自包含发行包列为下一轮优先开发项，尚未发布为已完成能力。
+材料助手已解除对用户 Git 项目的误限制，保留原件和 skill 分发目录保护。最新补充完整公式结构诊断、扫描资料转写，以及独立模型编写代码后由宿主审阅执行的可选研发入口；这些检查不认证数学或科学结论。标准源码归档仍不包含 vendor 子模块内部内容，自包含发行包列为下一轮优先开发项，尚未发布为已完成能力。
 
 ## 把完整赛题与数据交给其他 AI
 
@@ -17,6 +19,8 @@
 [材料准入工具](scripts/prepare_case_materials.py)按明确白名单复制原件并保留 bytes/hash；PDF 输出每页文本与 PNG，XLSX 输出所有工作表的逐格 CSV 和单元格记录，保留空位、原表头、公式原文与原始类型。结果样表标为 `output-template`，用于说明填写位置。DOC/DOCX、文本、CSV、图片等补充材料可以完整保留；UTF-8 文本另留可读副本，未覆盖的二进制解析明确标记，原 DOC 被复制不表示它已被自动读取。
 
 准备成功与模型实际读取分开验收。可选的只读 `case_materials` MCP 提供题面逐页查看与材料分段读取；普通项目也可用宿主已有工具。小型材料试用的全行收据不用于强制大数据逐行进入上下文，全量数据由实际程序处理并记录范围。研发独立基线放在私有研究目录，普通项目沿用用户目录；公开 skill 分发内容只保留通用工具、文档和合成测试。[完整合同与交接证据](references/case-materials.md)说明如何查漏；[模型评测](references/model-trials.md)说明专用工具模式的实际能力。
+
+扫描 PDF 不能凭导出文件非空就当成可读数据。可选[扫描转写工具](scripts/extract_scanned_pdf.py)保存原页、原文/OCR框与分数并校验原件哈希，兼容已知新旧 RapidOCR 返回；缺后端和空识别明确标为有限。识别完成仍须核对数字、单位与表格结构，打不开的加密旧表不猜密码。[材料规则](references/case-materials.md#扫描资料与旧工作簿)说明实际范围和失败状态。
 
 ## 真实测试示例
 
@@ -35,6 +39,8 @@ DeepSeek原程序把整数上取整技巧套到连续吨数，漏算小吨位运
 2026-10-02 又进行了冻结现稿的项目工具回归：25/26 页产物属于已有正文中的字体、同源图件导入和摘要分页修订，不能记为模型从完整赛题独立写出的长稿。在加入摘要结构检查的三模型轮中，GLM 会话与约定的局部产物均完成；Kimi 的局部产物通过对应检查，但会话超时；DeepSeek 未完成。这些范围与客户端状态分别列在[项目工具回归说明](references/model-trials.md#冻结现稿的局部回归记录)。
 
 2026-10-03 用完整 A 题及所有数据/样表测试材料交接：三模型均收全14项必要文本。Kimi 首轮误把正文展示范围当成完整结果范围，补齐本项目必读规范与上游共享引用后，在同题重新测试中自行纠正。[完整输入与上下文试验](docs/model-intake-20261003.md)分别列明材料覆盖、格式缺陷、限定的来源核对和未完成的求解/论文阶段；最新本地335项工具测试通过，未将读取成功记成整篇论文成功。
+
+同日另用使用者完整提供的**2026东北三省A题、人口普查ZIP和封面DOC**进行独立资料审计：DeepSeek、GLM、Kimi均完成首轮工具会话，各自数据读取程序也真实执行；但科学数据尚未核验，接续阶段因套餐额度中断。已实际增加 Agent Plan 的 Responses 接入与同名模型接续，**尚无完成的20页以上论文及全套材料**。[实题阶段记录](docs/northeast-trials-20261003.md)列出各轮、实际参考读取、OCR与公式缺陷和相应改进；客户端成功、程序运行、科学验证及最终交付分别验收。
 
 ## 科研绘图示例
 
@@ -148,6 +154,9 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [工具安装与第一次使用](docs/toolchain.md) | Git/Python 基础环境，数值库、LaTeX/Typst、draw.io、Word 与可选商业软件 |
 | [完整材料交接](references/case-materials.md) / [材料准入](scripts/prepare_case_materials.py) | 原始题面、全部附件/工作表与输出模板白名单；逐问要求映射、原件哈希、完整页图与实际读取证据 |
 | [只读材料 MCP](scripts/case_materials_server.py) | 给其他 AI 分段读取完整材料与题面页图，记录返回范围；不执行求解或把原 DOC 保留计为已解析 |
+| [扫描转写](scripts/extract_scanned_pdf.py) | 保留原页、原文/识别框与分数及原件哈希；不认证数值或表格结构 |
+| [完整公式结构诊断](scripts/check_formula_integrity.py) | 筛查Typst关系碎裂及实际PDF单变量编号/残留运算符；不改稿，不认证数学 |
+| [可选完整项目试用](references/workflow-project-trials.md) | 模型自己编写代码和论文，宿主仅审阅批准的完整源树并检查真实执行与产物 |
 | [历史版本锁](examples/upstream-lock.json) | 4 个公开上游的来源与当时提交 |
 | [约束合同示例](examples/workflow-contract.json) | 页数口径、边距、留白、附录与交付约定 |
 | [合同检查入口](scripts/audit_contract.py) | 直接读取合同，校验范围并运行 PDF 检查；支持 dry-run |

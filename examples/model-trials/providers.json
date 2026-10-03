@@ -9,6 +9,21 @@
     "model": "doubao-seed-2.1-pro",
     "env_key": "MM_ARK_AGENT_API_KEY"
   },
+  "deepseek-agent-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/plan/v3",
+    "model": "deepseek-v4-pro",
+    "env_key": "MM_ARK_AGENT_API_KEY"
+  },
+  "glm-agent-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/plan/v3",
+    "model": "glm-5.3",
+    "env_key": "MM_ARK_AGENT_API_KEY"
+  },
+  "kimi-agent-plan": {
+    "base_url": "https://ark.cn-beijing.volces.com/api/plan/v3",
+    "model": "kimi-k2.7-code",
+    "env_key": "MM_ARK_AGENT_API_KEY"
+  },
   "volcano-coding-plan": {
     "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
     "model": "glm-5.3",
