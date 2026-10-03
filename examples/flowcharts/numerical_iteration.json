@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "title": "通用数值迭代与时间推进机制",
+  "claim": "输入经离散与初始化后进入状态依赖的内层迭代，收敛后推进时间，最终输出轨迹。具体离散算子与条件由原模型确定。",
+  "source_note": "匿名通用示例；应由使用者用题面、模型报告和代码核对并替换。仅展示机制，不表示任何比赛算法已运行。",
+  "data_kind": "schematic",
+  "nodes": [
+    {
+      "id": "observations",
+      "label": "输入数据\n观测或初值",
+      "kind": "input",
+      "x": 30,
+      "y": 25,
+      "width": 200,
+      "height": 60
+    },
+    {
+      "id": "parameters",
+      "label": "输入参数\n抽象符号 θ",
+      "kind": "input",
+      "x": 280,
+      "y": 25,
+      "width": 200,
+      "height": 60
+    },
+    {
+      "id": "conditions",
+      "label": "边界与外部条件\n由来源材料给定",
+      "kind": "input",
+      "x": 530,
+      "y": 25,
+      "width": 200,
+      "height": 60
+    },
+    {
+      "id": "initialize",
+      "label": "离散网格与状态初始化",
+      "kind": "process",
+      "x": 230,
+      "y": 130,
+      "width": 300,
+      "height": 60
+    },
+    {
+      "id": "coefficients",
+      "label": "按当前状态更新系数\nA(uᵏ), b(uᵏ)",
+      "kind": "process",
+      "x": 230,
+      "y": 265,
+      "width": 300,
+      "height": 54,
+      "group": "iteration_region"
+    },
+    {
+      "id": "solve",
+      "label": "求解当前离散系统\n得到候选状态 uᵏ⁺¹",
+      "kind": "process",
+      "x": 230,
+      "y": 355,
+      "width": 300,
+      "height": 54,
+      "group": "iteration_region"
+    },
+    {
+      "id": "converged",
+      "label": "迭代收敛？",
+      "kind": "decision",
+      "x": 230,
+      "y": 447,
+      "width": 300,
+      "height": 130,
+      "group": "iteration_region",
+      "condition_label": "‖Δu‖ ≤ ε"
+    },
+    {
+      "id": "accept",
+      "label": "接受候选状态\n推进时间与状态",
+      "kind": "process",
+      "x": 230,
+      "y": 630,
+      "width": 300,
+      "height": 54,
+      "group": "iteration_region"
+    },
+    {
+      "id": "time_check",
+      "label": "继续推进？",
+      "kind": "decision",
+      "x": 230,
+      "y": 730,
+      "width": 300,
+      "height": 130,
+      "group": "iteration_region",
+      "condition_label": "t < t_end"
+    },
+    {
+      "id": "output",
+      "label": "输出轨迹与终止状态\n供论文结果引用",
+      "kind": "output",
+      "x": 230,
+      "y": 940,
+      "width": 300,
+      "height": 54
+    }
+  ],
+  "edges": [
+    {
+      "id": "data_init",
+      "source": "observations",
+      "target": "initialize",
+      "relation": "data",
+      "target_port": {
+        "side": "north",
+        "position": 0.15
+      },
+      "source_port": {
+        "side": "south"
+      },
+      "waypoints": [
+        {
+          "x": 130,
+          "y": 110
+        },
+        {
+          "x": 275,
+          "y": 110
+        }
+      ]
+    },
+    {
+      "id": "param_init",
+      "source": "parameters",
+      "target": "initialize",
+      "relation": "data"
+    },
+    {
+      "id": "cond_init",
+      "source": "conditions",
+      "target": "initialize",
+      "relation": "data",
+      "target_port": {
+        "side": "north",
+        "position": 0.85
+      },
+      "source_port": {
+        "side": "south"
+      },
+      "waypoints": [
+        {
+          "x": 630,
+          "y": 110
+        },
+        {
+          "x": 485,
+          "y": 110
+        }
+      ]
+    },
+    {
+      "id": "init_coeff",
+      "source": "initialize",
+      "target": "coefficients"
+    },
+    {
+      "id": "coeff_solve",
+      "source": "coefficients",
+      "target": "solve"
+    },
+    {
+      "id": "solve_converged",
+      "source": "solve",
+      "target": "converged"
+    },
+    {
+      "id": "inner_retry",
+      "source": "converged",
+      "target": "coefficients",
+      "label": "否",
+      "relation": "feedback",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 660,
+          "y": 512
+        },
+        {
+          "x": 660,
+          "y": 292
+        }
+      ],
+      "label_position": 0.15
+    },
+    {
+      "id": "inner_accept",
+      "source": "converged",
+      "target": "accept",
+      "label": "是",
+      "label_offset": {
+        "x": 28,
+        "y": 0
+      }
+    },
+    {
+      "id": "accept_time",
+      "source": "accept",
+      "target": "time_check"
+    },
+    {
+      "id": "next_time",
+      "source": "time_check",
+      "target": "coefficients",
+      "label": "是",
+      "relation": "loop",
+      "source_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 100,
+          "y": 795
+        },
+        {
+          "x": 100,
+          "y": 292
+        }
+      ],
+      "label_position": 0.1
+    },
+    {
+      "id": "finish",
+      "source": "time_check",
+      "target": "output",
+      "label": "否",
+      "label_offset": {
+        "x": 28,
+        "y": 0
+      },
+      "label_position": 0.25
+    }
+  ],
+  "groups": [
+    {
+      "id": "iteration_region",
+      "label": "时间与内层迭代",
+      "x": 180,
+      "y": 220,
+      "width": 540,
+      "height": 680
+    }
+  ],
+  "canvas": {
+    "width": 760,
+    "height": 1020
+  },
+  "style": {
+    "font_family": "Microsoft YaHei",
+    "font_size": 18,
+    "publication_width_mm": 160,
+    "minimum_font_pt": 8.5,
+    "maximum_height_mm": 225,
+    "minimum_dpi": 300
+  }
+}

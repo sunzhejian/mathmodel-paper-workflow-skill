@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "case": "Original four-question CUMCM A input; privately retained",
+  "inputs": {
+    "original_files": 9,
+    "statement_pages": 4,
+    "xlsx_files": 6,
+    "worksheets": 8,
+    "necessary_text_projections": 14,
+    "reference_answers_supplied": false,
+    "host_formula_transcript": "Original formulas only, checked against page renders; no derived models or computed answers",
+    "unparsed_original_format": ".doc preserved; supplied full UTF-8 extraction separately"
+  },
+  "scope": "Actual complete-original-input delivery and model-design intake only; no numerical solution or 21+ page autonomous paper validation",
+  "baseline": [
+    {
+      "model": "deepseek-v4-pro",
+      "successful_session": true,
+      "seconds": 144.2,
+      "tool_events": 21,
+      "raw_answer_strict_json": false,
+      "readonly_review_extraction": "individually-valid-fact-fields-only; full-report-invalid",
+      "all_required_text_supplied": true,
+      "necessary_text_count": 14,
+      "tool_errors": 0,
+      "selected_project_reads": [
+        "SKILL.md",
+        "vendor/MathModelAgent/skills/2analysis-modeling/SKILL.md"
+      ],
+      "manual_source_scope_review": {
+        "q2_full_output_truncated_to_paper_display": false
+      },
+      "full_scientific_or_paper_acceptance": false
+    },
+    {
+      "model": "glm-5.3",
+      "successful_session": true,
+      "seconds": 212.5,
+      "tool_events": 20,
+      "raw_answer_strict_json": false,
+      "readonly_review_extraction": "unique-json-object-with-prefix",
+      "all_required_text_supplied": true,
+      "necessary_text_count": 14,
+      "tool_errors": 0,
+      "selected_project_reads": [
+        "SKILL.md",
+        "vendor/MathModelAgent/skills/2analysis-modeling/SKILL.md"
+      ],
+      "manual_source_scope_review": {
+        "q2_full_output_truncated_to_paper_display": false
+      },
+      "full_scientific_or_paper_acceptance": false
+    },
+    {
+      "model": "kimi-k2.7-code",
+      "successful_session": true,
+      "seconds": 121.6,
+      "tool_events": 20,
+      "raw_answer_strict_json": true,
+      "readonly_review_extraction": "original-json",
+      "all_required_text_supplied": true,
+      "necessary_text_count": 14,
+      "tool_errors": 0,
+      "selected_project_reads": [
+        "SKILL.md",
+        "vendor/MathModelAgent/skills/2analysis-modeling/SKILL.md"
+      ],
+      "manual_source_scope_review": {
+        "q2_full_output_truncated_to_paper_display": true
+      },
+      "full_scientific_or_paper_acceptance": false
+    }
+  ],
+  "context_retest": {
+    "model": "kimi-k2.7-code",
+    "same_case_regression": true,
+    "fresh_client_session": true,
+    "previous_answer_provided": false,
+    "successful_session": true,
+    "seconds": 183.4,
+    "tool_events": 23,
+    "raw_answer_strict_json": true,
+    "all_required_text_supplied": true,
+    "all_required_project_text_supplied": true,
+    "required_project_text_count": 5,
+    "manual_source_scope_review": {
+      "q2_full_output_truncated_to_paper_display": false
+    },
+    "solver_executed": false,
+    "paper_compiled": false,
+    "science_verified": false,
+    "change": "Explicit stage references, separately audited rule coverage, and shared upstream reference access; not an unseen-case or paper-quality test"
+  },
+  "local_unit_tests": {
+    "run": 334,
+    "passed": 334,
+    "skipped": 0
+  },
+  "evidence_disclosure": "Original inputs, raw answers and detailed read logs remain in private research directories. Public metadata is not an independently reproducible release of the real contest dataset. Generic adapters and synthetic tests are reproducible from the repository.",
+  "vision_scope": "Page image delivery does not establish provider vision or independent formula comprehension; this was not graded as passed"
+}

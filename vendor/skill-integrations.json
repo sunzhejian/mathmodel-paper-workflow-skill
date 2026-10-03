@@ -2,17 +2,117 @@
   "schema_version": 1,
   "purpose": "Local entrypoints for pinned upstream skill projects; only load a skill when its stage is needed",
   "skills": [
-    {"name": "1start-mathmodel", "source": "MathModelAgent", "path": "skills/1start-mathmodel/SKILL.md", "stage": "new-project planning", "usage": "conditional"},
-    {"name": "2analysis-modeling", "source": "MathModelAgent", "path": "skills/2analysis-modeling/SKILL.md", "stage": "problem and model design", "usage": "core when modeling is in scope"},
-    {"name": "3coding-visual", "source": "MathModelAgent", "path": "skills/3coding-visual/SKILL.md", "stage": "reproducible solving and data figures", "usage": "core when computation is in scope"},
-    {"name": "4drawio", "source": "MathModelAgent", "path": "skills/4drawio/SKILL.md", "stage": "diagram planning", "usage": "conditional"},
-    {"name": "5writing", "source": "MathModelAgent", "path": "skills/5writing/SKILL.md", "stage": "paper writing and compilation", "usage": "core when source writing is in scope"},
-    {"name": "6verity", "source": "MathModelAgent", "path": "skills/6verity/SKILL.md", "stage": "paper acceptance", "usage": "core for final paper review"},
-    {"name": "mathmodel-figure-templates", "source": "MathModelAgent", "path": "skills/mathmodel-figure-templates/SKILL.md", "stage": "scientific data figures", "usage": "proactive when data-figure generation is in scope; select by verified inputs; selected over the duplicate scibox-figure frontmatter name"},
-    {"name": "typst-author", "source": "MathModelAgent", "path": "skills/typst-author/SKILL.md", "stage": "Typst source work", "usage": "conditional"},
-    {"name": "scibox-diagram", "source": "sci-box", "path": "skills/scibox-diagram/SKILL.md", "stage": "editable vector diagrams", "usage": "conditional"},
-    {"name": "bzd-model-assumption-checker", "source": "BZD", "path": "skills/论文自查类/bzd-model-assumption-checker/SKILL.md", "stage": "assumption review", "usage": "conditional; evidenced in source project"},
-    {"name": "bzd-model-solution-checker", "source": "BZD", "path": "skills/论文自查类/bzd-model-solution-checker/SKILL.md", "stage": "model and result review", "usage": "conditional; evidenced in source project"},
-    {"name": "editaplot", "source": "EditaPlot", "path": "skill/editaplot/SKILL.md", "stage": "Origin-based figure authoring", "usage": "optional; prior installation or environment checks do not prove a final Origin figure"}
+    {
+      "name": "1start-mathmodel",
+      "source": "MathModelAgent",
+      "path": "skills/1start-mathmodel/SKILL.md",
+      "stage": "new-project planning",
+      "usage": "conditional"
+    },
+    {
+      "name": "2analysis-modeling",
+      "source": "MathModelAgent",
+      "path": "skills/2analysis-modeling/SKILL.md",
+      "stage": "problem and model design",
+      "usage": "core when modeling is in scope"
+    },
+    {
+      "name": "_references",
+      "source": "MathModelAgent",
+      "path": "skills/_references/SKILL.md",
+      "stage": "shared modeling, writing and figure norms referenced by the selected stages",
+      "usage": "knowledge only; read needed sections through their actual file paths, never a standalone execution"
+    },
+    {
+      "name": "3coding-visual",
+      "source": "MathModelAgent",
+      "path": "skills/3coding-visual/SKILL.md",
+      "stage": "reproducible solving and data figures",
+      "usage": "core when computation is in scope"
+    },
+    {
+      "name": "4drawio",
+      "source": "MathModelAgent",
+      "path": "skills/4drawio/SKILL.md",
+      "stage": "diagram planning",
+      "usage": "conditional"
+    },
+    {
+      "name": "5writing",
+      "source": "MathModelAgent",
+      "path": "skills/5writing/SKILL.md",
+      "stage": "paper writing and compilation",
+      "usage": "core when source writing is in scope"
+    },
+    {
+      "name": "6verity",
+      "source": "MathModelAgent",
+      "path": "skills/6verity/SKILL.md",
+      "stage": "paper acceptance",
+      "usage": "core for final paper review"
+    },
+    {
+      "name": "mathmodel-figure-templates",
+      "source": "MathModelAgent",
+      "path": "skills/mathmodel-figure-templates/SKILL.md",
+      "stage": "scientific data figures",
+      "usage": "proactive when data-figure generation is in scope; select by verified inputs; selected over the duplicate scibox-figure frontmatter name"
+    },
+    {
+      "name": "typst-author",
+      "source": "MathModelAgent",
+      "path": "skills/typst-author/SKILL.md",
+      "stage": "Typst source work",
+      "usage": "conditional"
+    },
+    {
+      "name": "scibox-diagram",
+      "source": "sci-box",
+      "path": "skills/scibox-diagram/SKILL.md",
+      "stage": "editable vector diagrams",
+      "usage": "conditional"
+    },
+    {
+      "name": "bzd-model-assumption-checker",
+      "source": "BZD",
+      "path": "skills/论文自查类/bzd-model-assumption-checker/SKILL.md",
+      "stage": "assumption review",
+      "usage": "conditional; evidenced in source project"
+    },
+    {
+      "name": "bzd-model-solution-checker",
+      "source": "BZD",
+      "path": "skills/论文自查类/bzd-model-solution-checker/SKILL.md",
+      "stage": "model and result review",
+      "usage": "conditional; evidenced in source project"
+    },
+    {
+      "name": "editaplot",
+      "source": "EditaPlot",
+      "path": "skill/editaplot/SKILL.md",
+      "stage": "Origin-based figure authoring",
+      "usage": "optional; prior installation or environment checks do not prove a final Origin figure"
+    },
+    {
+      "name": "design-scientific-figure",
+      "source": "Sivia",
+      "path": "skills/design-scientific-figure/SKILL.md",
+      "stage": "mechanism and overview design",
+      "usage": "conditional; use project adapter references/scientific-mechanisms.md; no plugin installation implied"
+    },
+    {
+      "name": "audit-scientific-figure",
+      "source": "Sivia",
+      "path": "skills/audit-scientific-figure/SKILL.md",
+      "stage": "scientific diagram review",
+      "usage": "conditional; use project adapter references/scientific-mechanisms.md; no plugin installation implied"
+    },
+    {
+      "name": "correct-scientific-figure",
+      "source": "Sivia",
+      "path": "skills/correct-scientific-figure/SKILL.md",
+      "stage": "object-level diagram corrections",
+      "usage": "conditional; use project adapter references/scientific-mechanisms.md; no plugin installation implied"
+    }
   ]
 }

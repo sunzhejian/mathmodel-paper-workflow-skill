@@ -2,9 +2,17 @@
 
 面向数学建模竞赛的 Codex skill，支持**国赛中文、美赛英文及 MathorCup 大数据预备适配**：可以从题面和附件开始完成模型、求解、论文及相关材料，也可以接续现稿，只修论文、审查模型、制作图示或处理排版。工作围绕逐问证据展开，将程序与原精度结果、摘要与公式、数据图和线稿、分页优化、附录保留及支撑材料验收连接起来。缺少题面、数据或运行证据时会标明缺口，不把演示结果写进正式论文。
 
-它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、项目已有的 mma-paper** 等技能。前四个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
+它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、Sivia、项目已有的 mma-paper** 等技能。前五个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
 **第一次使用**：先看[工具安装与第一次使用](docs/toolchain.md)，装好 Git、Python 和本仓库依赖后，用同一个虚拟环境解释器运行 `scripts/run_demo.py --output qa/demo`。演示会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；它不需要 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。详细产物及真实项目迁移见[复现手册](references/reproduction-guide.md)。
+
+## 把完整赛题与数据交给其他 AI
+
+从零建模或测试另一模型时，先提供**完整原始题面、全部附件与工作表、原始输出样表，以及每问对应的数据和交付要求**。题面内的附录、参数表、边界条件和公式仍属于题面；摘要、题意概述或一张截图不能代替完整来源。独立试用使用原始资料，旧论文、已填结果表和参考解答单独保留，不进入其基线输入。
+
+[材料准入工具](scripts/prepare_case_materials.py)按明确白名单复制原件并保留 bytes/hash；PDF 输出每页文本与 PNG，XLSX 输出所有工作表的逐格 CSV 和单元格记录，保留空位、原表头、公式原文与原始类型。结果样表标为 `output-template`，用于说明填写位置。DOC/DOCX、文本、CSV、图片等补充材料可以完整保留；UTF-8 文本另留可读副本，未覆盖的二进制解析明确标记，原 DOC 被复制不表示它已被自动读取。
+
+准备成功与模型实际读取分开验收。只读 `case_materials` MCP 可提供题面逐页查看和材料分段读取；读取收据记录返回给模型的范围，不证明其理解公式、已经求解或论文已完成。真实赛题包放在仓库之外的独立研究目录，公开仓库只保留通用脚本、文档和合成测试。[完整合同、命令与交接证据](references/case-materials.md)说明如何查漏；[模型评测](references/model-trials.md)说明不同工具模式的实际能力。
 
 ## 真实测试示例
 
@@ -20,15 +28,35 @@ DeepSeek原程序把整数上取整技巧套到连续吨数，漏算小吨位运
 
 这些是列明小任务的验证示例，不能换算为比赛评级或完整论文质量。查看[详细测试说明](docs/model-trials-20261001-families.md)、[原始答复与检测记录](examples/model-trials/observed-v2/evaluation.json)；图提供[可编辑draw.io和矢量文件](docs/figures)，由[生成脚本](scripts/generate_trial_figures.py)读取实际数据生成。
 
+2026-10-02 又进行了冻结现稿的项目工具回归：25/26 页产物属于已有正文中的字体、同源图件导入和摘要分页修订，不能记为模型从完整赛题独立写出的长稿。在加入摘要结构检查的三模型轮中，GLM 会话与约定的局部产物均完成；Kimi 的局部产物通过对应检查，但会话超时；DeepSeek 未完成。这些范围与客户端状态分别列在[项目工具回归说明](references/model-trials.md#冻结现稿的局部回归记录)。
+
+2026-10-03 用完整 A 题及所有数据/样表测试材料交接：三模型均收全14项必要文本。Kimi 首轮误把正文展示范围当成完整结果范围，补齐本项目必读规范与上游共享引用后，在同题重新测试中自行纠正。[完整输入与上下文试验](docs/model-intake-20261003.md)分别列明材料覆盖、格式缺陷、限定的来源核对和未完成的求解/论文阶段；本地334项工具测试通过，未将读取成功记成整篇论文成功。
+
 ## 科研绘图示例
 
-数据分析和求解结果需要图件时，skill 会主动从科研绘图库选择能解释结论的组合图、分布图或响应表示。当前固定入口有11个样式脚本，其中相关矩阵、预测边缘分布及参数响应已有[CSV数据入口](scripts/render_scientific_data.py)：图中指标重算，坐标和单位来自合同，模拟数据明确标注。
+数据分析和求解结果需要图件时，skill 会主动从科研绘图库选择能解释结论的组合图、分布图或响应表示。当前固定入口有11个上游样式脚本，本项目已接通5类[CSV数据适配](scripts/render_scientific_data.py)：相关矩阵、预测边缘分布、参数响应、配对雨云图和二分类 ROC 比较。坐标、单位、样本/分组来自合同，统计量由实际输入重算，合成数据明确标注。
 
 | 多变量关系与分布 | 预测边缘分布与误差 | 参数响应网格 |
 | --- | --- | --- |
 | [![相关矩阵合成示例](docs/figures/scientific/correlation/figure.png)](docs/figures/scientific/correlation/figure.png) | [![预测误差合成示例](docs/figures/scientific/prediction/figure.png)](docs/figures/scientific/prediction/figure.png) | [![参数响应合成示例](docs/figures/scientific/surface/figure.png)](docs/figures/scientific/surface/figure.png) |
 
-点击看大图。这三图是**合成数据的布局与数据接口示例**，未训练预测模型或执行TPE；提供[CSV与合同](examples/scientific-figures)、[生成脚本](scripts/generate_advanced_figure_examples.py)及[矢量文件](docs/figures)。[主动选图规则](references/advanced-figures.md)说明11种模板的输入条件、原脚本风险和实际调用顺序；界面95款不被记成95个已经接通的入口。
+| 两阶段配对与差值 | 同样本二分类 ROC 比较 |
+| --- | --- |
+| [![配对雨云图合成示例](docs/figures/scientific/paired/figure.png)](docs/figures/scientific/paired/figure.png) | [![ROC比较合成示例](docs/figures/scientific/binary-roc/figure.png)](docs/figures/scientific/binary-roc/figure.png) |
+
+点击看大图。这5图是**匿名合成数据的布局与数据接口示例**，均不属于真实 A 题答案，未训练预测模型或执行TPE；提供[CSV与合同](examples/scientific-figures)、[生成脚本](scripts/generate_advanced_figure_examples.py)及[矢量文件](docs/figures)。[配对合同](examples/scientific-figures/paired.json)按 ID 对齐两个阶段，[ROC合同](examples/scientific-figures/binary-roc.json)按同一批标签与给定分数计算。当前 ROC 入口不训练模型、不执行交叉验证或产生置信区间；配对图也不自动生成 p 值。[主动选图规则](references/advanced-figures.md)说明11种模板与5类数据入口的输入条件和调用顺序；界面95款不被记成95个已经接通的入口。
+
+## 流程图与模型机制
+
+[通用流程图入口](scripts/render_flowchart.py)把显式节点、条件、分支和走线合同生成三层可编辑 draw.io 图，可画输入/输出、处理框、判断、起止、分组、循环及反馈。提供[数值迭代](examples/flowcharts/numerical_iteration.json)、[优化反馈](examples/flowcharts/optimization_feedback.json)、[训练验证测试划分](examples/flowcharts/data_split_no_leakage.json)和[并行模型汇流](examples/flowcharts/parallel_model_structure.json)4份匿名合同，作为可替换的语义示例。图意须来自当前题面、模型与代码，坐标和通道须明确；这个入口不推导算法或自动设计科学布局。
+
+简单图可用该入口或 sci-box 的4种既有版式。复杂机制、架构或科研总览按[机制图规则](references/scientific-mechanisms.md)选择 Sivia 的设计、审阅和最小纠错规则，核对对象、方向、条件、来源与可编辑层。使用哪些上游入口取决于当前图的需求和实际后端。传入已安装的 draw.io 可执行文件后，流程图入口才实际导出 PNG、矢量 PDF 和原 SVG；Typst 使用同源高清 PNG，保留 `.drawio`/PDF，并查看最终论文中的字体与箭头。原 SVG 的 HTML 标签和动态 CSS 需要目标引擎验证。
+
+| 输入、判断与迭代反馈示例 | 更多通用结构 |
+| --- | --- |
+| <a href="docs/figures/flowcharts/numerical_iteration/figure.png"><img src="docs/figures/flowcharts/numerical_iteration/figure.png" width="280" alt="匿名通用数值迭代：多输入、收敛判断、时间循环和反馈通道"></a> | [优化可行性与反馈](docs/figures/flowcharts/optimization_feedback/figure.png)<br>[训练/验证/测试边界](docs/figures/flowcharts/data_split_no_leakage/figure.png)<br>[并行模型与汇流](docs/figures/flowcharts/parallel_model_structure/figure.png)<br>[可编辑 draw.io 与矢量 PDF](docs/figures/flowcharts) |
+
+这些是匿名机制示意，具体算法和条件须用当前题面及代码替换，不表示真实 A 题已求解。公开流程图保留 PNG、PDF 和可编辑源；draw.io 原 SVG 本轮含 `foreignObject`，不作为 Typst 默认图件发布。
 
 ## 三张图看懂流程
 
@@ -50,6 +78,10 @@ MathModelAgent 组织建模与写作，sci-box 处理图形，BZD 提供专项�
 
 三图均提供 [可编辑 draw.io 源](docs/figures) 和 [生成脚本](scripts/generate_diagrams.py)，重绘与导出见 [复现手册第 7 节](references/reproduction-guide.md#7-重绘本仓库的三张讲解图)。
 
+## 使用许可
+
+新版自有内容仅允许非商业使用，禁止收费服务、商业集成及其他商业用途。源码公开供学习、教学与非商业研究使用；这不是 OSI 开源许可。历史 MIT 版本和第三方文件各自保留原许可，详见 [LICENSE](LICENSE) 与 [NOTICE](NOTICE)。Sivia 的固定入口、已知缺陷和后端适配见[机制图规则](references/scientific-mechanisms.md)。
+
 ## 安装与调用
 
 将仓库克隆到 Codex 的技能目录（Windows 默认位于用户目录下 `.codex/skills`，也可使用自己的 `CODEX_HOME/skills`）：
@@ -58,7 +90,7 @@ MathModelAgent 组织建模与写作，sci-box 处理图形，BZD 提供专项�
 git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-workflow-skill.git ~/.codex/skills/mathmodel-paper-workflow
 ```
 
-上面的路径写法适用于 macOS/Linux shell。**Windows PowerShell 请直接照[安装指南的 Windows 命令](docs/toolchain.md#windows-powershell)执行**，不必把 `~` 或 Bash 语法硬搬过去。已克隆旧版仓库时，在仓库根目录执行 `git submodule update --init --recursive`。运行 `python scripts/check_vendor_skills.py` 检查四个上游提交和 12 个选用入口。子模块文件在本地可读，但不会自动注册为顶层 Codex skill；按当前阶段读取对应 `SKILL.md`。
+上面的路径写法适用于 macOS/Linux shell。**Windows PowerShell 请直接照[安装指南的 Windows 命令](docs/toolchain.md#windows-powershell)执行**，不必把 `~` 或 Bash 语法硬搬过去。已克隆旧版仓库时，在仓库根目录执行 `git submodule update --init --recursive`。运行 `python scripts/check_vendor_skills.py` 检查五个上游提交和16个登记入口，其中 `_references` 提供所选阶段引用的共享规范，不作为独立执行阶段。子模块文件在本地可读；是否可被客户端发现取决于扫描/插件配置，不能假定已经执行。按入口清单读取当前阶段的 `SKILL.md` 及必要引用，避免同名副本。
 
 使用脚本需要 Python 3.10+。先按[安装指南](docs/toolchain.md#1-先把仓库演示跑通)创建 `.venv`；下面只示范从该环境安装依赖：
 
@@ -105,11 +137,13 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [SKILL.md](SKILL.md) | 入口、反馈处理与完成标准 |
 | [技能协作](references/skill-orchestration.md) | 其他技能的分工、证据等级、调用顺序、同名去重 |
 | [上游项目文件](vendor/README.md) / [入口清单](vendor/skill-integrations.json) | 固定提交的实际文件、所选技能路径和许可边界 |
-| [上游技能检查](scripts/check_vendor_skills.py) | 核对四个子模块提交、入口文件及 frontmatter 名称 |
-| [上游更新检测](scripts/check_upstream_updates.py) | 只读比较四个上游 HEAD 与当前固定提交，供定期维护使用 |
+| [上游技能检查](scripts/check_vendor_skills.py) | 核对五个子模块提交、入口文件及 frontmatter 名称 |
+| [上游更新检测](scripts/check_upstream_updates.py) | 只读比较五个上游 HEAD 与当前固定提交，供定期维护使用 |
 | [上游维护步骤](references/upstream-maintenance.md) | 发现更新后的差异审查、兼容性检查、提交和异常处理 |
 | [复现手册](references/reproduction-guide.md) | 环境、端到端演示、真实项目迁移、图源重绘 |
 | [工具安装与第一次使用](docs/toolchain.md) | Git/Python 基础环境，数值库、LaTeX/Typst、draw.io、Word 与可选商业软件 |
+| [完整材料交接](references/case-materials.md) / [材料准入](scripts/prepare_case_materials.py) | 原始题面、全部附件/工作表与输出模板白名单；逐问要求映射、原件哈希、完整页图与实际读取证据 |
+| [只读材料 MCP](scripts/case_materials_server.py) | 给其他 AI 分段读取完整材料与题面页图，记录返回范围；不执行求解或把原 DOC 保留计为已解析 |
 | [历史版本锁](examples/upstream-lock.json) | 4 个公开上游的来源与当时提交 |
 | [约束合同示例](examples/workflow-contract.json) | 页数口径、边距、留白、附录与交付约定 |
 | [合同检查入口](scripts/audit_contract.py) | 直接读取合同，校验范围并运行 PDF 检查；支持 dry-run |
@@ -134,7 +168,8 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [模板决策校验](scripts/validate_template_decisions.py) | 保存用户选择后验证模板与数据源，后续修订避免重复询问 |
 | [流程图模板对照图](scripts/preview_diagram_templates.py) | 从子模块预览生成本地四图对照，供使用者选择，不发布上游素材 |
 | [图表与排版](references/figures-and-layout.md) | 中文字体、可见图宽、线稿透视、标注避让、留白 |
-| [主动科研绘图](references/advanced-figures.md) / [CSV数据渲染](scripts/render_scientific_data.py) | 11种布局按证据主动选择；三类数据入口、指标重算、网格/点云与矢量输出 |
+| [主动科研绘图](references/advanced-figures.md) / [CSV数据渲染](scripts/render_scientific_data.py) | 11种上游样式、5类数据适配；指标重算、配对与同样本 ROC、网格/点云及矢量输出 |
+| [通用流程图](scripts/render_flowchart.py) / [4份语义合同](examples/flowcharts) | 显式条件、分支、循环、反馈与并行汇流；分层可编辑，实际导出后核对论文尺寸 |
 | [科研图合成示例](scripts/generate_advanced_figure_examples.py) / [可选绘图依赖](requirements-figures.txt) | 冻结合成CSV与合同，生成可编辑代码和PNG/PDF/SVG，不作为论文结果 |
 | [编译与交付](references/build-and-delivery.md) | 原附录接回、PDF/Word验收及支撑包 |
 | [PDF 工具](scripts/pdf_workflow.py) | 留白/公式检查、渲染、附录保留和可选页码 |
@@ -169,4 +204,4 @@ python scripts/run_demo.py --output qa/demo
 - 加页码只接受空白页脚；遇到已有内容直接停止，不覆盖旧页码。
 - 仓库公开通用流程、工具、合成测试及匿名模型试用记录；不包含真实参赛论文、赛题附件、队伍信息或私有赛题计算数据。
 
-工具使用 PyMuPDF、NumPy 和 Pillow；依赖各自许可证适用。仓库原创说明与代码采用 MIT 许可证。
+工具使用 PyMuPDF、NumPy 和 Pillow；依赖各自许可证适用。2026-10-02 起新版自有内容采用 PolyForm Noncommercial 1.0.0，仅许可非商业用途；历史 MIT 与第三方条款见 [NOTICE](NOTICE)。

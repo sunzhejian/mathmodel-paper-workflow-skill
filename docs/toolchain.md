@@ -8,6 +8,7 @@
 | --- | --- | --- | --- |
 | 获取仓库、固定上游子模块 | Git | 本地使用本仓库时 | `git --version` |
 | 运行检查、打包和合成演示 | Python 3.10+、本仓库依赖 | 本地使用本仓库时 | `python --version`、导入 `pymupdf` |
+| 准备完整原题、全部附件和只读材料接口 | 支持ZIP文件名编码参数的 Python、PyMuPDF | 交给其他 AI 或开展完整赛题任务时 | `prepare_case_materials.py --help`；核对完整文件/页/工作表清单 |
 | 编辑程序和论文源 | VS Code 等文本编辑器 | 想要图形界面时；不是运行依赖 | 打开仓库目录 |
 | 数值求解、数据表、数据图 | SciPy、pandas、Matplotlib、openpyxl 等 | 赛题确实采用相应 Python 路线时 | 在项目环境中导入并运行一问脚本 |
 | 编译 `.tex` | TeX Live 或 MiKTeX，含 XeLaTeX；需要时配 `latexmk` | 需要本机编译多文件 LaTeX 项目时，二选一 | `xelatex --version`、`latexmk -v` |
@@ -59,6 +60,21 @@ python3 -m venv .venv
 
 演示完成后查看 `qa/demo/demo-report.json`、`qa/demo/final.pdf` 和 `qa/demo/pages/`；它们来自**合成数据**，不能作为真实赛题的计算结论。[完整产物说明与复现步骤](../references/reproduction-guide.md)列出了每个文件的用途。VS Code 可从[官方安装指南](https://code.visualstudio.com/docs/getstarted/overview)安装，进入仓库后运行 `code .` 打开目录；编辑器不替代 Python、Git 或论文编译器。
 
+### 完整材料准备与只读交接
+
+按[材料合同](../references/case-materials.md)明确完整原题、题内附录、全部附件/工作表、原样输出模板和逐问要求，在仓库外研究目录生成新包。PDF逐页文本/PNG需要现有 PyMuPDF；XLSX ZIP/XML解析与逐格 CSV 用标准库，不要求为了材料准备安装 openpyxl。ZIP路线需解释器支持 `ZipFile(metadata_encoding=...)`，可在复用当前解释器前验证：
+
+```sh
+python -c "import inspect, zipfile, pymupdf; print('metadata_encoding' in inspect.signature(zipfile.ZipFile).parameters)"
+python -X utf8 scripts/prepare_case_materials.py --help
+python -X utf8 scripts/prepare_case_materials.py --manifest /path/to/research/source-manifest.json --output /path/to/research/packet-new
+python -X utf8 scripts/case_materials_server.py --help
+```
+
+先核对 `file_manifest.json` 的全部 source id、具体必需文件、页数、工作表和模板要求映射。`prepared_with_limitations` 的退出码2表示资料已保留但存在解析限制；DOC/DOCX、图片等被保留为原件不等于工具已经读取内容，UTF-8补充文本的完整可读副本也应交接。支持范围和缺口以清单为准，不能为消除限制而少交文件。
+
+只读 `case_materials` MCP 与受限排版 `paper_project` MCP 分别选择。前者提供完整材料读取/页图与范围收据，不执行求解；后者检查已准备 Typst 项目的字体、图件、摘要结构与编译，不提供任意数值程序运行。模型实际读完、理解条件、执行求解和完成论文各自要有证据。启动命令见[材料接口](../references/case-materials.md#给其他-ai-的只读入口)与[模型试用](../references/model-trials.md)。
+
 ## 2. 做真实赛题时增加 Python 数值库
 
 本仓库的 `requirements.txt` 只列 PDF 检查和演示工具的依赖，不强制安装所有建模包。按实际方法在**赛题项目自己的环境**中安装，例如：
@@ -91,7 +107,7 @@ LaTeX 与 Typst 模板不可仅通过改扩展名互换；选定一个引擎后�
 
 ## 4. 图示与 Word 检查
 
-**科研数据图：**采用本仓库三类CSV入口时，在选中的项目Python环境安装 `python -m pip install -r requirements-figures.txt`。原图库样式可按[主动科研绘图](../references/advanced-figures.md)调用；正式图使用真实CSV与角色合同，再用 `render_scientific_data.py` 输出PNG、PDF/SVG、计算值及可编辑源码。中文可传已有字体，或使用 `fetch_cjk_test_font.py` 在指定目录取得固定开源字体及许可证；不安装到系统。界面图款、原模板演示和已接通数据入口分开列明。
+**科研数据图：**采用本仓库5类CSV入口时，在选中的项目Python环境安装 `python -m pip install -r requirements-figures.txt`。已接通相关矩阵、预测边缘分布、参数响应、配对雨云图和二分类 ROC 比较，原图库样式可按[主动科研绘图](../references/advanced-figures.md)调用。正式图使用真实CSV与角色合同，再用 `render_scientific_data.py` 输出PNG、PDF/SVG、计算值及可编辑源码。中文可传已有字体，或使用 `fetch_cjk_test_font.py` 在指定目录取得固定开源字体及许可证；不安装到系统。界面图款、原模板演示和已接通数据入口分开列明。
 
 **可编辑示意图：**从 [draw.io Desktop 官方发布页](https://github.com/jgraph/drawio-desktop/releases)安装对应系统版本。打开 `.drawio` 核对文字、箭头、遮挡弧线和图例，再导出 PDF/PNG；命令行可在可执行文件已加入 PATH 时运行，例如：
 
@@ -100,6 +116,14 @@ drawio -x -f pdf -o figures/roadmap.pdf figures/roadmap.drawio
 ```
 
 不同系统的命令别名可能是 `drawio`、`draw.io` 或可执行文件完整路径。桌面导出通常需要图形会话；无桌面的服务器优先保留可编辑源，在有桌面的环境导出并目视验图。仓库讲解图的实际命令见[复现手册第 7 节](../references/reproduction-guide.md#7-重绘本仓库的三张讲解图)。
+
+通用流程图还可直接使用[4份语义合同](../examples/flowcharts)和显式坐标入口，输出新目录。源生成仅用标准库；实际 PNG/PDF/SVG 导出需要传入已安装的 draw.io 文件路径：
+
+```sh
+python -X utf8 scripts/render_flowchart.py --manifest examples/flowcharts/numerical_iteration.json --output /path/to/research/flowchart-new --drawio /path/to/drawio --scale 3
+```
+
+核对各分支、循环、条件、可编辑对象和声明版心宽度。原 draw.io SVG 可能含 HTML 标签、`foreignObject` 与动态 CSS；Typst默认使用同源高清 PNG，保留 draw.io/PDF。缺少导出程序时只交付源并说明未渲染，不能用浏览器预览替代论文 PDF 显示检查。复杂机制图按[机制图规则](../references/scientific-mechanisms.md)条件调用 Sivia 的设计/审阅/纠错；不为简单算法框图加载全部知识库或额外强制安装 Office。
 
 **Word：**有 Microsoft Word 时用它打开最终 DOCX，检查公式、字体、图表、页码并导出 PDF 逐页对照。没有 Word 时可从 [LibreOffice 官方下载页](https://www.libreoffice.org/download/)安装 Writer；[命令行参数文档](https://help.libreoffice.org/latest/en-US/text/shared/guide/start_parameters.html)说明 `--headless` 和 `--convert-to`。先创建 `qa/word-preview` 目录，再把 DOCX 渲染到其中：
 

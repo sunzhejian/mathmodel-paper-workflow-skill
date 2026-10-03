@@ -1,10 +1,36 @@
 {
   "purpose": "Pinned upstream revisions used by the vendor submodules; not a claim that all selected skills executed",
   "sources": [
-    {"name": "MathModelAgent", "url": "https://github.com/jihe520/MathModelAgent", "commit": "487f35085271f2f5bac5c0bad0b30c64b7b889f9"},
-    {"name": "sci-box", "url": "https://github.com/jihe520/sci-box", "commit": "9687d2a52037e92bf68a781b9b1e061ca03c8125"},
-    {"name": "BZD", "url": "https://github.com/BZDmathclub/bzd-math-modeling-skills", "commit": "5395fb591a47f8f3b906feb9647bebdf1f4779e8"},
-    {"name": "EditaPlot", "url": "https://github.com/hang-jin/editaplot", "commit": "01721038afd212103d96225319b22d1bbfe32270"}
+    {
+      "name": "MathModelAgent",
+      "url": "https://github.com/jihe520/MathModelAgent",
+      "commit": "487f35085271f2f5bac5c0bad0b30c64b7b889f9"
+    },
+    {
+      "name": "sci-box",
+      "url": "https://github.com/jihe520/sci-box",
+      "commit": "9687d2a52037e92bf68a781b9b1e061ca03c8125"
+    },
+    {
+      "name": "BZD",
+      "url": "https://github.com/BZDmathclub/bzd-math-modeling-skills",
+      "commit": "5395fb591a47f8f3b906feb9647bebdf1f4779e8"
+    },
+    {
+      "name": "EditaPlot",
+      "url": "https://github.com/hang-jin/editaplot",
+      "commit": "01721038afd212103d96225319b22d1bbfe32270"
+    },
+    {
+      "name": "Sivia",
+      "url": "https://github.com/exsinger-hub/Sivia",
+      "commit": "93f9de2c29a20f3004cc04a9b7913401a8744d60"
+    }
   ],
-  "local_only": [{"name": "mma-paper", "public_source_verified": false}]
+  "local_only": [
+    {
+      "name": "mma-paper",
+      "public_source_verified": false
+    }
+  ]
 }

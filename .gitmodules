@@ -10,3 +10,6 @@
 [submodule "vendor/EditaPlot"]
 	path = vendor/EditaPlot
 	url = https://github.com/hang-jin/editaplot.git
+[submodule "vendor/Sivia"]
+	path = vendor/Sivia
+	url = https://github.com/exsinger-hub/Sivia.git

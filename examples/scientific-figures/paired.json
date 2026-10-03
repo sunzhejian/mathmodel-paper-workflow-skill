@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "template_id": "paired-raincloud",
+  "data_kind": "synthetic",
+  "data": "paired-values.csv",
+  "title": "匿名合成配对分布与个体变化",
+  "source_note": "匿名固定合成输入，仅验证配对数据接口与版式；不是实验结果，不进行显著性检验。",
+  "roles": {"sample_id": "sample_id", "condition": "condition", "value": "value"},
+  "conditions": ["阶段一", "阶段二"],
+  "unit": "mg"
+}

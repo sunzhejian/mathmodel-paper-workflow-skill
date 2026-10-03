@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="mathmodel-flowchart" version="24.7.17">
+  <diagram id="mathmodel-schematic" name="并行模型模块与输出汇流机制">
+    <mxGraphModel dx="900" dy="675" grid="1" gridSize="10" guides="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="675" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="mm-layer-background" value="分组背景" parent="0" />
+        <mxCell id="mm-layer-connectors" value="语义连线" parent="0" />
+        <mxCell id="mm-layer-nodes" value="节点与文字" parent="0" />
+        <mxCell id="physical" value="物理机制" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=0;fillColor=none;strokeColor=#9C8AB2;dashed=1;dashPattern=4 4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=5;fontColor=#6C5489;" vertex="1" parent="mm-layer-background">
+          <mxGeometry x="10" y="235" width="270" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="statistical" value="统计映射" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=0;fillColor=none;strokeColor=#9C8AB2;dashed=1;dashPattern=4 4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=5;fontColor=#6C5489;" vertex="1" parent="mm-layer-background">
+          <mxGeometry x="315" y="235" width="270" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="constraints" value="约束条件" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=0;fillColor=none;strokeColor=#9C8AB2;dashed=1;dashPattern=4 4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=5;fontColor=#6C5489;" vertex="1" parent="mm-layer-background">
+          <mxGeometry x="620" y="235" width="270" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="input_prepare" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.5;exitY=1;exitPerimeter=1;entryX=0.5;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="input" target="prepare" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry" />
+        </mxCell>
+        <mxCell id="prepare_a" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.1;exitY=1;exitPerimeter=1;entryX=0.5;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="prepare" target="module_a" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="210" />
+              <mxPoint x="145" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="prepare_b" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.5;exitY=1;exitPerimeter=1;entryX=0.5;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="prepare" target="module_b" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry" />
+        </mxCell>
+        <mxCell id="prepare_c" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.9;exitY=1;exitPerimeter=1;entryX=0.5;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="prepare" target="module_c" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="210" />
+              <mxPoint x="755" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a_merge" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.5;exitY=1;exitPerimeter=1;entryX=0.1;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="module_a" target="merge" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <Array as="points">
+              <mxPoint x="145" y="460" />
+              <mxPoint x="350" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b_merge" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.5;exitY=1;exitPerimeter=1;entryX=0.5;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="module_b" target="merge" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry" />
+        </mxCell>
+        <mxCell id="c_merge" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.5;exitY=1;exitPerimeter=1;entryX=0.9;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="module_c" target="merge" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry">
+            <Array as="points">
+              <mxPoint x="755" y="460" />
+              <mxPoint x="550" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="merge_output" value="" style="html=0;whiteSpace=nowrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;edgeStyle=none;rounded=0;exitX=0.5;exitY=1;exitPerimeter=1;entryX=0.5;entryY=0;entryPerimeter=1;strokeColor=#42617A;endArrow=block;endFill=1;endSize=7;labelBackgroundColor=#FFFFFF;" edge="1" parent="mm-layer-connectors" source="merge" target="output" relation="data">
+          <mxGeometry relative="1" x="0" y="0" as="geometry" />
+        </mxCell>
+        <mxCell id="input" value="输入与共享状态" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;shape=parallelogram;perimeter=parallelogramPerimeter;fillColor=#FBECDD;strokeColor=#A88966;" vertex="1" parent="mm-layer-nodes" kind="input">
+          <mxGeometry x="325" y="20" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="prepare" value="统一单位与索引" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=1;arcSize=8;fillColor=#ECF4FA;strokeColor=#688098;" vertex="1" parent="mm-layer-nodes" kind="process">
+          <mxGeometry x="325" y="120" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="module_a" value="机制模块 A&#10;状态 u 与参数 θ" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=1;arcSize=8;fillColor=#ECF4FA;strokeColor=#688098;" vertex="1" parent="mm-layer-nodes" kind="process" groupRef="physical">
+          <mxGeometry x="30" y="300" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="module_b" value="映射模块 B&#10;特征 z 与响应 v" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=1;arcSize=8;fillColor=#ECF4FA;strokeColor=#688098;" vertex="1" parent="mm-layer-nodes" kind="process" groupRef="statistical">
+          <mxGeometry x="335" y="300" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="module_c" value="约束模块 C&#10;边界与可行条件" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=1;arcSize=8;fillColor=#ECF4FA;strokeColor=#688098;" vertex="1" parent="mm-layer-nodes" kind="process" groupRef="constraints">
+          <mxGeometry x="640" y="300" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="merge" value="对齐状态并融合输出" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;rounded=1;arcSize=8;fillColor=#ECF4FA;strokeColor=#688098;" vertex="1" parent="mm-layer-nodes" kind="process">
+          <mxGeometry x="325" y="500" width="250" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="output" value="综合响应与解释" style="html=0;whiteSpace=wrap;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#202A35;align=center;verticalAlign=middle;strokeWidth=1.25;spacing=6;shape=parallelogram;perimeter=parallelogramPerimeter;fillColor=#FBECDD;strokeColor=#A88966;" vertex="1" parent="mm-layer-nodes" kind="output">
+          <mxGeometry x="325" y="600" width="250" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

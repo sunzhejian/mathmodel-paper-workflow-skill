@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import tempfile
 import subprocess
 import sys
@@ -187,6 +188,217 @@ class ScientificDataChecks(unittest.TestCase):
             target = path.with_suffix(".checked")
             path.rename(target)
             target.rename(path)
+
+
+class PairedAndBinaryDataChecks(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        for name in ("paired.json", "paired-values.csv", "binary-roc.json", "binary-scores.csv"):
+            shutil.copy2(ROOT / "examples/scientific-figures" / name, self.root / name)
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def contract(self, name, **changes):
+        path = self.root / name
+        spec = json.loads(path.read_text(encoding="utf-8"))
+        spec.update(changes)
+        path.write_text(json.dumps(spec), encoding="utf-8")
+        return path
+
+    def rows(self, name):
+        with (self.root / name).open(encoding="utf-8", newline="") as stream:
+            return list(csv.DictReader(stream))
+
+    def write_rows(self, name, rows):
+        with (self.root / name).open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(rows)
+
+    def test_pairs_align_by_id_not_csv_row_position(self):
+        self.write_rows("paired-values.csv", [
+            {"sample_id": "S1", "condition": "After", "value": 20},
+            {"sample_id": "S2", "condition": "Before", "value": 2},
+            {"sample_id": "S2", "condition": "After", "value": 4},
+            {"sample_id": "S1", "condition": "Before", "value": 10},
+        ])
+        path = self.contract("paired.json", conditions=["Before", "After"])
+        _, bundle, _ = MODULE.prepare(path)
+        self.assertEqual(bundle["sample_ids"], ["S1", "S2"])
+        np.testing.assert_array_equal(bundle["values"], [[10, 20], [2, 4]])
+        self.assertEqual(bundle["statistics"]["paired_difference"]["mean"], 6)
+        self.assertAlmostEqual(bundle["statistics"]["paired_difference"]["sd"], np.sqrt(32))
+        original_stats = bundle["statistics"]
+        self.write_rows("paired-values.csv", self.rows("paired-values.csv")[::-1])
+        self.assertEqual(MODULE.prepare(path)[1]["statistics"], original_stats)
+        _, reverse, _ = MODULE.prepare(self.contract("paired.json", conditions=["After", "Before"]))
+        self.assertEqual(reverse["statistics"]["paired_difference"]["mean"], -6)
+        self.assertFalse(reverse["statistics"]["p_value_calculated"])
+        self.assertFalse(reverse["statistics"]["confidence_interval_calculated"])
+
+    def test_pair_missing_duplicate_unknown_or_empty_id_is_rejected(self):
+        rows = self.rows("paired-values.csv")
+        cases = [rows[:-1], rows + [dict(rows[0])],
+                 [dict(rows[0], condition="Unknown stage")] + rows[1:],
+                 [dict(rows[0], sample_id="")] + rows[1:]]
+        for sample in cases:
+            with self.subTest(sample=sample[:1]):
+                self.write_rows("paired-values.csv", sample)
+                with self.assertRaises(ValueError):
+                    MODULE.prepare(self.root / "paired.json")
+
+    def test_pair_nonfinite_values_and_unknown_contract_fields_are_rejected(self):
+        original = self.rows("paired-values.csv")
+        for value in ("", "NaN", "inf", "1e309"):
+            with self.subTest(value=value):
+                self.write_rows("paired-values.csv", [dict(original[0], value=value)] + original[1:])
+                with self.assertRaises(ValueError):
+                    MODULE.prepare(self.root / "paired.json")
+        self.write_rows("paired-values.csv", original)
+        for changes in ({"conditions": ["阶段一"]}, {"unit": ""},
+                        {"roles": {"sample_id": "sample_id", "condition": "condition", "value": "value", "group": "group"}},
+                        {"p_value": .01}):
+            with self.subTest(changes=changes):
+                shutil.copy2(ROOT / "examples/scientific-figures/paired.json", self.root / "paired.json")
+                with self.assertRaises(ValueError):
+                    MODULE.prepare(self.contract("paired.json", **changes))
+
+    def test_constant_pairs_have_real_difference_and_no_kde(self):
+        rows = [{"sample_id": sample, "condition": condition, "value": value}
+                for sample in ("A", "B", "C") for condition, value in (("Before", 5), ("After", 7))]
+        self.write_rows("paired-values.csv", rows)
+        _, bundle, _ = MODULE.prepare(self.contract("paired.json", conditions=["Before", "After"]))
+        self.assertEqual(bundle["statistics"]["constant_conditions"], ["Before", "After"])
+        self.assertEqual(bundle["statistics"]["paired_difference"], {"mean": 2., "median": 2., "sd": 0.})
+        self.assertIsNone(MODULE.density(bundle["values"][:, 0], np.linspace(4, 8, 30)))
+
+    def test_pair_calculation_overflow_is_rejected(self):
+        self.write_rows("paired-values.csv", [{"sample_id": sample, "condition": condition, "value": value}
+                for sample in ("A", "B") for condition, value in (("Before", -1e308), ("After", 1e308))])
+        with self.assertRaisesRegex(ValueError, "finite numeric range"):
+            MODULE.prepare(self.contract("paired.json", conditions=["Before", "After"]))
+
+    def test_roc_perfect_reverse_and_constant_scores_have_known_auc(self):
+        labels = [0, 0, 1, 1]
+        perfect = MODULE.binary_roc(labels, [.1, .2, .8, .9])
+        reverse = MODULE.binary_roc(labels, [.9, .8, .2, .1])
+        constant = MODULE.binary_roc(labels, [.5] * 4)
+        self.assertEqual(perfect["auc"], 1.)
+        self.assertEqual(reverse["auc"], 0.)
+        self.assertEqual(constant["auc"], .5)
+        self.assertEqual(constant["fpr"], [0., 1.])
+        self.assertEqual(constant["tpr"], [0., 1.])
+        self.assertEqual(constant["thresholds"], [None, .5])
+
+    def test_roc_ties_move_as_whole_groups_independent_of_row_order(self):
+        labels, scores = [0, 1, 0, 1], [.8, .8, .2, .2]
+        result = MODULE.binary_roc(labels, scores)
+        self.assertEqual(result["fpr"], [0., .5, 1.])
+        self.assertEqual(result["tpr"], [0., .5, 1.])
+        self.assertEqual(result["auc"], .5)
+        self.assertEqual(result["thresholds"], [None, .8, .2])
+        order = [1, 0, 3, 2]
+        self.assertEqual(result, MODULE.binary_roc([labels[i] for i in order], [scores[i] for i in order]))
+
+    def test_auc_matches_independent_pairwise_ranking_with_half_credit_for_ties(self):
+        labels = np.array([0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0])
+        for scores in ([3, 1, 2, 3, 0, 2, 1, 2, 3, 1, 0],
+                       [7, -2, 1, 5, 0, 6, 8, 2, 3, 4, -1]):
+            values = np.array(scores)
+            positive, negative = values[labels == 1], values[labels == 0]
+            expected = sum(float(a > b) + .5 * float(a == b) for a in positive for b in negative) / (len(positive) * len(negative))
+            result = MODULE.binary_roc(labels, values)
+            self.assertAlmostEqual(result["auc"], expected)
+            transformed = MODULE.binary_roc(labels, values * 3 + 11)
+            self.assertEqual(result["fpr"], transformed["fpr"])
+            self.assertEqual(result["tpr"], transformed["tpr"])
+            self.assertAlmostEqual(MODULE.binary_roc(labels, -values)["auc"], 1 - expected)
+
+    def test_roc_single_class_invalid_labels_nonfinite_or_misaligned_values_rejected(self):
+        for labels, scores in (([0, 0], [.1, .9]), ([1, 1], [.1, .9]), ([0, 2], [.1, .9]),
+                               ([0, 1], [.1, float("nan")]), ([0, 1], [float("inf"), .1]),
+                               ([0, 1], [.1]), ([0, float("nan")], [.1, .9])):
+            with self.subTest(labels=labels, scores=scores):
+                with self.assertRaises(ValueError):
+                    MODULE.binary_roc(labels, scores)
+
+    def test_roc_different_cohorts_labels_duplicates_and_invalid_csv_values_rejected(self):
+        original = self.rows("binary-scores.csv")
+        model_b = next(i for i, row in enumerate(original) if row["model"] == "方案B")
+        cases = [original[:model_b] + original[model_b + 1:], original + [dict(original[0])],
+                 [dict(row, label="1") if i == model_b else row for i, row in enumerate(original)],
+                 [dict(row, label="2") if i == 0 else row for i, row in enumerate(original)],
+                 [dict(row, score="NaN") if i == 0 else row for i, row in enumerate(original)],
+                 [dict(row, sample_id="") if i == 0 else row for i, row in enumerate(original)],
+                 [dict(row, label="0") for row in original]]
+        for rows in cases:
+            with self.subTest(rows=rows[:1]):
+                self.write_rows("binary-scores.csv", rows)
+                with self.assertRaises(ValueError):
+                    MODULE.prepare(self.root / "binary-roc.json")
+
+    def test_roc_contract_does_not_accept_unimplemented_cv_or_ci_requests(self):
+        for changes in ({"fold_id": "fold"}, {"confidence_level": .95}, {"comparison": False},
+                        {"roles": {"model": "model", "sample_id": "sample_id", "label": "label", "score": "label"}}):
+            with self.subTest(changes=changes):
+                shutil.copy2(ROOT / "examples/scientific-figures/binary-roc.json", self.root / "binary-roc.json")
+                with self.assertRaises(ValueError):
+                    MODULE.prepare(self.contract("binary-roc.json", **changes))
+
+    def test_new_interfaces_preserve_sources_and_report_computed_statistics(self):
+        for manifest, data_file in (("paired.json", "paired-values.csv"), ("binary-roc.json", "binary-scores.csv")):
+            before = (self.root / data_file).read_bytes()
+            spec, bundle, source = MODULE.prepare(self.root / manifest)
+            self.assertEqual(source.read_bytes(), before)
+            self.assertEqual(spec["data_kind"], "synthetic")
+            self.assertFalse(bundle["statistics"]["confidence_interval_calculated"])
+        _, bundle, _ = MODULE.prepare(self.root / "binary-roc.json")
+        self.assertTrue(bundle["statistics"]["same_cohort_verified"])
+        self.assertEqual(bundle["statistics"]["models"]["方案C"]["auc"], .5)
+        self.assertFalse(bundle["statistics"]["training_run_by_renderer"])
+
+    @unittest.skipUnless(HAS_MPL, "Optional Matplotlib route not installed")
+    def test_new_figures_and_reproduction_export_real_vectors_and_matching_statistics(self):
+        for index, name in enumerate(("paired.json", "binary-roc.json")):
+            with self.subTest(template=name):
+                manifest = self.contract(name, title="Synthetic data interface figure")
+                if index == 0:
+                    manifest = self.contract(name, conditions=["Before", "After"])
+                    source = self.root / "paired-values.csv"
+                    source.write_text(source.read_text(encoding="utf-8").replace("阶段一", "Before").replace("阶段二", "After"), encoding="utf-8")
+                else:
+                    source = self.root / "binary-scores.csv"
+                    source.write_text(source.read_text(encoding="utf-8").replace("方案A", "Case A").replace("方案B", "Case B").replace("方案C", "Case C"), encoding="utf-8")
+                output = self.root / f"figure-{index}"
+                report = MODULE.render(manifest, output)
+                ET.parse(output / "figure.svg")
+                with pymupdf.open(output / "figure.pdf") as pdf:
+                    self.assertGreater(len(pdf[0].get_text()), 50)
+                    self.assertEqual(pdf[0].get_images(), [])
+                self.assertEqual(report["input_sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
+                rebuilt = self.root / f"rebuilt-{index}"
+                result = subprocess.run([sys.executable, "-X", "utf8", str(output / "reproduce/render_scientific_data.py"),
+                                         "--manifest", str(output / "reproduce/contract.json"), "--output", str(rebuilt)],
+                                        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
+                self.assertEqual(result.returncode, 0, result.stderr[-1500:])
+                rebuilt_report = json.loads((rebuilt / "figure-data.json").read_text(encoding="utf-8"))
+                self.assertEqual(rebuilt_report["statistics"], report["statistics"])
+                self.assertEqual(rebuilt_report["input_sha256"], report["input_sha256"])
+                for extension in ("png", "pdf", "svg"):
+                    self.assertGreater((rebuilt / ("figure." + extension)).stat().st_size, 1000)
+
+    @unittest.skipUnless(HAS_MPL, "Optional Matplotlib route not installed")
+    def test_constant_paired_conditions_render_without_kde_or_invented_significance(self):
+        self.write_rows("paired-values.csv", [{"sample_id": sample, "condition": condition, "value": value}
+                for sample in ("A", "B", "C") for condition, value in (("Before", 5), ("After", 7))])
+        manifest = self.contract("paired.json", title="Constant synthetic pairs", conditions=["Before", "After"])
+        report = MODULE.render(manifest, self.root / "constant-figure")
+        self.assertEqual(report["statistics"]["constant_conditions"], ["Before", "After"])
+        with pymupdf.open(self.root / "constant-figure/figure.pdf") as pdf:
+            self.assertIn("KDE omitted", pdf[0].get_text())
+            self.assertNotIn("p<", pdf[0].get_text())
 
 
 if __name__ == "__main__":

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "template_id": "binary-roc-comparison",
+  "data_kind": "synthetic",
+  "data": "binary-scores.csv",
+  "title": "匿名合成二分类 ROC 比较",
+  "source_note": "三组预先给定的匿名合成分数，标签与样本集合相同；未训练模型，不包含交叉验证折或置信区间。",
+  "roles": {"model": "model", "sample_id": "sample_id", "label": "label", "score": "score"}
+}

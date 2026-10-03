@@ -15,7 +15,7 @@ DIAGRAM_LABELS = {
     "stageflow-3col": "三栏阶段流程：阶段推进与分支",
     "taskflow-land": "横版任务流水线：多任务步骤与方法",
 }
-DATA_ADAPTER_TEMPLATES = {"correlation-pairgrid", "prediction-marginal-grid", "rf-tpe-surface"}
+DATA_ADAPTER_TEMPLATES = {"correlation-pairgrid", "prediction-marginal-grid", "rf-tpe-surface", "paired-raincloud"}
 
 
 def inspect(project_root: Path, skill_root: Path = SKILL) -> dict:
@@ -114,6 +114,25 @@ def inspect(project_root: Path, skill_root: Path = SKILL) -> dict:
                                  "default_data": "simulated; replace and verify before paper use",
                                  "data_adapter": "scripts/render_scientific_data.py" if name in DATA_ADAPTER_TEMPLATES and (skill_root / "scripts/render_scientific_data.py").is_file() else None,
                                  "adapter_note": "CSV role contract required; metrics are computed and sparse surfaces rejected" if name in DATA_ADAPTER_TEMPLATES else "Original template is style-only until data and statistics are adapted"})
+    # The project ROC adapter deliberately has its own identity. It must not
+    # imply that the upstream cv-roc-ci confidence bands are implemented.
+    roc_manifest=skill_root/'examples/scientific-figures/binary-roc.json'
+    if roc_manifest.is_file() and (skill_root/'scripts/render_scientific_data.py').is_file():
+        roc_preview=skill_root/'docs/figures/scientific/binary-roc/figure.png'
+        data_figures.append({'id':'binary-roc-comparison','label':'二元ROC比较：同一样本标签与真实得分，无折间CI',
+                             'script':'scripts/render_scientific_data.py','preview':roc_preview.relative_to(skill_root).as_posix() if roc_preview.is_file() else None,
+                             'template_source':'project-adaptation','default_data':'none; explicit CSV role contract required',
+                             'example':roc_manifest.relative_to(skill_root).as_posix(),'data_adapter':'scripts/render_scientific_data.py',
+                             'adapter_note':'Empirical binary ROC/AUC; no training, fold analysis or confidence intervals'})
+    flow_root=skill_root/'examples/flowcharts'
+    if (skill_root/'scripts/render_flowchart.py').is_file() and flow_root.is_dir():
+        for manifest in sorted(flow_root.glob('*.json')):
+            spec=json.loads(manifest.read_text(encoding='utf-8'))
+            native_preview=skill_root/'docs/figures/flowcharts'/manifest.stem/'figure.png'
+            diagrams.append({'id':'project-flowchart/'+manifest.stem,'label':spec['title'],
+                             'example':manifest.relative_to(skill_root).as_posix(),'preview':native_preview.relative_to(skill_root).as_posix() if native_preview.is_file() else None,
+                             'template_source':'project-adaptation','script':'scripts/render_flowchart.py',
+                             'layout':'authored coordinates, labeled conditions and explicit feedback lanes; no automatic layout claim'})
     return {"project_root": str(project_root), "configured": selected,
             "available": available, "diagram_templates": diagrams,
             "data_figure_templates": data_figures,

@@ -14,14 +14,23 @@ except ImportError:
     from scripts.run_codex_trial import route_config,redacted
 
 
-def tool_config(cfg: dict, output_tokens: int) -> dict:
+def tool_config(cfg: dict, output_tokens: int, effort: str | None = None, project_tools: dict | None = None) -> dict:
     model=cfg['model']
-    return {'$schema':'https://opencode.ai/config.json','enabled_providers':['trial'],
+    model_options={'reasoningEffort':effort} if effort else {}
+    config={'$schema':'https://opencode.ai/config.json','enabled_providers':['trial'],
             'model':'trial/'+model,'small_model':'trial/'+model,'share':'disabled','autoupdate':False,
             'permission':{'*':'deny'},'mcp':{},
             'provider':{'trial':{'npm':'@ai-sdk/openai-compatible','name':'Anonymous trial',
                                'options':{'baseURL':cfg['base_url'],'apiKey':'{env:'+cfg['env_key']+'}','timeout':480000},
-                               'models':{model:{'name':model,'limit':{'context':256000,'output':output_tokens}}}}}}
+                               'models':{model:{'name':model,'options':model_options,'limit':{'context':256000,'output':output_tokens}}}}}}
+    if project_tools is not None:
+        if set(project_tools)!={'name','command'} or project_tools['name'] not in {'paper_project','case_materials'}:raise ValueError('Only the reviewed paper_project or case_materials tool interface is supported')
+        command=project_tools['command']
+        if not isinstance(command,list) or not command or not all(isinstance(x,str) and x for x in command):raise ValueError('Expected explicit project tool command arguments')
+        interface=project_tools['name']
+        config['mcp']={interface:{'type':'local','command':command,'enabled':True,'timeout':120000}}
+        config['permission'][interface+'_*']='allow'
+    return config
 
 
 def collect_events(stdout: str, secret: str) -> tuple[str,list[dict],int,bool]:
@@ -46,18 +55,24 @@ def collect_events(stdout: str, secret: str) -> tuple[str,list[dict],int,bool]:
     return redacted(''.join(text),secret),events,tools,finished
 
 
-def run_trial(cli: str,cfg: dict,prompt: Path,output: Path,output_tokens: int) -> dict:
+def run_trial(cli: str,cfg: dict,prompt: Path,output: Path,output_tokens: int, effort: str | None = None, project_tools: dict | None = None) -> dict:
     secret=os.environ.get(cfg['env_key'],'')
     if not secret:raise ValueError('Credential environment variable missing')
     raw=prompt.read_bytes()
     if secret in raw.decode('utf-8') or any(secret in x for x in cfg.values()):raise ValueError('Credential found in public inputs')
-    config=tool_config(cfg,output_tokens)
+    if project_tools and secret in json.dumps(project_tools):raise ValueError('Credential found in project tool arguments')
+    if effort not in {None,'low','medium','high'}:raise ValueError('Unsupported reasoning option')
+    config=tool_config(cfg,output_tokens,effort,project_tools)
     output.mkdir(parents=True,exist_ok=False)
     output=output.resolve()
     env=os.environ.copy()
     env['OPENCODE_CONFIG_CONTENT']=json.dumps(config)
     env['OPENCODE_DISABLE_AUTOUPDATE']='true'
     env['OPENCODE_DISABLE_SESSION_SHARING']='true'
+    # Each CLI gets its own database/cache; concurrent runs must not share a
+    # global SQLite migration lock or affect the user's ordinary OpenCode state.
+    for kind in ['DATA','CONFIG','CACHE','STATE']:
+        env['XDG_'+kind+'_HOME']=str(output/'.opencode'/kind.lower())
     args=[cli,'run','--pure','--format','json','--model','trial/'+cfg['model'],'--title','Anonymous model trial','--dir',str(output)]
     started=time.monotonic()
     proc=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8',errors='replace',env=env)
@@ -68,12 +83,15 @@ def run_trial(cli: str,cfg: dict,prompt: Path,output: Path,output_tokens: int) -
         proc.kill()
         stdout,stderr=proc.communicate()
     answer,events,tools,finished=collect_events(stdout,secret)
-    if answer:(output/'answer.json').write_bytes(answer.encode('utf-8'))
-    report={'tool':'OpenCode','model':cfg['model'],'base_url':cfg['base_url'],'protocol':'Chat Completions','reasoning_effort':'provider-default',
+    answer_path=output/('answer.txt' if project_tools else 'answer.json')
+    if answer:answer_path.write_bytes(answer.encode('utf-8'))
+    report={'tool':'OpenCode','model':cfg['model'],'base_url':cfg['base_url'],'protocol':'Chat Completions','reasoning_effort':effort or 'provider-default','effort_scope':'client configuration; provider behavior is not independently verified','isolated_client_state':True,
+            'mode':('case-materials-task' if project_tools['name']=='case_materials' else 'project-tool-task') if project_tools else 'text-only',
+            'selected_tool_interface':project_tools['name'] if project_tools else None,
             'configured_output_tokens':output_tokens,'prompt_sha256':hashlib.sha256(raw).hexdigest(),'exit_code':proc.returncode,
             'timed_out':timed_out,'seconds':round(time.monotonic()-started,1),'answer_present':bool(answer),'complete_stop_event':finished,
             'tool_events':tools,'events':events,'stderr_tail':redacted(stderr,secret)[-1200:]}
-    if answer:report['answer_sha256']=hashlib.sha256((output/'answer.json').read_bytes()).hexdigest()
+    if answer:report['answer_sha256']=hashlib.sha256(answer_path.read_bytes()).hexdigest()
     report['successful_session']=proc.returncode==0 and not timed_out and bool(answer) and finished
     (output/'run.json').write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')
     return report
@@ -87,10 +105,13 @@ def main() -> int:
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--opencode',default=shutil.which('opencode.exe') or shutil.which('opencode'))
     p.add_argument('--output-tokens',type=int,default=32000)
+    p.add_argument('--effort',choices=['low','medium','high'])
+    p.add_argument('--project-tools',type=Path,help='Reviewed paper_project or read-only case_materials MCP name/command JSON; no secrets')
     args=p.parse_args()
     try:
         if not args.opencode or not 1000<=args.output_tokens<=32000:raise ValueError('Unavailable CLI or unsupported trial output budget')
-        r=run_trial(args.opencode,route_config(args.routes,args.route),args.prompt,args.output,args.output_tokens)
+        project_tools=json.loads(args.project_tools.read_text(encoding='utf-8')) if args.project_tools else None
+        r=run_trial(args.opencode,route_config(args.routes,args.route),args.prompt,args.output,args.output_tokens,args.effort,project_tools)
         print(json.dumps({k:r[k] for k in ['tool','model','exit_code','timed_out','seconds','answer_present','complete_stop_event','tool_events']}))
         return 0 if r['successful_session'] else 1
     except (OSError,ValueError,KeyError) as exc:

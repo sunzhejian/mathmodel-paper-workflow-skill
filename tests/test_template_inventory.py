@@ -120,9 +120,38 @@ class TemplateInventoryTests(unittest.TestCase):
             (skill / "scripts/render_scientific_data.py").write_text("original adapter", encoding="utf-8")
             candidates = {x["id"]: x for x in MODULE.inspect(root, skill)["data_figure_templates"]}
             self.assertEqual(candidates["correlation-pairgrid"]["data_adapter"], "scripts/render_scientific_data.py")
-            self.assertIsNone(candidates["paired-raincloud"]["data_adapter"])
+            self.assertEqual(candidates["paired-raincloud"]["data_adapter"], "scripts/render_scientific_data.py")
             (skill / "scripts/render_scientific_data.py").unlink()
             self.assertTrue(all(x["data_adapter"] is None for x in MODULE.inspect(root, skill)["data_figure_templates"]))
+
+    def test_native_diagram_and_roc_are_discovered_separately_with_real_previews(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = root / 'skill'
+            (skill / 'scripts').mkdir(parents=True)
+            for name in ('render_scientific_data.py', 'render_flowchart.py'):
+                (skill / 'scripts' / name).write_text('synthetic adapter', encoding='utf-8')
+            (skill / 'examples/scientific-figures').mkdir(parents=True)
+            (skill / 'examples/scientific-figures/binary-roc.json').write_text('{}', encoding='utf-8')
+            (skill / 'examples/flowcharts').mkdir(parents=True)
+            (skill / 'examples/flowcharts/feedback.json').write_text('{"title":"Feedback"}', encoding='utf-8')
+            for folder in ('scientific/binary-roc', 'flowcharts/feedback'):
+                directory=skill / 'docs/figures' / folder
+                directory.mkdir(parents=True)
+                (directory / 'figure.png').write_bytes(b'synthetic preview fixture')
+            result=MODULE.inspect(root, skill)
+            roc=result['data_figure_templates'][0]
+            flow=result['diagram_templates'][0]
+            self.assertEqual(roc['id'],'binary-roc-comparison')
+            self.assertEqual(roc['template_source'],'project-adaptation')
+            self.assertEqual(roc['preview'],'docs/figures/scientific/binary-roc/figure.png')
+            self.assertEqual(flow['id'],'project-flowchart/feedback')
+            self.assertEqual(flow['preview'],'docs/figures/flowcharts/feedback/figure.png')
+            (skill / 'scripts/render_flowchart.py').unlink()
+            (skill / 'scripts/render_scientific_data.py').unlink()
+            result=MODULE.inspect(root, skill)
+            self.assertEqual(result['diagram_templates'],[])
+            self.assertEqual(result['data_figure_templates'],[])
 
 
 if __name__ == "__main__":

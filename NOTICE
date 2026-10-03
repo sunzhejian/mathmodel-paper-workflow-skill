@@ -1,0 +1,21 @@
+MathModel Paper Workflow
+Required Notice: Copyright (c) 2026 sunzhejian
+
+Distributions carrying the new LICENSE from 2026-10-02 license this project's
+own contributions under PolyForm Noncommercial License 1.0.0. Commercial use
+is not granted. The applicable license covers only rights the maintainer owns.
+
+Earlier copies through commit 40dbe6ed25e80451b0f54524def933c212159acc were
+distributed under MIT. Their existing permissions are not revoked. The former
+text is retained in LICENSES/MIT-legacy.txt for that historical scope; it is
+not a blanket MIT grant for new contributions distributed under the new license.
+
+Vendor Git submodules, dependencies, fonts, papers, data, reference images and
+other third-party materials retain their own licenses and notices. In particular
+Sivia's own contributions have its Non-Commercial License, with separate MIT
+upstream and historical portions. This project does not relicense those files.
+
+The project claims no ownership of user inputs or independently created outputs
+merely because they are processed. Copied project or third-party material in an
+output retains the applicable terms. Public examples are synthetic demonstrations,
+not official competition papers, empirical studies or endorsements by AI vendors.

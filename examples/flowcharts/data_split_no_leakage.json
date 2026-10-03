@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "title": "训练、验证与测试的防泄漏机制",
+  "claim": "划分先锁定；拟合仅使用训练集，验证集用于模型选择，测试集在方案冻结后用于最终评估。实际代码需独立核验这些边界。",
+  "source_note": "匿名通用示例；应由使用者用题面、模型报告和代码核对并替换。仅展示机制，不表示任何比赛算法已运行。",
+  "data_kind": "schematic",
+  "nodes": [
+    {
+      "id": "dataset",
+      "label": "来源数据与样本索引",
+      "kind": "input",
+      "x": 310,
+      "y": 20,
+      "width": 260,
+      "height": 60
+    },
+    {
+      "id": "split",
+      "label": "按时间或组划分\n先锁定三个集合",
+      "kind": "process",
+      "x": 310,
+      "y": 120,
+      "width": 260,
+      "height": 60
+    },
+    {
+      "id": "fit",
+      "label": "仅训练集拟合\n预处理与模型",
+      "kind": "process",
+      "x": 45,
+      "y": 270,
+      "width": 200,
+      "height": 85,
+      "group": "training"
+    },
+    {
+      "id": "trained",
+      "label": "冻结的模型与\n预处理参数",
+      "kind": "output",
+      "x": 45,
+      "y": 410,
+      "width": 200,
+      "height": 90,
+      "group": "training"
+    },
+    {
+      "id": "select",
+      "label": "验证集选择\n模型与超参数",
+      "kind": "process",
+      "x": 340,
+      "y": 270,
+      "width": 200,
+      "height": 85,
+      "group": "validation"
+    },
+    {
+      "id": "locked",
+      "label": "锁定选择规则\n与最终方案",
+      "kind": "output",
+      "x": 340,
+      "y": 410,
+      "width": 200,
+      "height": 90,
+      "group": "validation"
+    },
+    {
+      "id": "test",
+      "label": "测试集仅作\n最终一次评估",
+      "kind": "process",
+      "x": 635,
+      "y": 270,
+      "width": 200,
+      "height": 85,
+      "group": "testing"
+    },
+    {
+      "id": "metrics",
+      "label": "记录误差与\n不确定性",
+      "kind": "output",
+      "x": 635,
+      "y": 410,
+      "width": 200,
+      "height": 90,
+      "group": "testing"
+    }
+  ],
+  "edges": [
+    {
+      "id": "dataset_split",
+      "source": "dataset",
+      "target": "split",
+      "relation": "data"
+    },
+    {
+      "id": "split_train",
+      "source": "split",
+      "target": "fit",
+      "relation": "data",
+      "source_port": {
+        "side": "south",
+        "position": 0.2
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 362,
+          "y": 200
+        },
+        {
+          "x": 145,
+          "y": 200
+        }
+      ]
+    },
+    {
+      "id": "split_val",
+      "source": "split",
+      "target": "select",
+      "relation": "data"
+    },
+    {
+      "id": "split_test",
+      "source": "split",
+      "target": "test",
+      "relation": "data",
+      "source_port": {
+        "side": "south",
+        "position": 0.8
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 518,
+          "y": 200
+        },
+        {
+          "x": 735,
+          "y": 200
+        }
+      ]
+    },
+    {
+      "id": "frozen_train",
+      "source": "fit",
+      "target": "trained"
+    },
+    {
+      "id": "trained_select",
+      "source": "trained",
+      "target": "select",
+      "label": "模型",
+      "relation": "data",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 290,
+          "y": 455
+        },
+        {
+          "x": 290,
+          "y": 312.5
+        }
+      ],
+      "label_offset": {
+        "x": 2.5,
+        "y": -14
+      }
+    },
+    {
+      "id": "select_locked",
+      "source": "select",
+      "target": "locked"
+    },
+    {
+      "id": "locked_test",
+      "source": "locked",
+      "target": "test",
+      "label": "冻结\n方案",
+      "relation": "data",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 585,
+          "y": 455
+        },
+        {
+          "x": 585,
+          "y": 312.5
+        }
+      ],
+      "label_offset": {
+        "x": 2.5,
+        "y": -14
+      }
+    },
+    {
+      "id": "test_metrics",
+      "source": "test",
+      "target": "metrics"
+    }
+  ],
+  "groups": [
+    {
+      "id": "training",
+      "label": "训练集",
+      "x": 20,
+      "y": 220,
+      "width": 250,
+      "height": 330
+    },
+    {
+      "id": "validation",
+      "label": "验证集",
+      "x": 315,
+      "y": 220,
+      "width": 250,
+      "height": 330
+    },
+    {
+      "id": "testing",
+      "label": "测试集",
+      "x": 610,
+      "y": 220,
+      "width": 250,
+      "height": 330
+    }
+  ],
+  "canvas": {
+    "width": 880,
+    "height": 590
+  },
+  "style": {
+    "font_family": "Microsoft YaHei",
+    "font_size": 18,
+    "publication_width_mm": 160,
+    "minimum_font_pt": 8.5,
+    "maximum_height_mm": 225,
+    "minimum_dpi": 300
+  }
+}

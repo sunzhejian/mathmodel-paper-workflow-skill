@@ -14,6 +14,8 @@ SUPPORTED = {
     "correlation-pairgrid": "Selected numeric columns: distributions, scatter and Pearson correlation",
     "prediction-marginal-grid": "Observed/predicted rows with model, split and unique sample IDs",
     "rf-tpe-surface": "Complete observed parameter grid; no optimizer is run or inferred",
+    "paired-raincloud": "Two explicitly ordered conditions measured on complete paired sample IDs",
+    "binary-roc-comparison": "Binary labels and supplied model scores on the same evaluation cohort; no CI",
 }
 _FONT_CACHE = {}
 
@@ -58,6 +60,43 @@ def column(spec: dict) -> tuple[str, str]:
     return spec["key"], f"{label}\n({unit})"
 
 
+def mapped_roles(spec, expected, purpose):
+    roles = spec.get("roles")
+    if (not isinstance(roles, dict) or set(roles) != set(expected)
+            or not all(isinstance(value, str) and value.strip() for value in roles.values())
+            or len(set(roles.values())) != len(expected)):
+        raise ValueError(f"{purpose} requires exactly these distinct role columns: " + ", ".join(expected))
+    return roles
+
+
+def binary_roc(labels, scores):
+    """Empirical ROC at distinct score thresholds; tied observations move together."""
+    labels, scores = np.asarray(labels, dtype=float), np.asarray(scores, dtype=float)
+    if labels.ndim != 1 or scores.shape != labels.shape or not len(labels):
+        raise ValueError("ROC needs nonempty aligned label/score vectors")
+    if not np.isfinite(labels).all() or not np.isfinite(scores).all():
+        raise ValueError("ROC labels and scores must be finite")
+    if not np.isin(labels, [0, 1]).all():
+        raise ValueError("ROC labels must be binary 0/1")
+    positives = int(labels.sum())
+    negatives = len(labels) - positives
+    if not positives or not negatives:
+        raise ValueError("ROC requires both positive and negative classes")
+    order = np.argsort(scores, kind="mergesort")[::-1]
+    ranked_scores, ranked_labels = scores[order], labels[order]
+    ends = np.r_[np.flatnonzero(ranked_scores[1:] != ranked_scores[:-1]), len(labels) - 1]
+    tp = np.cumsum(ranked_labels, dtype=float)[ends]
+    fp = ends + 1 - tp
+    tpr, fpr = np.r_[0., tp / positives], np.r_[0., fp / negatives]
+    auc = float(np.sum(np.diff(fpr) * (tpr[1:] + tpr[:-1]) / 2))
+    return {"n": len(labels), "positive_count": positives, "negative_count": negatives,
+            "positive_label": 1, "score_direction": "higher score predicts label 1",
+            "auc": auc, "fpr": fpr.tolist(), "tpr": tpr.tolist(),
+            "thresholds": [None] + ranked_scores[ends].tolist(),
+            "threshold_rule": "score >= threshold; equal scores updated as one group; initial None is above all scores",
+            "auc_method": "trapezoidal integral of empirical threshold points; ties receive half credit"}
+
+
 def prepare(manifest: Path) -> tuple[dict, dict, Path]:
     spec = json.loads(manifest.read_text(encoding="utf-8-sig"))
     if not isinstance(spec, dict) or type(spec.get("schema_version")) is not int or spec["schema_version"] != 1:
@@ -69,7 +108,9 @@ def prepare(manifest: Path) -> tuple[dict, dict, Path]:
         raise ValueError("Declare data_kind as real or synthetic; this declaration is not provenance proof")
     allowed = {"schema_version", "template_id", "data_kind", "data", "title", "source_note"} | {
         "correlation-pairgrid": {"columns"}, "prediction-marginal-grid": {"roles", "unit", "comparison"},
-        "rf-tpe-surface": {"x", "y", "z", "surface_mode"}}[kind]
+        "rf-tpe-surface": {"x", "y", "z", "surface_mode"},
+        "paired-raincloud": {"roles", "conditions", "unit"},
+        "binary-roc-comparison": {"roles"}}[kind]
     if set(spec) - allowed:
         raise ValueError("Unsupported contract fields: " + ", ".join(sorted(set(spec) - allowed)))
     if not isinstance(spec.get("title"), str) or not spec["title"].strip():
@@ -152,6 +193,85 @@ def prepare(manifest: Path) -> tuple[dict, dict, Path]:
                  for model, parts in arrays.items()}
         bundle = {"groups": arrays, "statistics": {"metrics": stats, "comparison": comparison,
                     "kde": "Gaussian KDE with Silverman bandwidth; constant groups omit the curve"}}
+    elif kind == "paired-raincloud":
+        roles = mapped_roles(spec, ("sample_id", "condition", "value"), "Paired raincloud")
+        conditions = spec.get("conditions")
+        if (not isinstance(conditions, list) or len(conditions) != 2
+                or not all(isinstance(value, str) and value.strip() for value in conditions)
+                or conditions[0] == conditions[1]):
+            raise ValueError("Paired contract requires exactly two distinct ordered conditions")
+        if not isinstance(spec.get("unit"), str) or not spec["unit"].strip():
+            raise ValueError("Paired contract requires a common measurement unit")
+        pairs = {}
+        for line, row in enumerate(rows, 2):
+            try:
+                sample_id, condition = row[roles["sample_id"]], row[roles["condition"]]
+            except KeyError as exc:
+                raise ValueError("Paired role column is missing") from exc
+            if not isinstance(sample_id, str) or not sample_id.strip():
+                raise ValueError(f"CSV line {line}: paired sample ID cannot be empty")
+            if condition not in conditions:
+                raise ValueError(f"CSV line {line}: unknown condition; use the two contracted conditions")
+            pair = pairs.setdefault(sample_id, {})
+            if condition in pair:
+                raise ValueError("Duplicate sample ID/condition; do not aggregate repeated measurements implicitly")
+            pair[condition] = numeric(row, roles["value"], line)
+        if len(pairs) < 2 or any(set(pair) != set(conditions) for pair in pairs.values()):
+            raise ValueError("Paired raincloud needs at least two complete paired IDs in both conditions")
+        ids = sorted(pairs)
+        values = np.array([[pairs[sample_id][condition] for condition in conditions] for sample_id in ids])
+        with np.errstate(over="ignore", invalid="ignore"):
+            differences = values[:, 1] - values[:, 0]
+            summaries = {condition: {"mean": float(values[:, index].mean()),
+                                     "median": float(np.median(values[:, index])),
+                                     "sd": float(values[:, index].std(ddof=1)),
+                                     "q1": float(np.percentile(values[:, index], 25)),
+                                     "q3": float(np.percentile(values[:, index], 75))}
+                         for index, condition in enumerate(conditions)}
+            difference_stats = {"mean": float(differences.mean()), "median": float(np.median(differences)),
+                                "sd": float(differences.std(ddof=1))}
+        if (not np.isfinite(differences).all() or
+                not all(np.isfinite(value) for item in [*summaries.values(), difference_stats] for value in item.values())):
+            raise ValueError("Paired calculations exceed finite numeric range")
+        bundle = {"sample_ids": ids, "conditions": conditions, "values": values, "differences": differences,
+                  "statistics": {"n_pairs": len(ids), "conditions": conditions,
+                                 "condition_summaries": summaries, "difference_direction": conditions[1] + " - " + conditions[0],
+                                 "paired_difference": difference_stats,
+                                 "kde": "Gaussian KDE with Silverman bandwidth; constant conditions omit the curve",
+                                 "constant_conditions": [conditions[i] for i in range(2) if values[:, i].std() == 0],
+                                 "p_value_calculated": False, "confidence_interval_calculated": False}}
+    elif kind == "binary-roc-comparison":
+        roles = mapped_roles(spec, ("model", "sample_id", "label", "score"), "Binary ROC comparison")
+        groups = {}
+        for line, row in enumerate(rows, 2):
+            try:
+                model, sample_id = row[roles["model"]], row[roles["sample_id"]]
+            except KeyError as exc:
+                raise ValueError("ROC role column is missing") from exc
+            if not all(isinstance(value, str) and value.strip() for value in (model, sample_id)):
+                raise ValueError(f"CSV line {line}: model/sample ID cannot be empty")
+            samples = groups.setdefault(model, {})
+            if sample_id in samples:
+                raise ValueError("Duplicate model/sample ID in ROC comparison")
+            label, score = numeric(row, roles["label"], line), numeric(row, roles["score"], line)
+            if label not in {0, 1}:
+                raise ValueError("ROC labels must be binary 0/1")
+            samples[sample_id] = (int(label), score)
+        if not 2 <= len(groups) <= 6:
+            raise ValueError("ROC comparison requires two to six model panels on a common cohort")
+        models = sorted(groups)
+        reference = groups[models[0]]
+        for samples in groups.values():
+            if samples.keys() != reference.keys() or any(samples[key][0] != reference[key][0] for key in reference):
+                raise ValueError("Comparable ROC models require the same cohort sample IDs and identical binary labels")
+        ids = sorted(reference)
+        curves = {model: binary_roc([groups[model][key][0] for key in ids], [groups[model][key][1] for key in ids])
+                  for model in models}
+        bundle = {"curves": curves,
+                  "statistics": {"models": curves, "same_cohort_verified": True, "n_samples": len(ids),
+                                 "training_run_by_renderer": False, "confidence_interval_calculated": False,
+                                 "cross_validation": "none; one supplied score per model/sample ID",
+                                 "scope": "empirical ranking of supplied scores; no training, fold variability, inference or generalization guarantee"}}
     else:
         columns = [column(spec.get(key)) for key in ("x", "y", "z")]
         if len({key for key, _ in columns}) != 3:
@@ -316,6 +436,70 @@ def render(manifest: Path, output: Path, font: Path | None = None) -> dict:
             top.tick_params(labelbottom=False, left=False, labelleft=False); side.tick_params(labelleft=False, bottom=False, labelbottom=False)
             for ax in (main, top, side):
                 ax.spines[["top", "right"]].set_visible(False)
+    elif kind == "paired-raincloud":
+        values, conditions, differences = bundle["values"], bundle["conditions"], bundle["differences"]
+        fig, (distribution, changes) = plt.subplots(1, 2, figsize=(6.3, 3.9), gridspec_kw={"width_ratios": [1.45, 1]})
+        colors = ["#168c9a", "#e49c45"]
+        span = float(np.ptp(values))
+        pad = .12 * span if span else max(abs(float(values[0, 0])) * .08, 1)
+        lower, upper = float(values.min() - pad), float(values.max() + pad)
+        grid = np.linspace(lower, upper, 200)
+        # Deterministic display offsets are shared across each true pair.
+        offsets = np.array([int(hashlib.sha256(sample_id.encode("utf-8")).hexdigest()[:8], 16) / 0xffffffff
+                            for sample_id in bundle["sample_ids"]]) * .12 - .06
+        for index, sample_id in enumerate(bundle["sample_ids"]):
+            distribution.plot(np.arange(2) + .17 + offsets[index], values[index],
+                              color="#8998a5", lw=.55, alpha=.4, zorder=1)
+        omitted = []
+        for index, condition in enumerate(conditions):
+            array = values[:, index]
+            kde = density(array, grid)
+            if kde is not None:
+                distribution.fill_betweenx(grid, index - .12 - .29 * kde / kde.max(), index - .12,
+                                           color=colors[index], alpha=.3, linewidth=.6, edgecolor=colors[index])
+            else:
+                omitted.append(condition)
+            distribution.scatter(index + .17 + offsets, array, s=14, color=colors[index], alpha=.72, linewidths=0, zorder=3)
+            box = distribution.boxplot([array], positions=[index], widths=.12, patch_artist=True,
+                                       showfliers=False, medianprops={"color": "#243746", "linewidth": .9},
+                                       boxprops={"facecolor": "white", "edgecolor": colors[index]},
+                                       whiskerprops={"color": colors[index]}, capprops={"color": colors[index]})
+        distribution.plot([0, 1], values.mean(axis=0), color="#92506e", marker="D", markersize=4,
+                          linewidth=1.2, linestyle="--", label="Condition means", zorder=4)
+        distribution.set(xlim=(-.55, 1.4), ylim=(lower, upper), xticks=[0, 1], xticklabels=conditions,
+                         ylabel=f"Value ({spec['unit']})")
+        distribution.set_title("Paired observations and distributions", fontsize=8.5)
+        distribution.legend(loc="best", frameon=False, fontsize=6)
+        bins = 1 if float(np.ptp(differences)) == 0 else min(15, max(3, int(np.sqrt(len(differences)))))
+        changes.hist(differences, bins=bins, color="#bddce2", edgecolor="white", linewidth=.6)
+        changes.axvline(0, color="#8998a5", lw=.8, ls="--", label="Zero change")
+        mean_difference = bundle["statistics"]["paired_difference"]["mean"]
+        changes.axvline(mean_difference, color="#92506e", lw=1.2, label="Mean paired change")
+        changes.set(xlabel=f"{conditions[1]} - {conditions[0]} ({spec['unit']})", ylabel="Pairs")
+        changes.set_title("Within-pair differences", fontsize=8.5)
+        changes.legend(frameon=False, fontsize=6)
+        for ax in (distribution, changes):
+            ax.spines[["top", "right"]].set_visible(False)
+        note = f"n={len(differences)} pairs; mean difference={mean_difference:.4g} {spec['unit']}. Descriptive only; no p-value/CI."
+        if omitted:
+            note += "\nConstant condition: KDE omitted (" + ", ".join(omitted) + ")."
+        fig.text(.5, .035, note, ha="center", fontsize=6.5)
+        fig.subplots_adjust(left=.1, right=.98, bottom=.22, top=.79, wspace=.4)
+    elif kind == "binary-roc-comparison":
+        fig, ax = plt.subplots(figsize=(6.3, 4.8))
+        colors = ["#168c9a", "#e49c45", "#7862a1", "#ce6e7b", "#527c48", "#5e789d"]
+        for color, (model, curve) in zip(colors, bundle["curves"].items()):
+            ax.plot(curve["fpr"], curve["tpr"], color=color, lw=1.7,
+                    label=f"{model}: AUC={curve['auc']:.3f}")
+        ax.plot([0, 1], [0, 1], color="#8998a5", lw=.8, ls="--", label="Random-ranking baseline")
+        ax.set(xlim=(0, 1), ylim=(0, 1), xlabel="False positive rate", ylabel="True positive rate")
+        ax.set_aspect("equal", adjustable="box")
+        ax.legend(loc="lower right", frameon=False, fontsize=7)
+        ax.spines[["top", "right"]].set_visible(False)
+        curve = next(iter(bundle["curves"].values()))
+        fig.text(.5, .07, f"Same cohort: n={curve['n']} ({curve['positive_count']} positive / {curve['negative_count']} negative).", ha="center", fontsize=7)
+        fig.text(.5, .025, "Supplied scores; ties grouped. No model training, cross-validation or confidence interval.", ha="center", fontsize=6.5)
+        fig.subplots_adjust(left=.12, right=.97, bottom=.19, top=.85)
     else:
         fig = plt.figure(figsize=(6.3, 4.5))
         ax = fig.add_subplot(projection="3d")

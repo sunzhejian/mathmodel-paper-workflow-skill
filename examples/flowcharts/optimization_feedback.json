@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "title": "通用优化搜索、可行性与评价反馈",
+  "claim": "可行性检查区分评价路径与候选修复路径；评价记录受显式终止条件控制，未终止时反馈至候选生成。",
+  "source_note": "匿名通用示例；应由使用者用题面、模型报告和代码核对并替换。仅展示机制，不表示任何比赛算法已运行。",
+  "data_kind": "schematic",
+  "nodes": [
+    {
+      "id": "start",
+      "label": "给定目标与约束",
+      "kind": "start",
+      "x": 265,
+      "y": 20,
+      "width": 230,
+      "height": 48
+    },
+    {
+      "id": "propose",
+      "label": "生成候选解 x",
+      "kind": "process",
+      "x": 265,
+      "y": 100,
+      "width": 230,
+      "height": 58
+    },
+    {
+      "id": "feasibility",
+      "label": "可行性检查",
+      "kind": "decision",
+      "x": 190,
+      "y": 205,
+      "width": 280,
+      "height": 122,
+      "condition_label": "g(x) ≤ 0"
+    },
+    {
+      "id": "repair",
+      "label": "修复或重新采样",
+      "kind": "process",
+      "x": 540,
+      "y": 385,
+      "width": 190,
+      "height": 60
+    },
+    {
+      "id": "evaluate",
+      "label": "计算目标与评价指标",
+      "kind": "process",
+      "x": 190,
+      "y": 385,
+      "width": 280,
+      "height": 60
+    },
+    {
+      "id": "archive",
+      "label": "更新候选集与最佳记录",
+      "kind": "process",
+      "x": 190,
+      "y": 490,
+      "width": 280,
+      "height": 60
+    },
+    {
+      "id": "stop",
+      "label": "终止判定",
+      "kind": "decision",
+      "x": 190,
+      "y": 610,
+      "width": 280,
+      "height": 120,
+      "condition_label": "满足终止准则？"
+    },
+    {
+      "id": "output",
+      "label": "输出可行解与评价",
+      "kind": "output",
+      "x": 190,
+      "y": 805,
+      "width": 280,
+      "height": 58
+    }
+  ],
+  "edges": [
+    {
+      "id": "start_propose",
+      "source": "start",
+      "target": "propose"
+    },
+    {
+      "id": "propose_check",
+      "source": "propose",
+      "target": "feasibility"
+    },
+    {
+      "id": "feasible",
+      "source": "feasibility",
+      "target": "evaluate",
+      "label": "可行",
+      "label_offset": {
+        "x": 40,
+        "y": 0
+      }
+    },
+    {
+      "id": "infeasible",
+      "source": "feasibility",
+      "target": "repair",
+      "label": "不可行",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 635,
+          "y": 266
+        }
+      ],
+      "label_position": 0.35
+    },
+    {
+      "id": "repair_retry",
+      "source": "repair",
+      "target": "propose",
+      "relation": "feedback",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 740,
+          "y": 415
+        },
+        {
+          "x": 740,
+          "y": 129
+        }
+      ]
+    },
+    {
+      "id": "evaluate_archive",
+      "source": "evaluate",
+      "target": "archive"
+    },
+    {
+      "id": "archive_stop",
+      "source": "archive",
+      "target": "stop"
+    },
+    {
+      "id": "search_again",
+      "source": "stop",
+      "target": "propose",
+      "label": "继续",
+      "relation": "loop",
+      "source_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 90,
+          "y": 670
+        },
+        {
+          "x": 90,
+          "y": 129
+        }
+      ],
+      "label_position": 0.08
+    },
+    {
+      "id": "stop_output",
+      "source": "stop",
+      "target": "output",
+      "label": "结束",
+      "label_offset": {
+        "x": 40,
+        "y": 0
+      }
+    }
+  ],
+  "groups": [],
+  "canvas": {
+    "width": 760,
+    "height": 900
+  },
+  "style": {
+    "font_family": "Microsoft YaHei",
+    "font_size": 18,
+    "publication_width_mm": 160,
+    "minimum_font_pt": 8.5,
+    "maximum_height_mm": 225,
+    "minimum_dpi": 300
+  }
+}
