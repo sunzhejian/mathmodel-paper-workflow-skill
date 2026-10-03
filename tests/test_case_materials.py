@@ -312,7 +312,7 @@ class CaseMaterialsTests(unittest.TestCase):
                 m.inspect_xlsx(stream.getvalue())
 
     @unittest.skipIf(pymupdf is None, "PDF fixture needs existing PyMuPDF")
-    def test_output_cannot_overwrite_or_enter_a_public_skill_or_git_checkout(self):
+    def test_output_cannot_overwrite_or_enter_the_skill_distribution(self):
         with tempfile.TemporaryDirectory() as folder:
             base = Path(folder)
             _, contract = originals(base)
@@ -323,14 +323,35 @@ class CaseMaterialsTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "NEW directory"):
                 m.prepare(contract, existing)
             self.assertEqual(sentinel.read_text(encoding="utf-8"), "keep")
-            git = base / "public-repo"
-            git.mkdir()
-            (git / ".git").write_text("gitdir: elsewhere", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "outside Git"):
-                m.prepare(contract, git / "research")
-            self.assertFalse((git / "research").exists())
-            with self.assertRaisesRegex(ValueError, "outside the public skill"):
+            with self.assertRaisesRegex(ValueError, "outside the skill distribution"):
                 m.prepare(contract, ROOT / "qa/should-never-copy-case-materials-here")
+
+    @unittest.skipIf(pymupdf is None, "PDF fixture needs existing PyMuPDF")
+    def test_user_git_project_can_prepare_new_materials_without_changing_originals_or_git(self):
+        for worktree_marker in (False,True):
+            with self.subTest(worktree_marker=worktree_marker), tempfile.TemporaryDirectory() as folder:
+                base=Path(folder)
+                archive,contract=originals(base)
+                before=archive.read_bytes()
+                project=base/'user-contest-project'
+                project.mkdir()
+                marker=project/'.git'
+                if worktree_marker:
+                    marker.write_text('gitdir: user-managed-worktree\n',encoding='utf-8')
+                    marker_before=marker.read_bytes()
+                else:
+                    marker.mkdir()
+                    (marker/'config').write_text('user-owned-config\n',encoding='utf-8')
+                    marker_before=(marker/'config').read_bytes()
+                output=project/'data'/'original-materials-new'
+                report=m.prepare(contract,output)
+                self.assertEqual(report['status'],'prepared')
+                self.assertEqual(len(report['files']),3)
+                self.assertEqual(archive.read_bytes(),before)
+                retained=marker.read_bytes() if worktree_marker else (marker/'config').read_bytes()
+                self.assertEqual(retained,marker_before)
+                self.assertFalse((project/'.gitignore').exists())
+                self.assertTrue((output/'raw/statement/problem.pdf').is_file())
 
     @unittest.skipIf(pymupdf is None, "PDF fixture needs existing PyMuPDF")
     def test_selected_member_must_match_exactly_and_missing_role_does_not_create_output(self):

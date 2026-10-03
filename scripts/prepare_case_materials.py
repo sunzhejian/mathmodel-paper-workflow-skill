@@ -1,4 +1,4 @@
-"""Prepare a manifest-selected original problem/data packet outside repositories.
+"""Prepare a manifest-selected original problem/data packet in a user's project.
 
 No file discovery or reference-answer selection is performed. PDF text/PNG previews
 retain all pages; formula correctness remains a human review requirement. XLSX CSVs
@@ -538,10 +538,7 @@ def _check_output_location(output):
         raise ValueError("Output must be a NEW directory; existing materials are never overwritten")
     skill_root = Path(__file__).resolve().parents[1]
     if output.is_relative_to(skill_root):
-        raise ValueError("Original case materials must stay outside the public skill/project directory")
-    for directory in (output, *output.parents):
-        if (directory / ".git").exists():
-            raise ValueError("Original case materials must stay outside Git repositories; choose an independent research directory")
+        raise ValueError("Original case materials must stay outside the skill distribution directory")
 
 
 def prepare(manifest, output):
@@ -653,7 +650,7 @@ def prepare(manifest, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", required=True, type=Path, help="Explicit original-material whitelist JSON")
-    parser.add_argument("--output", required=True, type=Path, help="NEW independent research directory outside repositories")
+    parser.add_argument("--output", required=True, type=Path, help="NEW authorized project directory outside the skill distribution; user Git projects are allowed")
     args = parser.parse_args()
     try:
         report = prepare(args.manifest, args.output)

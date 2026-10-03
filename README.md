@@ -4,7 +4,11 @@
 
 它接续 **MathModelAgent、sci-box、BZD 专项审查、EditaPlot、Sivia、项目已有的 mma-paper** 等技能。前五个上游项目已作为固定提交的 Git 子模块放入 [vendor](vendor/README.md)；`mma-paper` 没有已核验的公开来源，继续使用项目自带版本。完整分工与实际使用证据见 [技能协作说明](references/skill-orchestration.md)。
 
-**第一次使用**：先看[工具安装与第一次使用](docs/toolchain.md)，装好 Git、Python 和本仓库依赖后，用同一个虚拟环境解释器运行 `scripts/run_demo.py --output qa/demo`。演示会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；它不需要 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。详细产物及真实项目迁移见[复现手册](references/reproduction-guide.md)。
+**在自己的项目中使用**：向当前代理/IDE提供赛题和附件并调用此 skill，由代理建立内部要求清单，使用该环境已有的读写、运行、绘图与编译工具完成任务。核心工作流不要求指定模型账户、IDE、MCP或商业软件；用户项目可使用 Git，素材留在授权项目目录。已有环境直接复用，缺项按任务补最小必要能力。便携发行包的优先计划见[开发方向](docs/roadmap.md#下一轮开发顺序)，未验证的模型/后端不列为已经支持。
+
+**运行仓库演示或维护工具**：看[工具安装与第一次使用](docs/toolchain.md)，准备演示所需的 Git、Python 和依赖后，用同一解释器运行 `scripts/run_demo.py --output qa/demo`。它会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；无需 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。演示与真实用户赛题分别核验，详细产物见[复现手册](references/reproduction-guide.md)。
+
+本轮已解除材料助手对用户 Git 项目的误限制，保留原件和 skill 分发目录保护；336 项本地测试通过。标准源码归档仍不包含 vendor 子模块内部内容，自包含发行包列为下一轮优先开发项，尚未发布为已完成能力。
 
 ## 把完整赛题与数据交给其他 AI
 
@@ -12,7 +16,7 @@
 
 [材料准入工具](scripts/prepare_case_materials.py)按明确白名单复制原件并保留 bytes/hash；PDF 输出每页文本与 PNG，XLSX 输出所有工作表的逐格 CSV 和单元格记录，保留空位、原表头、公式原文与原始类型。结果样表标为 `output-template`，用于说明填写位置。DOC/DOCX、文本、CSV、图片等补充材料可以完整保留；UTF-8 文本另留可读副本，未覆盖的二进制解析明确标记，原 DOC 被复制不表示它已被自动读取。
 
-准备成功与模型实际读取分开验收。只读 `case_materials` MCP 可提供题面逐页查看和材料分段读取；读取收据记录返回给模型的范围，不证明其理解公式、已经求解或论文已完成。真实赛题包放在仓库之外的独立研究目录，公开仓库只保留通用脚本、文档和合成测试。[完整合同、命令与交接证据](references/case-materials.md)说明如何查漏；[模型评测](references/model-trials.md)说明不同工具模式的实际能力。
+准备成功与模型实际读取分开验收。可选的只读 `case_materials` MCP 提供题面逐页查看与材料分段读取；普通项目也可用宿主已有工具。小型材料试用的全行收据不用于强制大数据逐行进入上下文，全量数据由实际程序处理并记录范围。研发独立基线放在私有研究目录，普通项目沿用用户目录；公开 skill 分发内容只保留通用工具、文档和合成测试。[完整合同与交接证据](references/case-materials.md)说明如何查漏；[模型评测](references/model-trials.md)说明专用工具模式的实际能力。
 
 ## 真实测试示例
 
