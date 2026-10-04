@@ -8,6 +8,8 @@
 
 **当前开发重点：Sunzhejian的MathModelAgent 网页版。** 面向东北农业大学数模协会办公室，以水墨与宋体工作台为界面，重点融合 MathModelAgent 的项目、材料、模板、任务事件和源编辑能力，并接本 skill 的逐问证据与交付检查。[开发计划](docs/web-platform-plan.md)与[实际源文件映射](docs/web-upstream-integration.md)区分交互预览、后端执行及完整论文验收；直接在IDE调用本 skill 的方式继续保留。
 
+[首版交互预览](https://sunzhejian-mathmodelagent.sunzhejian.chatgpt.site)已通过Sites实际发布，目前保持创建者私有访问。提供六方向选择、材料分类、模板偏好、5类合成图件预览与配置导出，采用宣纸白、墨黑、朱砂红及宋体；在线AI求解与实际论文编译仍待接入。MiniMax M3.1 Flash Preview已通过中国订阅路线完成一次限定的[源码复核](docs/minimax-mplan-20261004.md)，未把该文本复核计为科学建模或论文完成。
+
 **在自己的项目中使用**：向当前代理/IDE提供赛题和附件并调用此 skill，由代理建立内部要求清单，使用该环境已有的读写、运行、绘图与编译工具完成任务。核心工作流不要求指定模型账户、IDE、MCP或商业软件；用户项目可使用 Git，素材留在授权项目目录。已有环境直接复用，缺项按任务补最小必要能力。便携发行包的优先计划见[开发方向](docs/roadmap.md#下一轮开发顺序)，未验证的模型/后端不列为已经支持。
 
 **运行仓库演示或维护工具**：看[工具安装与第一次使用](docs/toolchain.md)，准备演示所需的 Git、Python 和依赖后，用同一解释器运行 `scripts/run_demo.py --output qa/demo`。它会生成合成计算结果、正文检查、保留原附录的 PDF 和支撑压缩包；无需 MATLAB、COMSOL、Stata、Origin、Office 或 LaTeX。演示与真实用户赛题分别核验，详细产物见[复现手册](references/reproduction-guide.md)。

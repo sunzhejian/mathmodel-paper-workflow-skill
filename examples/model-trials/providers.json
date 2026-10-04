@@ -1,4 +1,14 @@
 {
+  "minimax-cn-mplan-flash": {
+    "base_url": "https://api.minimax.cn/v1",
+    "model": "MiniMax-M3.1-Flash-Preview",
+    "env_key": "MM_MINIMAX_MPLAN_API_KEY"
+  },
+  "minimax-mplan-flash": {
+    "base_url": "https://api.minimax.io/v1",
+    "model": "MiniMax-M3.1-Flash-Preview",
+    "env_key": "MM_MINIMAX_MPLAN_API_KEY"
+  },
   "qwen-token-plan": {
     "base_url": "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1",
     "model": "qwen3.8-max",

@@ -141,6 +141,8 @@ python scripts/run_codex_trial.py --routes examples/model-trials/providers.json 
 
 ## 可选客户端与分项验收
 
+MiniMax M Plan 已加入显式地区路线，模型请求名为 `MiniMax-M3.1-Flash-Preview`；首轮实际源码复核与鉴权结果见[2026-10-04记录](../docs/minimax-mplan-20261004.md)。它与人口题科学试用分别统计，不能因正常文本返回就称完成论文或已接网站后端。
+
 [run_opencode_trial.py](../scripts/run_opencode_trial.py) 可使用已安装的 OpenCode，显式选择 `--protocol chat` 或 `--protocol responses` 接入同一授权套餐。默认保留 Chat Completions 的 `@ai-sdk/openai-compatible`；Responses 使用 `@ai-sdk/openai`，不改 endpoint、凭据或模型。当前实际验证版本 1.18.34，原有 Codex 为 0.144.1；需要相应 CLI 选项时先核对帮助。它仅启用所选 provider、以环境变量引用密钥、禁用分享、采用 `--pure`；不保存密钥或改全局配置。默认 `text-only` 禁用全部模型工具并保存 `answer.json`。客户端仍不是 OS 安全沙箱。CLI 终止、答案存在和正常 `stop` 事件共同判断完整会话；`length` 或超时不能记作成功。[官方 provider 说明](https://opencode.ai/docs/providers/)、[CLI 说明](https://opencode.ai/docs/cli/)、[工具权限](https://opencode.ai/docs/permissions/)是兼容配置依据。
 
 火山 Agent Plan 的端点、两种协议与 OpenCode SDK 配置见[官方接入说明](https://docs.volcengine.com/docs/ark/agent-plan-enterprise-opencode?lang=zh)。[路线示例](../examples/model-trials/providers.json)列出本轮实际请求的 DeepSeek、GLM、Kimi Agent Plan 路线，供已获授权且账户确有支持时选择；不替使用者订阅，不从 Coding Plan 自动切换套餐，更不降到普通按量付费端点。套餐限额按真实错误中的重置时间处理，停止无意义重试；接续用保存的同版材料和产物，不重复运行已完成且未变更的阶段。请求模型名不证明后台精确版本。
