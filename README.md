@@ -8,7 +8,7 @@
 
 **当前开发重点：Sunzhejian的MathModelAgent 网页版。** 面向东北农业大学数模协会办公室，以水墨与宋体工作台为界面，重点融合 MathModelAgent 的项目、材料、模板、任务事件和源编辑能力，并接本 skill 的逐问证据与交付检查。[开发计划](docs/web-platform-plan.md)与[实际源文件映射](docs/web-upstream-integration.md)区分交互预览、后端执行及完整论文验收；直接在IDE调用本 skill 的方式继续保留。
 
-[首版交互预览](https://sunzhejian-mathmodelagent.sunzhejian.chatgpt.site)已通过Sites实际发布，目前保持创建者私有访问。提供六方向选择、材料分类、模板偏好、5类合成图件预览与配置导出，采用宣纸白、墨黑、朱砂红及宋体；在线AI求解与实际论文编译仍待接入。MiniMax M3.1 Flash Preview已通过中国订阅路线完成一次限定的[源码复核](docs/minimax-mplan-20261004.md)，未把该文本复核计为科学建模或论文完成。
+[集成工作区 v0.2](https://sunzhejian-mathmodelagent.sunzhejian.chatgpt.site)已通过Sites实际发布，保持创建者私有访问。新增持久项目、显式原件上传与哈希、UTF-8词法解析、逐问要求/资料/依赖、过程记录、参考与算法目录及设置；保留六方向、模板偏好和5类合成图件预览。采用宣纸白、墨黑、朱砂红与宋体风格；在线AI求解与实际论文编译仍待接入。[新版桌面参照与本轮验收](docs/web-desktop-integration.md)区分登记、读取、执行和科学验证。MiniMax M3.1 Flash Preview通过中国订阅编程路线复核源码，未把文本审查计为科学建模或论文完成。
 
 **在自己的项目中使用**：向当前代理/IDE提供赛题和附件并调用此 skill，由代理建立内部要求清单，使用该环境已有的读写、运行、绘图与编译工具完成任务。核心工作流不要求指定模型账户、IDE、MCP或商业软件；用户项目可使用 Git，素材留在授权项目目录。已有环境直接复用，缺项按任务补最小必要能力。便携发行包的优先计划见[开发方向](docs/roadmap.md#下一轮开发顺序)，未验证的模型/后端不列为已经支持。
 
