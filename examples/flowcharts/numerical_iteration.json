@@ -175,7 +175,7 @@
       "id": "inner_retry",
       "source": "converged",
       "target": "coefficients",
-      "label": "否",
+      "label": "否\n更新当前状态",
       "relation": "feedback",
       "source_port": {
         "side": "east",
