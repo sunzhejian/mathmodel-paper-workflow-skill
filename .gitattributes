@@ -3,6 +3,9 @@
 # Preserve the frozen figure-input bytes referenced by data provenance hashes.
 examples/scientific-figures/*.csv -text whitespace=cr-at-eol
 examples/scientific-figures/*.json -text whitespace=cr-at-eol
+examples/scientific-figures/gallery/*.csv -text whitespace=cr-at-eol
+examples/scientific-figures/gallery/*.json -text whitespace=cr-at-eol
+examples/flowcharts/*.json -text whitespace=cr-at-eol
 
 # Matplotlib wraps SVG path data with trailing spaces; keep hashed output bytes.
 docs/figures/scientific/*/figure.svg -text whitespace=cr-at-eol,-blank-at-eol
