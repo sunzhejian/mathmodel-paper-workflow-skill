@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "data_kind": "schematic",
+  "groups": [],
+  "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+  "style": {
+    "font_family": "SimSun",
+    "font_size": 22,
+    "publication_width_mm": 160,
+    "minimum_font_pt": 8.5,
+    "maximum_height_mm": 225,
+    "minimum_dpi": 300
+  },
+  "title": "数据处理与划分",
+  "claim": "字段单位校验失败时补齐资料；完成明确变换后划分训练、验证与测试集。",
+  "canvas": {
+    "width": 900,
+    "height": 630
+  },
+  "nodes": [
+    {
+      "id": "synthetic_banner",
+      "label": "合成示例 · 数据处理与划分",
+      "kind": "annotation",
+      "x": 15,
+      "y": 5,
+      "width": 870,
+      "height": 42
+    },
+    {
+      "id": "input",
+      "label": "原始数据与字典",
+      "kind": "input",
+      "x": 300,
+      "y": 65,
+      "width": 280,
+      "height": 60
+    },
+    {
+      "id": "check",
+      "label": "数据可用？",
+      "kind": "decision",
+      "x": 280,
+      "y": 170,
+      "width": 320,
+      "height": 140,
+      "condition_label": "字段单位完整？"
+    },
+    {
+      "id": "repair",
+      "label": "补齐字段与单位",
+      "kind": "process",
+      "x": 655,
+      "y": 208,
+      "width": 230,
+      "height": 66
+    },
+    {
+      "id": "transform",
+      "label": "清理与明确变换",
+      "kind": "process",
+      "x": 300,
+      "y": 365,
+      "width": 280,
+      "height": 64
+    },
+    {
+      "id": "train",
+      "label": "训练集\n仅此集估计参数",
+      "kind": "output",
+      "x": 25,
+      "y": 535,
+      "width": 260,
+      "height": 72
+    },
+    {
+      "id": "validation",
+      "label": "验证集\n比较候选方法",
+      "kind": "output",
+      "x": 310,
+      "y": 535,
+      "width": 260,
+      "height": 72
+    },
+    {
+      "id": "test",
+      "label": "测试集\n一次评价表现",
+      "kind": "output",
+      "x": 605,
+      "y": 535,
+      "width": 270,
+      "height": 72
+    }
+  ],
+  "edges": [
+    {
+      "id": "input_check",
+      "source": "input",
+      "target": "check",
+      "relation": "process"
+    },
+    {
+      "id": "complete",
+      "source": "check",
+      "target": "transform",
+      "relation": "process",
+      "label": "是",
+      "label_offset": {
+        "x": 28,
+        "y": 0
+      }
+    },
+    {
+      "id": "incomplete",
+      "source": "check",
+      "target": "repair",
+      "relation": "process",
+      "label": "否",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "label_offset": {
+        "x": 0,
+        "y": -20
+      }
+    },
+    {
+      "id": "repair_check",
+      "source": "repair",
+      "target": "check",
+      "relation": "feedback",
+      "source_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 770,
+          "y": 147
+        },
+        {
+          "x": 440,
+          "y": 147
+        }
+      ]
+    },
+    {
+      "id": "to_train",
+      "source": "transform",
+      "target": "train",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.2
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 356,
+          "y": 485
+        },
+        {
+          "x": 155,
+          "y": 485
+        }
+      ]
+    },
+    {
+      "id": "to_validation",
+      "source": "transform",
+      "target": "validation",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      }
+    },
+    {
+      "id": "to_test",
+      "source": "transform",
+      "target": "test",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.8
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 524,
+          "y": 485
+        },
+        {
+          "x": 740,
+          "y": 485
+        }
+      ]
+    }
+  ]
+}

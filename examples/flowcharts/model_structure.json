@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "data_kind": "schematic",
+  "groups": [
+    {
+      "id": "modules",
+      "label": "模型模块",
+      "x": 15,
+      "y": 300,
+      "width": 830,
+      "height": 165
+    }
+  ],
+  "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+  "style": {
+    "font_family": "SimSun",
+    "font_size": 22,
+    "publication_width_mm": 160,
+    "minimum_font_pt": 8.5,
+    "maximum_height_mm": 225,
+    "minimum_dpi": 300
+  },
+  "title": "模型模块与汇流",
+  "claim": "输入与参数汇入状态接口，三个抽象模块独立计算并汇总输出。",
+  "canvas": {
+    "width": 860,
+    "height": 620
+  },
+  "nodes": [
+    {
+      "id": "synthetic_banner",
+      "label": "合成示例 · 模型模块与汇流",
+      "kind": "annotation",
+      "x": 15,
+      "y": 5,
+      "width": 830,
+      "height": 42
+    },
+    {
+      "id": "observations",
+      "label": "输入数据",
+      "kind": "input",
+      "x": 50,
+      "y": 80,
+      "width": 250,
+      "height": 65
+    },
+    {
+      "id": "parameters",
+      "label": "参数与条件",
+      "kind": "input",
+      "x": 560,
+      "y": 80,
+      "width": 250,
+      "height": 65
+    },
+    {
+      "id": "interface",
+      "label": "状态与变量接口",
+      "kind": "process",
+      "x": 300,
+      "y": 205,
+      "width": 260,
+      "height": 70
+    },
+    {
+      "id": "module_a",
+      "label": "模块一\n状态估计",
+      "kind": "process",
+      "x": 35,
+      "y": 355,
+      "width": 240,
+      "height": 65,
+      "group": "modules"
+    },
+    {
+      "id": "module_b",
+      "label": "模块二\n约束计算",
+      "kind": "process",
+      "x": 310,
+      "y": 355,
+      "width": 240,
+      "height": 65,
+      "group": "modules"
+    },
+    {
+      "id": "module_c",
+      "label": "模块三\n目标评价",
+      "kind": "process",
+      "x": 585,
+      "y": 355,
+      "width": 240,
+      "height": 65,
+      "group": "modules"
+    },
+    {
+      "id": "summary",
+      "label": "汇总结果与校验量",
+      "kind": "output",
+      "x": 270,
+      "y": 545,
+      "width": 320,
+      "height": 65
+    }
+  ],
+  "edges": [
+    {
+      "id": "data_interface",
+      "source": "observations",
+      "target": "interface",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.2
+      },
+      "waypoints": [
+        {
+          "x": 175,
+          "y": 175
+        },
+        {
+          "x": 352,
+          "y": 175
+        }
+      ]
+    },
+    {
+      "id": "params_interface",
+      "source": "parameters",
+      "target": "interface",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.8
+      },
+      "waypoints": [
+        {
+          "x": 685,
+          "y": 175
+        },
+        {
+          "x": 508,
+          "y": 175
+        }
+      ]
+    },
+    {
+      "id": "to_a",
+      "source": "interface",
+      "target": "module_a",
+      "relation": "process",
+      "source_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 155,
+          "y": 240
+        }
+      ]
+    },
+    {
+      "id": "to_b",
+      "source": "interface",
+      "target": "module_b",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      }
+    },
+    {
+      "id": "to_c",
+      "source": "interface",
+      "target": "module_c",
+      "relation": "process",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 705,
+          "y": 240
+        }
+      ]
+    },
+    {
+      "id": "a_summary",
+      "source": "module_a",
+      "target": "summary",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.2
+      },
+      "waypoints": [
+        {
+          "x": 155,
+          "y": 500
+        },
+        {
+          "x": 334,
+          "y": 500
+        }
+      ]
+    },
+    {
+      "id": "b_summary",
+      "source": "module_b",
+      "target": "summary",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      }
+    },
+    {
+      "id": "c_summary",
+      "source": "module_c",
+      "target": "summary",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.8
+      },
+      "waypoints": [
+        {
+          "x": 705,
+          "y": 500
+        },
+        {
+          "x": 526,
+          "y": 500
+        }
+      ]
+    }
+  ]
+}

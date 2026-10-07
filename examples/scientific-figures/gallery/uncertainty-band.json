@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "template_id": "uncertainty-band",
+  "data_kind": "synthetic",
+  "data": "uncertainty-band.csv",
+  "title": "给定范围带",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "group": "group",
+    "x": "x",
+    "estimate": "estimate",
+    "lower": "lower",
+    "upper": "upper"
+  },
+  "axes": {
+    "x": {
+      "label": "时间",
+      "unit": "h"
+    },
+    "estimate": {
+      "label": "给定中心值",
+      "unit": "1"
+    }
+  },
+  "interval_note": "范围为合成规则给定的上下界；不是由样本推算的置信区间。"
+}

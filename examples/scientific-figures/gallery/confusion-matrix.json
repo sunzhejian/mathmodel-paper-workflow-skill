@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "template_id": "confusion-matrix",
+  "data_kind": "synthetic",
+  "data": "confusion-matrix.csv",
+  "title": "混淆矩阵",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "model": "model",
+    "sample_id": "sample_id",
+    "actual": "actual",
+    "predicted": "predicted"
+  }
+}

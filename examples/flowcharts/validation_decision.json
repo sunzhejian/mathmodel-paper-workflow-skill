@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "data_kind": "schematic",
+  "groups": [],
+  "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+  "style": {
+    "font_family": "SimSun",
+    "font_size": 22,
+    "publication_width_mm": 160,
+    "minimum_font_pt": 8.5,
+    "maximum_height_mm": 225,
+    "minimum_dpi": 300
+  },
+  "title": "验证判断与修订回路",
+  "claim": "求解输出按预先指定标准判断；失败进入模型修订并重新计算，成功输出验证报告。",
+  "canvas": {
+    "width": 900,
+    "height": 660
+  },
+  "nodes": [
+    {
+      "id": "synthetic_banner",
+      "label": "合成示例 · 验证判断与修订回路",
+      "kind": "annotation",
+      "x": 15,
+      "y": 5,
+      "width": 870,
+      "height": 42
+    },
+    {
+      "id": "input",
+      "label": "模型与数据",
+      "kind": "input",
+      "x": 265,
+      "y": 65,
+      "width": 320,
+      "height": 62
+    },
+    {
+      "id": "solve",
+      "label": "重新计算与输出",
+      "kind": "process",
+      "x": 265,
+      "y": 185,
+      "width": 320,
+      "height": 65
+    },
+    {
+      "id": "decision",
+      "label": "验证通过？",
+      "kind": "decision",
+      "x": 250,
+      "y": 320,
+      "width": 350,
+      "height": 150,
+      "condition_label": "误差 ≤ 给定阈值"
+    },
+    {
+      "id": "revise",
+      "label": "检查与修订\n模型或数据",
+      "kind": "process",
+      "x": 660,
+      "y": 360,
+      "width": 225,
+      "height": 70
+    },
+    {
+      "id": "report",
+      "label": "输出验证报告\n保存指标与残差",
+      "kind": "output",
+      "x": 265,
+      "y": 580,
+      "width": 320,
+      "height": 70
+    }
+  ],
+  "edges": [
+    {
+      "id": "input_solve",
+      "source": "input",
+      "target": "solve",
+      "relation": "process"
+    },
+    {
+      "id": "solve_decision",
+      "source": "solve",
+      "target": "decision",
+      "relation": "process"
+    },
+    {
+      "id": "passed",
+      "source": "decision",
+      "target": "report",
+      "relation": "process",
+      "label": "是",
+      "label_offset": {
+        "x": 28,
+        "y": 0
+      }
+    },
+    {
+      "id": "failed",
+      "source": "decision",
+      "target": "revise",
+      "relation": "process",
+      "label": "否",
+      "source_port": {
+        "side": "east",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "west",
+        "position": 0.5
+      },
+      "label_offset": {
+        "x": 0,
+        "y": -20
+      }
+    },
+    {
+      "id": "retry",
+      "source": "revise",
+      "target": "solve",
+      "relation": "feedback",
+      "source_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 772.5,
+          "y": 155
+        },
+        {
+          "x": 425,
+          "y": 155
+        }
+      ]
+    }
+  ]
+}

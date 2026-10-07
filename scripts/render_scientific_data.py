@@ -9,6 +9,12 @@ from pathlib import Path
 import shutil
 import sys
 import numpy as np
+import importlib.util
+
+_extension_spec = importlib.util.spec_from_file_location('scientific_chart_extensions', Path(__file__).with_name('scientific_chart_extensions.py'))
+_extension = importlib.util.module_from_spec(_extension_spec)
+_extension_spec.loader.exec_module(_extension)
+EXTENSIONS, prepare_extension, render_extension = _extension.EXTENSIONS, _extension.prepare_extension, _extension.render_extension
 
 SUPPORTED = {
     "correlation-pairgrid": "Selected numeric columns: distributions, scatter and Pearson correlation",
@@ -18,6 +24,7 @@ SUPPORTED = {
     "binary-roc-comparison": "Binary labels and supplied model scores on the same evaluation cohort; no CI",
 }
 _FONT_CACHE = {}
+SUPPORTED.update({key: item['description'] for key, item in EXTENSIONS.items()})
 
 
 def digest(path: Path) -> str:
@@ -110,7 +117,7 @@ def prepare(manifest: Path) -> tuple[dict, dict, Path]:
         "correlation-pairgrid": {"columns"}, "prediction-marginal-grid": {"roles", "unit", "comparison"},
         "rf-tpe-surface": {"x", "y", "z", "surface_mode"},
         "paired-raincloud": {"roles", "conditions", "unit"},
-        "binary-roc-comparison": {"roles"}}[kind]
+        "binary-roc-comparison": {"roles"}}.get(kind, {"roles"} | ({"axes"} if EXTENSIONS.get(kind, {}).get("axes") else set()) | ({"unit"} if EXTENSIONS.get(kind, {}).get("unit") else set()) | set(EXTENSIONS.get(kind, {}).get("required_fields", [])) | set(EXTENSIONS.get(kind, {}).get("optional_fields", [])))
     if set(spec) - allowed:
         raise ValueError("Unsupported contract fields: " + ", ".join(sorted(set(spec) - allowed)))
     if not isinstance(spec.get("title"), str) or not spec["title"].strip():
@@ -131,7 +138,9 @@ def prepare(manifest: Path) -> tuple[dict, dict, Path]:
         raise ValueError("CSV has no observations")
     if any(None in row for row in rows):
         raise ValueError("CSV row has extra unnamed fields; correct the source structure explicitly")
-    if kind == "correlation-pairgrid":
+    if kind in EXTENSIONS:
+        bundle = prepare_extension(spec, rows)
+    elif kind == "correlation-pairgrid":
         roles = spec.get("columns")
         if not isinstance(roles, list) or not 2 <= len(roles) <= 9:
             raise ValueError("Select 2 to 9 numeric variables; split dense figures into meaningful groups")
@@ -358,6 +367,8 @@ def render(manifest: Path, output: Path, font: Path | None = None) -> dict:
     spec, bundle, source = prepare(manifest)
     source_hash, manifest_hash = digest(source), digest(manifest)
     renderer_hash = digest(Path(__file__))
+    extension_path = Path(__file__).with_name('scientific_chart_extensions.py')
+    extension_hash = digest(extension_path)
     output.mkdir(parents=True)
     os.environ["MPLCONFIGDIR"] = str(output / ".mplconfig")
     import matplotlib as mpl
@@ -372,7 +383,9 @@ def render(manifest: Path, output: Path, font: Path | None = None) -> dict:
                          "xtick.labelsize": 7, "ytick.labelsize": 7, "axes.linewidth": .65,
                          "svg.fonttype": "none", "pdf.fonttype": 42, "axes.unicode_minus": False})
     kind = spec["template_id"]
-    if kind == "correlation-pairgrid":
+    if kind in EXTENSIONS:
+        fig = render_extension(spec, bundle, plt)
+    elif kind == "correlation-pairgrid":
         values, labels, corr = bundle["values"], bundle["labels"], np.array(bundle["statistics"]["correlation"])
         count = len(labels)
         fig, axes = plt.subplots(count, count, figsize=(6.3, 6.1), squeeze=False)
@@ -530,7 +543,7 @@ def render(manifest: Path, output: Path, font: Path | None = None) -> dict:
         fig.savefig(path, dpi=300, bbox_inches="tight", facecolor="white")
         outputs[suffix] = {"file": path.name, "sha256": digest(path)}
     plt.close(fig)
-    if digest(source) != source_hash or digest(manifest) != manifest_hash or digest(Path(__file__)) != renderer_hash:
+    if digest(source) != source_hash or digest(manifest) != manifest_hash or digest(Path(__file__)) != renderer_hash or digest(extension_path) != extension_hash:
         raise ValueError("Input or renderer changed during drawing; reject these outputs and rerun from stable sources")
     # Preserve inputs and an original editable renderer; no upstream code is redistributed.
     reproduce = output / "reproduce"
@@ -539,6 +552,7 @@ def render(manifest: Path, output: Path, font: Path | None = None) -> dict:
     copy_spec = dict(spec, data="data.csv")
     (reproduce / "contract.json").write_text(json.dumps(copy_spec, ensure_ascii=False, indent=2), encoding="utf-8")
     shutil.copy2(Path(__file__), reproduce / "render_scientific_data.py")
+    shutil.copy2(extension_path, reproduce / "scientific_chart_extensions.py")
     report = {"schema_version": 1, "template_id": kind, "data_kind": spec["data_kind"],
               "implementation": "original project data adapter; upstream style references are separate",
               "source_note": spec.get("source_note", ""),
@@ -546,6 +560,7 @@ def render(manifest: Path, output: Path, font: Path | None = None) -> dict:
               "input_sha256": source_hash, "contract_sha256": manifest_hash, "renderer_sha256": renderer_hash,
               "numpy_version": np.__version__, "matplotlib_version": mpl.__version__,
               "statistics": bundle["statistics"], "outputs": outputs,
+              "extension_sha256": extension_hash,
               "scope": "Declared CSV data and figure calculations; not data authenticity, model training or paper acceptance"}
     (output / "figure-data.json").write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
     return report

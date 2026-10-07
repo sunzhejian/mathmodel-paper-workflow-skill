@@ -124,6 +124,19 @@ def inspect(project_root: Path, skill_root: Path = SKILL) -> dict:
                              'template_source':'project-adaptation','default_data':'none; explicit CSV role contract required',
                              'example':roc_manifest.relative_to(skill_root).as_posix(),'data_adapter':'scripts/render_scientific_data.py',
                              'adapter_note':'Empirical binary ROC/AUC; no training, fold analysis or confidence intervals'})
+    gallery=skill_root/'examples/scientific-figures/gallery'
+    if gallery.is_dir():
+        for manifest in sorted(gallery.glob('*.json')):
+            spec=json.loads(manifest.read_text(encoding='utf-8'))
+            if not isinstance(spec,dict) or not spec.get('template_id') or spec.get('data_kind') not in {'real','synthetic'}:
+                continue
+            preview=gallery/(spec['template_id']+'.jpg')
+            data_figures.append({'id':spec['template_id'],'label':spec['title'],
+                                 'script':'scripts/render_scientific_data.py','data_adapter':'scripts/render_scientific_data.py',
+                                 'preview':preview.relative_to(skill_root).as_posix() if preview.is_file() else None,
+                                 'example':manifest.relative_to(skill_root).as_posix(),'template_source':'project-adaptation',
+                                 'default_data':'synthetic example; replace with selected CSV before paper use',
+                                 'adapter_note':'Explicit roles and units; input-driven statistics, no inferred scientific evidence'})
     flow_root=skill_root/'examples/flowcharts'
     if (skill_root/'scripts/render_flowchart.py').is_file() and flow_root.is_dir():
         for manifest in sorted(flow_root.glob('*.json')):

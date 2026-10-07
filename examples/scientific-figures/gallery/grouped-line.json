@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "template_id": "grouped-line",
+  "data_kind": "synthetic",
+  "data": "grouped-line.csv",
+  "title": "分组曲线",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "group": "group",
+    "x": "x",
+    "y": "y"
+  },
+  "axes": {
+    "x": {
+      "label": "时间",
+      "unit": "h"
+    },
+    "y": {
+      "label": "响应值",
+      "unit": "1"
+    }
+  }
+}

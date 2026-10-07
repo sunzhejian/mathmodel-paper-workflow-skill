@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "template_id": "optimization-convergence",
+  "data_kind": "synthetic",
+  "data": "optimization-convergence.csv",
+  "title": "目标轨迹",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "group": "group",
+    "iteration": "iteration",
+    "objective": "objective"
+  },
+  "axes": {
+    "iteration": {
+      "label": "迭代序号",
+      "unit": "1"
+    },
+    "objective": {
+      "label": "给定目标值",
+      "unit": "1"
+    }
+  }
+}

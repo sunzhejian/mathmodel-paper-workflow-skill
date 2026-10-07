@@ -6,7 +6,7 @@
 
 截图中的相关矩阵、预测边缘分布、TPE曲面、半边小提琴、环形热图等对应 `mathmodel-figure-templates`。本项目默认入口为 `vendor/MathModelAgent/skills/mathmodel-figure-templates/SKILL.md`；sci-box 的 `scibox-figure` 声明同名，选择一个来源即可。先读所选入口及 `references/figure-catalog.md`，再调用具体模板。
 
-当前固定版本有 **11个可直接运行的上游模拟样式脚本**，本项目已接通 **5种CSV真实数据入口**。这两项与界面显示的95款菜单分别计数：菜单数不等于可跑脚本数，可跑模拟样式也不等于已验证的数据接口。以下11项是上游样式目录；后文5项是本项目实际数据适配能力。选中模板、复制脚本、成功运行和绑定真实数据分别记录，模板说明不构成统计检验或模型已经执行的证据。
+当前固定版本有 **11个可直接运行的上游模拟样式脚本**，本项目已接通 **20种CSV数据入口**和5类带实际图源的流程模板。它们与参考软件的95款菜单分别计数：菜单数不等于可跑脚本数，可跑模拟样式也不等于已验证的数据接口。选中模板、复制脚本、成功运行和绑定真实数据分别记录，模板说明不构成统计检验或模型已经执行的证据。
 
 在已接入本工作流绘图工具的桌面/网页宿主中，先查询真实可用的图件资源，再读取具体资源返回的指导与 example 合同。只把 example 字段的值保存为合同，不混入工具返回的 scientific_verified、操作说明或来源元数据。已有用户确认的字段、单位、数据版本不得静默改写；材料使用宿主返回的项目路径，不猜原始文件名。没有这组工具的环境继续使用下文真实 CSV 脚本入口，不能伪造工具调用或要求用户更换 IDE。
 
@@ -38,7 +38,7 @@
 
 ## 已接通的CSV数据入口
 
-`scripts/render_scientific_data.py` 当前支持五种布局及网格/点云两种响应表示，角色合同示例见 [examples/scientific-figures](../examples/scientific-figures)。原数据只读；输出目录必须新建。图中不绘制默认显著性星号或拟合置信带；需要这些内容时先取得对应分析证据再改图源。
+`scripts/render_scientific_data.py` 当前支持20种布局及网格/点云两种响应表示，角色合同示例见 [examples/scientific-figures](../examples/scientific-figures)与[新增图库](../examples/scientific-figures/gallery)。原数据只读；输出目录必须新建。图中不绘制默认显著性星号或拟合置信带；需要这些内容时先取得对应分析证据再改图源。
 
 | template_id | 合同字段 | 实际行为 |
 | --- | --- | --- |
@@ -47,6 +47,27 @@
 | rf-tpe-surface | `x/y/z` 三个 `key/label/unit`，`surface_mode` 为 `grid` 或 `scatter` | 完整网格连接已给节点；稀疏试验可直接画原始点云；不启动优化器、不混入解析造面函数 |
 | paired-raincloud | `roles` 精确映射 `sample_id/condition/value`，`conditions` 为两个不同阶段的有序名称，共同 `unit` | 按ID对齐完整两阶段配对，半边密度、箱线、原始点与每对连线；另画真实配对差值分布，重算均值/中位数/标准差与四分位数；不生成p值或CI |
 | binary-roc-comparison | `roles` 精确映射 `model/sample_id/label/score` | 同一批样本及相同0/1标签上的2–6个方案，按分数整组处理并列阈值，ROC及梯形积分AUC从原始分数计算；不训练、不启动交叉验证，不生成置信带 |
+
+新增15项仍从主渲染器调用，数值轴使用`axes={角色:{label,unit}}`，分布、柱状和矩阵使用共同`unit`。实现模块为`scientific_chart_extensions.py`，随主脚本一并复制进复现目录并记录SHA，不依赖用户另装Origin。
+
+| template_id | 角色与额外输入 | 实际用途 |
+| --- | --- | --- |
+| grouped-line | group/x/y；axes x/y | 按给定横轴排序连接观测，不拟合趋势模型 |
+| uncertainty-band | group/x/estimate/lower/upper；axes x/estimate；interval_note | 画已给区间，说明是场景、观测范围还是已算CI；拒绝倒置或不含估计的边界 |
+| grouped-scatter | group/sample_id/x/y；axes x/y | 原始二维散点；不加未计算拟合线 |
+| grouped-box、grouped-violin | group/sample_id/value；unit | 原始点、四分位或描述性KDE；常量组省略密度 |
+| distribution-histogram、ecdf-distribution | group/sample_id/value；unit | 共同分箱频数或经验累计比例；直方图可显式选择bins |
+| grouped-bar、stacked-bar | category/series/value；unit | 完整类别系列表；不默默汇总或用0填缺格，堆积拒绝负数 |
+| matrix-heatmap | row/column/value；unit | 完整矩阵与统一色标，不推算缺失单元 |
+| residual-diagnostics | model/split/sample_id/actual/predicted；axes actual/predicted且单位相同 | 对齐同评价样本，重算误差、RMSE/MAE/R²并展示残差 |
+| binary-pr-comparison | model/sample_id/label/score | 同人群的PR与平均精确率AP，按相同分数组移动；不拿ROC面积代替AP |
+| confusion-matrix | model/sample_id/actual/predicted，类别为文本；可显式classes | 同样本类别计数；缺类分母为0的指标记null，不填成0分 |
+| optimization-convergence | group/iteration/objective；axes iteration/objective | 已供迭代轨迹，不宣称实际运行优化器或证明收敛 |
+| pareto-front | group/sample_id/x/y；axes x/y；x_direction/y_direction为min或max | 已供点集中的非支配候选，不宣称全局最优或可行性已验证 |
+
+字段缺失、非有限数值、重复样本/横轴/矩阵格、比较人群或观测不一致均拒绝。原始精度保留在`figure-data.json`，绘图仅按显示需求舍入。15份合成示例和生成脚本在新增图库内；正式使用替换CSV并确认字段、单位及来源。
+
+流程目录包含迭代推进、全文技术路线、数据质量分支、模型模块关系与验证回路。各合同保留实际节点、条件、箭头和坐标；复用的是图示组织方式，需替换成该题算法，不能把样式预览认作实验或求解证据。
 
 `paired-raincloud` 继承上游的半边小提琴、箱线、散点和均值布局，配对依据来自实际ID。输入是长表，每个ID在两个合同阶段各出现一次，至少有两个完整配对；缺配对、重复、未知阶段、空ID和非有限值直接拒绝。阶段顺序定义差值方向为第二阶段减第一阶段，图中的个体连线与均值菱形/趋势线分别表达个体和总体变化。抖动只是按ID确定的水平显示偏移，两阶段共用偏移，不修改测量值。常量阶段保留点和箱线、注明省略KDE，避免造一个不存在的分布宽度。
 

@@ -1,0 +1,671 @@
+{
+  "schema_version": 1,
+  "seed": 20261007,
+  "source_scope": "Anonymous deterministic synthetic inputs and authored mechanism schematics; no contest results.",
+  "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+  "generator_sha256": "8b03c27b78601a1a84d11a0eb7aba733a5c434b77db59a01b09ca2edf34e8d46",
+  "records": [
+    {
+      "template_id": "binary-pr-comparison",
+      "category": "statistical",
+      "title": "精确率–召回率比较",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/binary-pr-comparison.json",
+      "data": "examples/scientific-figures/gallery/binary-pr-comparison.csv",
+      "roles": {
+        "model": "model",
+        "sample_id": "sample_id",
+        "label": "label",
+        "score": "score"
+      },
+      "axes": {},
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/binary-pr-comparison.jpg",
+        "width": 640,
+        "height": 475,
+        "bytes": 34985,
+        "sha256": "75a7b04b6cf9a294eaa1f52ef1ab60b62bd350a1406db4943d4bc8a1ab9bd05c",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/binary-pr-comparison/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/binary-pr-comparison/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "confusion-matrix",
+      "category": "statistical",
+      "title": "混淆矩阵",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/confusion-matrix.json",
+      "data": "examples/scientific-figures/gallery/confusion-matrix.csv",
+      "roles": {
+        "model": "model",
+        "sample_id": "sample_id",
+        "actual": "actual",
+        "predicted": "predicted"
+      },
+      "axes": {},
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/confusion-matrix.jpg",
+        "width": 640,
+        "height": 340,
+        "bytes": 30635,
+        "sha256": "f43fb566cbbd3b960c1eeff9bef220fb603b8d65b995b162d5aeda37d5c21a1d",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/confusion-matrix/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/confusion-matrix/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "distribution-histogram",
+      "category": "statistical",
+      "title": "分布直方图",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/distribution-histogram.json",
+      "data": "examples/scientific-figures/gallery/distribution-histogram.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/distribution-histogram.jpg",
+        "width": 640,
+        "height": 458,
+        "bytes": 27064,
+        "sha256": "89e85c28057eea78a6c4fbfb679d2c841cc29c785cc8a118d1840ad8549f789d",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/distribution-histogram/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/distribution-histogram/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "ecdf-distribution",
+      "category": "statistical",
+      "title": "经验累积分布",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/ecdf-distribution.json",
+      "data": "examples/scientific-figures/gallery/ecdf-distribution.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/ecdf-distribution.jpg",
+        "width": 640,
+        "height": 453,
+        "bytes": 31132,
+        "sha256": "0c6910bda421584b614e0a85fd9de901f57213b9ec47489b402e11ef1dd3976b",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/ecdf-distribution/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/ecdf-distribution/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "grouped-bar",
+      "category": "statistical",
+      "title": "分组柱状",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/grouped-bar.json",
+      "data": "examples/scientific-figures/gallery/grouped-bar.csv",
+      "roles": {
+        "category": "category",
+        "series": "series",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/grouped-bar.jpg",
+        "width": 640,
+        "height": 450,
+        "bytes": 34277,
+        "sha256": "bb9eb47ee0a0bd5cd86a60fcf9833649cc3f4d69cf946d18ca7fae2643c621d8",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/grouped-bar/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/grouped-bar/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "grouped-box",
+      "category": "statistical",
+      "title": "分组箱线",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/grouped-box.json",
+      "data": "examples/scientific-figures/gallery/grouped-box.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/grouped-box.jpg",
+        "width": 640,
+        "height": 436,
+        "bytes": 23979,
+        "sha256": "f2fd7eb857437d85aaea9fa0837febe6b5bc347d28026b3582b9962cf91c165e",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/grouped-box/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/grouped-box/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "grouped-line",
+      "category": "statistical",
+      "title": "分组曲线",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/grouped-line.json",
+      "data": "examples/scientific-figures/gallery/grouped-line.csv",
+      "roles": {
+        "group": "group",
+        "x": "x",
+        "y": "y"
+      },
+      "axes": {
+        "x": {
+          "label": "时间",
+          "unit": "h"
+        },
+        "y": {
+          "label": "响应值",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/grouped-line.jpg",
+        "width": 640,
+        "height": 453,
+        "bytes": 33198,
+        "sha256": "baf0a94d5707823c81f4a5a42237a752de57b781c483b75454b7c09a9e855146",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/grouped-line/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/grouped-line/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "grouped-scatter",
+      "category": "statistical",
+      "title": "分组散点",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/grouped-scatter.json",
+      "data": "examples/scientific-figures/gallery/grouped-scatter.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "x": "x",
+        "y": "y"
+      },
+      "axes": {
+        "x": {
+          "label": "输入变量",
+          "unit": "1"
+        },
+        "y": {
+          "label": "响应变量",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/grouped-scatter.jpg",
+        "width": 640,
+        "height": 463,
+        "bytes": 28076,
+        "sha256": "3fc3475a57699f4a2de19b051683076d5fdc6a89ce468818a044c2b39ebfdd4e",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/grouped-scatter/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/grouped-scatter/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "grouped-violin",
+      "category": "statistical",
+      "title": "分组小提琴",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/grouped-violin.json",
+      "data": "examples/scientific-figures/gallery/grouped-violin.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/grouped-violin.jpg",
+        "width": 640,
+        "height": 436,
+        "bytes": 25074,
+        "sha256": "a25e346b4d198861c3eaf6ce13000519a81bb6620adc8353e27a1b789ee95a23",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/grouped-violin/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/grouped-violin/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "matrix-heatmap",
+      "category": "statistical",
+      "title": "矩阵热图",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/matrix-heatmap.json",
+      "data": "examples/scientific-figures/gallery/matrix-heatmap.csv",
+      "roles": {
+        "row": "row",
+        "column": "column",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/matrix-heatmap.jpg",
+        "width": 640,
+        "height": 468,
+        "bytes": 34701,
+        "sha256": "0357762e3e142b6dec7a8d9c08329a628e548d92e73bd60247fabbb50d8b65a1",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/matrix-heatmap/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/matrix-heatmap/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "optimization-convergence",
+      "category": "statistical",
+      "title": "目标轨迹",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/optimization-convergence.json",
+      "data": "examples/scientific-figures/gallery/optimization-convergence.csv",
+      "roles": {
+        "group": "group",
+        "iteration": "iteration",
+        "objective": "objective"
+      },
+      "axes": {
+        "iteration": {
+          "label": "迭代序号",
+          "unit": "1"
+        },
+        "objective": {
+          "label": "给定目标值",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/optimization-convergence.jpg",
+        "width": 640,
+        "height": 463,
+        "bytes": 34080,
+        "sha256": "e64f0c5f72ad88c50fd32ed4e09488d4411d5211b282fb17e4f18ca2e9513e95",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/optimization-convergence/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/optimization-convergence/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "pareto-front",
+      "category": "statistical",
+      "title": "非支配解前沿",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/pareto-front.json",
+      "data": "examples/scientific-figures/gallery/pareto-front.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "x": "x",
+        "y": "y"
+      },
+      "axes": {
+        "x": {
+          "label": "目标一",
+          "unit": "1"
+        },
+        "y": {
+          "label": "目标二",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/pareto-front.jpg",
+        "width": 640,
+        "height": 464,
+        "bytes": 32468,
+        "sha256": "467a3b0f09c47ff150648d473754aab8b38c2beac920c8997a888ce1a9a4488f",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/pareto-front/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/pareto-front/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "residual-diagnostics",
+      "category": "statistical",
+      "title": "残差诊断",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/residual-diagnostics.json",
+      "data": "examples/scientific-figures/gallery/residual-diagnostics.csv",
+      "roles": {
+        "model": "model",
+        "split": "split",
+        "sample_id": "sample_id",
+        "actual": "actual",
+        "predicted": "predicted"
+      },
+      "axes": {
+        "actual": {
+          "label": "参考值",
+          "unit": "1"
+        },
+        "predicted": {
+          "label": "给定预测值",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/residual-diagnostics.jpg",
+        "width": 640,
+        "height": 535,
+        "bytes": 41711,
+        "sha256": "c48983b66685014d701b9ff9cd4d1528631d10b08c9b5451cf079ca1f0e3fa60",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 2,
+        "source": "qa/gallery-v09/charts-02/residual-diagnostics/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/residual-diagnostics/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "stacked-bar",
+      "category": "statistical",
+      "title": "堆叠柱状",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/stacked-bar.json",
+      "data": "examples/scientific-figures/gallery/stacked-bar.csv",
+      "roles": {
+        "category": "category",
+        "series": "series",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/stacked-bar.jpg",
+        "width": 640,
+        "height": 450,
+        "bytes": 28467,
+        "sha256": "6a70d0582af75ec3451b4f72d8c04a19f8116f839fbee3acbe5db0873fd0896e",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/stacked-bar/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/stacked-bar/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "uncertainty-band",
+      "category": "statistical",
+      "title": "给定范围带",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/uncertainty-band.json",
+      "data": "examples/scientific-figures/gallery/uncertainty-band.csv",
+      "roles": {
+        "group": "group",
+        "x": "x",
+        "estimate": "estimate",
+        "lower": "lower",
+        "upper": "upper"
+      },
+      "axes": {
+        "x": {
+          "label": "时间",
+          "unit": "h"
+        },
+        "estimate": {
+          "label": "给定中心值",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/uncertainty-band.jpg",
+        "width": 640,
+        "height": 464,
+        "bytes": 34986,
+        "sha256": "96e69a5f98d33d07acbddee1b89880d8c4f65d08a3c871f34b8e5ab415c40a08",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/charts-02/uncertainty-band/figure.png"
+      },
+      "render_report": "qa/gallery-v09/charts-02/uncertainty-band/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "data_pipeline",
+      "category": "flowchart",
+      "title": "数据处理与划分",
+      "data_kind": "schematic",
+      "contract": "examples/flowcharts/data_pipeline.json",
+      "data": null,
+      "roles": {},
+      "axes": {},
+      "unit": null,
+      "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/data_pipeline.jpg",
+        "width": 640,
+        "height": 447,
+        "bytes": 34445,
+        "sha256": "e92587fc1ec798ca7b7dbfc3fa65f36c115dc56dba91daa9681bf0af23a8d143",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/flows-01/data_pipeline/figure.png"
+      },
+      "render_report": "qa/gallery-v09/flows-01/data_pipeline/rendering_report.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "model_structure",
+      "category": "flowchart",
+      "title": "模型模块与汇流",
+      "data_kind": "schematic",
+      "contract": "examples/flowcharts/model_structure.json",
+      "data": null,
+      "roles": {},
+      "axes": {},
+      "unit": null,
+      "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/model_structure.jpg",
+        "width": 640,
+        "height": 469,
+        "bytes": 37906,
+        "sha256": "70362e740be28eacf1612e32d4a3c1c0c8ea7e809cf0b3bd83cd1999b8a2e320",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/flows-01/model_structure/figure.png"
+      },
+      "render_report": "qa/gallery-v09/flows-01/model_structure/rendering_report.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "numerical-iteration",
+      "category": "flowchart",
+      "title": "数值迭代与时间推进",
+      "data_kind": "schematic",
+      "contract": "examples/flowcharts/numerical_iteration.json",
+      "data": null,
+      "roles": {},
+      "axes": {},
+      "unit": null,
+      "source_note": "匿名通用示例；应由使用者用题面、模型报告和代码核对并替换。仅展示机制，不表示任何比赛算法已运行。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/numerical-iteration.jpg",
+        "width": 640,
+        "height": 918,
+        "bytes": 66588,
+        "sha256": "d7125d7d6d41f3ed801415225cafc6d3544c63cae6c7dab10797a268ae01eac9",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 2,
+        "source": "qa/gallery-v09/flows-01/numerical-iteration/figure.png"
+      },
+      "render_report": "qa/gallery-v09/flows-01/numerical-iteration/rendering_report.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "research_roadmap",
+      "category": "flowchart",
+      "title": "全文研究路线",
+      "data_kind": "schematic",
+      "contract": "examples/flowcharts/research_roadmap.json",
+      "data": null,
+      "roles": {},
+      "axes": {},
+      "unit": null,
+      "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/research_roadmap.jpg",
+        "width": 640,
+        "height": 458,
+        "bytes": 32480,
+        "sha256": "f7183edc5440a290f44e0e77faa1ae2de418134f0209b78ae6020942247d6ca1",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/flows-01/research_roadmap/figure.png"
+      },
+      "render_report": "qa/gallery-v09/flows-01/research_roadmap/rendering_report.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "validation_decision",
+      "category": "flowchart",
+      "title": "验证判断与修订回路",
+      "data_kind": "schematic",
+      "contract": "examples/flowcharts/validation_decision.json",
+      "data": null,
+      "roles": {},
+      "axes": {},
+      "unit": null,
+      "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/validation_decision.jpg",
+        "width": 640,
+        "height": 478,
+        "bytes": 28560,
+        "sha256": "e34bcd133e17aca835a6108b3f3c8c8e4083b4182ebabe64bb062fee9dd243a0",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-v09/flows-01/validation_decision/figure.png"
+      },
+      "render_report": "qa/gallery-v09/flows-01/validation_decision/rendering_report.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    }
+  ]
+}

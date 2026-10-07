@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "template_id": "pareto-front",
+  "data_kind": "synthetic",
+  "data": "pareto-front.csv",
+  "title": "非支配解前沿",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "group": "group",
+    "sample_id": "sample_id",
+    "x": "x",
+    "y": "y"
+  },
+  "axes": {
+    "x": {
+      "label": "目标一",
+      "unit": "1"
+    },
+    "y": {
+      "label": "目标二",
+      "unit": "1"
+    }
+  },
+  "x_direction": "min",
+  "y_direction": "min"
+}

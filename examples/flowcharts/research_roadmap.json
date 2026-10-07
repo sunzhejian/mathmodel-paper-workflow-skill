@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "data_kind": "schematic",
+  "groups": [],
+  "source_note": "合成示例；由 generate_gallery.py::flow_contracts 明确编写的匿名通用机制，须按真实题面和方法替换；不表示算法或试验已经执行。",
+  "style": {
+    "font_family": "SimSun",
+    "font_size": 22,
+    "publication_width_mm": 160,
+    "minimum_font_pt": 8.5,
+    "maximum_height_mm": 225,
+    "minimum_dpi": 300
+  },
+  "title": "全文研究路线",
+  "claim": "研究从问题与数据出发，连接数据处理、模型设计、求解验证和结果表达。",
+  "canvas": {
+    "width": 840,
+    "height": 590
+  },
+  "nodes": [
+    {
+      "id": "synthetic_banner",
+      "label": "合成示例 · 全文研究路线",
+      "kind": "annotation",
+      "x": 15,
+      "y": 5,
+      "width": 810,
+      "height": 42
+    },
+    {
+      "id": "problem",
+      "label": "问题与资料\n确定目标与约束",
+      "kind": "input",
+      "x": 285,
+      "y": 65,
+      "width": 270,
+      "height": 66
+    },
+    {
+      "id": "data",
+      "label": "数据处理\n字段、单位与质量",
+      "kind": "process",
+      "x": 45,
+      "y": 190,
+      "width": 300,
+      "height": 66
+    },
+    {
+      "id": "model",
+      "label": "模型设计\n假设、变量与关系",
+      "kind": "process",
+      "x": 495,
+      "y": 190,
+      "width": 300,
+      "height": 66
+    },
+    {
+      "id": "solve",
+      "label": "数值求解\n生成可追溯输出",
+      "kind": "process",
+      "x": 285,
+      "y": 315,
+      "width": 270,
+      "height": 66
+    },
+    {
+      "id": "validate",
+      "label": "验证与敏感性分析",
+      "kind": "process",
+      "x": 285,
+      "y": 410,
+      "width": 270,
+      "height": 60
+    },
+    {
+      "id": "report",
+      "label": "结果、图表与结论",
+      "kind": "output",
+      "x": 265,
+      "y": 520,
+      "width": 310,
+      "height": 60
+    }
+  ],
+  "edges": [
+    {
+      "id": "problem_data",
+      "source": "problem",
+      "target": "data",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.25
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 352.5,
+          "y": 160
+        },
+        {
+          "x": 195,
+          "y": 160
+        }
+      ]
+    },
+    {
+      "id": "problem_model",
+      "source": "problem",
+      "target": "model",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.75
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.5
+      },
+      "waypoints": [
+        {
+          "x": 487.5,
+          "y": 160
+        },
+        {
+          "x": 645,
+          "y": 160
+        }
+      ]
+    },
+    {
+      "id": "data_solve",
+      "source": "data",
+      "target": "solve",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.2
+      },
+      "waypoints": [
+        {
+          "x": 195,
+          "y": 285
+        },
+        {
+          "x": 339,
+          "y": 285
+        }
+      ]
+    },
+    {
+      "id": "model_solve",
+      "source": "model",
+      "target": "solve",
+      "relation": "process",
+      "source_port": {
+        "side": "south",
+        "position": 0.5
+      },
+      "target_port": {
+        "side": "north",
+        "position": 0.8
+      },
+      "waypoints": [
+        {
+          "x": 645,
+          "y": 285
+        },
+        {
+          "x": 501,
+          "y": 285
+        }
+      ]
+    },
+    {
+      "id": "solve_validate",
+      "source": "solve",
+      "target": "validate",
+      "relation": "process"
+    },
+    {
+      "id": "validate_report",
+      "source": "validate",
+      "target": "report",
+      "relation": "process"
+    }
+  ]
+}
