@@ -181,8 +181,15 @@ def check(contract_path, project_root):
         root = root_path(project_root)
         supplied = Path(contract_path)
         if supplied.is_absolute():
+            lexical = supplied.absolute()
+            # Canonicalize both Windows 8.3 aliases and long paths, but inspect
+            # the original ancestry first: resolve() must not erase a link.
+            for parent in (lexical, *lexical.parents):
+                if (parent.exists() or parent.is_symlink()) and is_link(parent):
+                    raise ContractError("Contract may not traverse symlinks, junctions or reparse points")
+            canonical = lexical.resolve(strict=True)
             try:
-                contract_key = supplied.absolute().relative_to(root).as_posix()
+                contract_key = canonical.relative_to(root).as_posix()
             except ValueError as exc:
                 raise ContractError("Contract must also be inside project-root") from exc
         else:

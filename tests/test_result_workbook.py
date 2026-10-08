@@ -1,6 +1,7 @@
 """Independent anonymous XLSX/CSV fixtures, not model-generated answers."""
 import csv
 import builtins
+import ctypes
 import hashlib
 import importlib.util
 import json
@@ -345,6 +346,73 @@ class WorkbookTests(unittest.TestCase):
             self.assert_failed("junctions")
         with patch.object(m, "is_link", side_effect=lambda p: Path(p) == self.root.parent or original(p)):
             self.assert_failed("root may not traverse")
+
+    def test_absolute_contract_lexical_file_and_parent_links_are_refused_before_resolve(self):
+        alias = self.root / "contract-alias.json"
+        alias.write_bytes(self.contract.read_bytes())
+        original = m.is_link
+        with patch.object(m, "is_link", side_effect=lambda p: Path(p) == alias or original(p)):
+            report = m.check(alias, self.root)
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(any("Contract may not traverse" in e for e in report["errors"]))
+        parent = self.root / "alias-parent"
+        parent.mkdir()
+        nested = parent / "contract.json"
+        nested.write_bytes(self.contract.read_bytes())
+        with patch.object(m, "is_link", side_effect=lambda p: Path(p) == parent or original(p)):
+            report = m.check(nested, self.root)
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(any("Contract may not traverse" in e for e in report["errors"]))
+
+    def test_absolute_contract_outside_root_and_hardlinks_still_fail(self):
+        with tempfile.TemporaryDirectory() as outside:
+            path = Path(outside) / "contract.json"
+            path.write_bytes(self.contract.read_bytes())
+            report = m.check(path, self.root)
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(any("inside project-root" in e for e in report["errors"]))
+        alias = self.root / "contract-hardlink.json"
+        os.link(self.contract, alias)
+        report = m.check(alias, self.root)
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(any("single-linked" in e for e in report["errors"]))
+
+    def windows_short_path(self, path):
+        if os.name != "nt":
+            self.skipTest("Windows GetShortPathNameW is unavailable on this platform")
+        function = ctypes.WinDLL("kernel32", use_last_error=True).GetShortPathNameW
+        function.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint32]
+        function.restype = ctypes.c_uint32
+        required = function(str(path), None, 0)
+        if not required:
+            self.skipTest("GetShortPathNameW unavailable for this filesystem: error " + str(ctypes.get_last_error()))
+        buffer = ctypes.create_unicode_buffer(required + 1)
+        actual = function(str(path), buffer, len(buffer))
+        if not actual or actual >= len(buffer):
+            self.skipTest("GetShortPathNameW could not supply a stable filesystem alias")
+        short = Path(buffer.value)
+        if str(short).casefold() == str(Path(path).resolve()).casefold():
+            self.skipTest("This filesystem does not expose an 8.3 alias for the test path")
+        self.assertEqual(short.resolve(strict=True), Path(path).resolve(strict=True))
+        return short
+
+    def test_windows_real_short_contract_with_long_root(self):
+        # A long basename guarantees an alias where 8.3 generation is enabled,
+        # even when the runner's temporary parent already uses a short name.
+        long_contract = self.root / "anonymous workbook output verification contract.json"
+        long_contract.write_bytes(self.contract.read_bytes())
+        short_contract = self.windows_short_path(long_contract.resolve())
+        report = m.check(short_contract, self.root.resolve())
+        self.assertEqual(report["status"], "mechanical pass", report["errors"])
+
+    def test_windows_real_long_contract_with_short_root(self):
+        nested = self.root / "anonymous workbook verification project directory"
+        nested.mkdir()
+        for source in (self.template, self.result, self.body, self.contract):
+            (nested / source.name).write_bytes(source.read_bytes())
+        short_root = self.windows_short_path(nested.resolve())
+        report = m.check((nested / "contract.json").resolve(), short_root)
+        self.assertEqual(report["status"], "mechanical pass", report["errors"])
 
     def test_directories_hardlinks_and_invalid_xlsx_fail_closed(self):
         self.cfg["result"]["path"] = "."
