@@ -25,7 +25,9 @@ class WorkbookTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        # Fixtures and hooks use the same canonical spelling as the checker;
+        # Windows runners may expose TEMP through a RUNNER~1 alias.
+        self.root = Path(self.temp.name).resolve(strict=True)
         self.template = self.root / "template.xlsx"
         self.result = self.root / "result.xlsx"
         self.body = self.root / "body.csv"
@@ -310,13 +312,17 @@ class WorkbookTests(unittest.TestCase):
 
     def test_hashes_are_checked_after_inspection_as_well_as_before(self):
         original = openpyxl.load_workbook
+        triggered = False
         def load_and_tamper(path, **kwargs):
+            nonlocal triggered
             book = original(path, **kwargs)
             if Path(path) == self.template:
+                triggered = True
                 self.body.write_text("time,a,b,surface\n0,1,0.9,0.8\n", encoding="utf-8")
             return book
         with patch.object(openpyxl, "load_workbook", side_effect=load_and_tamper):
             report = self.run_check()
+        self.assertTrue(triggered, "Template-load tamper hook did not execute")
         self.assertEqual(report["status"], "failed")
         # CSV was changed before its declared binding; this must fail stale SHA.
         self.assertTrue(any("stale input SHA" in error for error in report["errors"]))
@@ -324,15 +330,19 @@ class WorkbookTests(unittest.TestCase):
     def test_actual_after_read_input_change_fails_unchanged_check(self):
         original = m.sha256
         calls = 0
+        triggered = False
         def alter_on_final_read(path):
-            nonlocal calls
+            nonlocal calls, triggered
             if Path(path) == self.result:
                 calls += 1
                 if calls == 2:
+                    triggered = True
                     self.result.write_bytes(self.result.read_bytes() + b"changed-after-inspection")
             return original(path)
         with patch.object(m, "sha256", side_effect=alter_on_final_read):
             report = m.check(self.contract, self.root)
+        self.assertTrue(triggered, "After-read tamper hook did not execute")
+        self.assertEqual(calls, 2, "Result must be hashed before and after inspection")
         self.assertEqual(report["status"], "failed")
         self.assertTrue(any(not h["unchanged"] for h in report["input_hashes"] if h["path"] == "result.xlsx"))
 
@@ -342,10 +352,25 @@ class WorkbookTests(unittest.TestCase):
             self.assert_failed("Paths must stay relative")
         self.cfg["result"]["path"] = "result.xlsx"
         original = m.is_link
-        with patch.object(m, "is_link", side_effect=lambda p: Path(p) == self.result or original(p)):
+        result_triggered, ancestor_triggered = False, False
+        def result_link(path):
+            nonlocal result_triggered
+            if Path(path) == self.result:
+                result_triggered = True
+                return True
+            return original(path)
+        def ancestor_link(path):
+            nonlocal ancestor_triggered
+            if Path(path) == self.root.parent:
+                ancestor_triggered = True
+                return True
+            return original(path)
+        with patch.object(m, "is_link", side_effect=result_link):
             self.assert_failed("junctions")
-        with patch.object(m, "is_link", side_effect=lambda p: Path(p) == self.root.parent or original(p)):
+        self.assertTrue(result_triggered, "Result reparse-point hook did not execute")
+        with patch.object(m, "is_link", side_effect=ancestor_link):
             self.assert_failed("root may not traverse")
+        self.assertTrue(ancestor_triggered, "Root ancestor reparse-point hook did not execute")
 
     def test_absolute_contract_lexical_file_and_parent_links_are_refused_before_resolve(self):
         alias = self.root / "contract-alias.json"
