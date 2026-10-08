@@ -18,6 +18,24 @@
 
 图中单位、上/下标与数学符号也检查实际字形。正文宋体正常不能掩盖图内方框或 LastResort 等缺字回退；不要过滤缺字警告后称通过。图件说明逐项对照实际坐标轴、位置、参数扰动幅度和可复现脚本，编号能跳转不代表图意对应。发现排版或语义错配时修其源并重新导出，再看最终嵌入页。
 
+## CTeX 声明检查与平台适配
+
+先读取模板原件及实际入口，忽略普通 `%` 注释后定位唯一、已使用的 `\documentclass` 声明。注释、说明或正文示例可能先出现 `fontset=mac`；对整个文件做第一次字符串替换，可能只改注释而保留真实声明。检查改后的参数与来源/写入收据，不能因模板准备工具声称“已适配Windows”就认定生效，也不能没查版本就归因模型改回旧配置。
+
+对于使用 CTeX 标准文档类的新模板，通常可先考虑 Windows 的 `fontset=windows`、macOS 的 `fontset=mac`、Linux 的 `fontset=fandol`，再检查本机与当前引擎实际字体。CTeX也可按系统自动选择默认字体；Fandol是一套包含宋、黑、楷、仿宋的字体。[CTeX手册4.3节](https://tug.ctan.org/language/chinese/ctex/ctex.pdf)、[Fandol项目说明](https://ctan.org/pkg/fandol)。这是平台起点，**不是当届赛事官方字体/字号要求**，也不保证字体已安装或PDF职责正确。用户明确选择其他字体、`fontset=none`、宏配置、转发选项或自定义类时，先读实际配置和类源，不强制换成平台建议。
+
+可选 [`ctex_fontset_guard.py`](../scripts/ctex_fontset_guard.py) 只检查一个 UTF-8 入口中普通注释以外的字面声明：
+
+```sh
+python scripts/ctex_fontset_guard.py inspect paper/main.tex --platform windows
+# 仅在已选定新模板适配策略时生成新的源副本；不会覆盖输入或已有文件。
+python scripts/ctex_fontset_guard.py adapt paper/main.tex --platform windows --output paper/main-fonts-candidate.tex
+```
+
+`--platform` 可选值为 `windows/macos/linux`。inspect退出0表示声明匹配平台策略或不是CTeX标准类，1表示明确不匹配，2表示宏/缺少显式配置/自定义类等需要阅读。adapt只处理明确的 `windows/mac/fandol` 字面配置；重复声明、转发选项、宏展开或明确自选字体不猜改。此工具不是完整TeX解释器，不处理CTeX包/类内部的所有字体来源。
+
+适配之后复查真正的声明，并用本机已有编译器编译**该候选入口**（多文件模板沿用自己的目录和宏）；查看缺字体、缺字与引用诊断，核对实际PDF中的正文/标题/西文/数学及图中字形。未实际编译就保持待验证。候选编译失败时保留原源与诊断，不安装整套商业工具，也不将声明检查通过或一个平台的编译结果扩称为全部系统已经验证。
+
 ## 按目标引擎选择图件
 
 保留真正可编辑的图源与目标软件导出。SVG 不总能跨引擎显示：`foreignObject` 里的 HTML 文字、CSS `light-dark()`/变量、字体及外部资源引用可能在浏览器正确而在排版引擎丢失。对目标为 Typst 的图先查这些结构；发现风险时先用实际引擎核验，已知不兼容的图停止直接嵌入，选择可移植 SVG 或从同一图源导出的高清 PNG。不能仅删掉 `foreignObject` 或 CSS 警告而同时丢失标签/颜色。
