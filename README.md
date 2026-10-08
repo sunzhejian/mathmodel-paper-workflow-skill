@@ -160,6 +160,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [只读材料 MCP](scripts/case_materials_server.py) | 给其他 AI 分段读取完整材料与题面页图，记录返回范围；不执行求解或把原 DOC 保留计为已解析 |
 | [扫描转写](scripts/extract_scanned_pdf.py) | 保留原页、原文/识别框与分数及原件哈希；不认证数值或表格结构 |
 | [完整公式结构诊断](scripts/check_formula_integrity.py) | 筛查Typst关系碎裂及实际PDF单变量编号/残留运算符；不改稿，不认证数学 |
+| [数值与结果合同](references/numerical-result-contract.md) / [工作簿检查器](scripts/check_result_workbook.py) | 原式/离散项、坐标与单位、全量时间输出、未舍入事件状态；只读比对样表与正文CSV，机械通过不代表科学正确 |
 | [可选完整项目试用](references/workflow-project-trials.md) | 模型自己编写代码和论文，宿主仅审阅批准的完整源树并检查真实执行与产物 |
 | [历史版本锁](examples/upstream-lock.json) | 4 个公开上游的来源与当时提交 |
 | [约束合同示例](examples/workflow-contract.json) | 页数口径、边距、留白、附录与交付约定 |

@@ -79,6 +79,8 @@ python -X utf8 scripts/case_materials_server.py --help
 
 本仓库的 `requirements.txt` 只列 PDF 检查和演示工具的依赖，不强制安装所有建模包。按实际方法在**赛题项目自己的环境**中安装，例如：
 
+使用独立工作簿输出检查器时，另执行 `python -m pip install -r requirements-results.txt`，以同一解释器运行 `scripts/check_result_workbook.py`。该可选依赖用于已生成XLSX与样表/合同的只读回读，不是普通论文编辑或材料准备的前提；检查范围见[数值结果合同](../references/numerical-result-contract.md)。
+
 ```sh
 python -m pip install scipy pandas matplotlib openpyxl
 python -c "import scipy, pandas, matplotlib, openpyxl; print('model tools OK')"
