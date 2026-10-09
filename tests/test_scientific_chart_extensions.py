@@ -17,6 +17,7 @@ SPEC = importlib.util.spec_from_file_location("scientific_chart_extensions", ROO
 CHARTS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHARTS)
 HAS_MPL = importlib.util.find_spec("matplotlib") is not None
+ORIGINAL_IDS = tuple(kind for kind in CHARTS.EXTENSIONS if kind not in CHARTS.NEW_EXTENSIONS)
 
 
 def contract(kind, **extras):
@@ -71,8 +72,9 @@ def fixture(kind):
 
 class ScientificChartExtensionChecks(unittest.TestCase):
     def test_exact_catalog_of_fifteen_adapters(self):
-        self.assertEqual(len(CHARTS.EXTENSIONS), 15)
-        for kind in CHARTS.EXTENSIONS:
+        self.assertEqual(len(ORIGINAL_IDS), 15)
+        self.assertEqual(len(CHARTS.EXTENSIONS), 25)
+        for kind in ORIGINAL_IDS:
             spec, rows = fixture(kind)
             bundle = CHARTS.prepare_extension(spec, rows)
             self.assertEqual(bundle["statistics"]["observations"], len(rows))
@@ -81,7 +83,7 @@ class ScientificChartExtensionChecks(unittest.TestCase):
             json.dumps(bundle["statistics"], allow_nan=False)
 
     def test_every_role_must_exist_and_roles_cannot_alias(self):
-        for kind in CHARTS.EXTENSIONS:
+        for kind in ORIGINAL_IDS:
             with self.subTest(kind=kind):
                 spec, rows = fixture(kind)
                 del rows[0][CHARTS.EXTENSIONS[kind]["roles"][0]]
@@ -113,7 +115,7 @@ class ScientificChartExtensionChecks(unittest.TestCase):
         spec["axes"]["y"].pop("unit")
         with self.assertRaisesRegex(ValueError, "unit"):
             CHARTS.prepare_extension(spec, rows)
-        for kind in CHARTS.EXTENSIONS:
+        for kind in ORIGINAL_IDS:
             spec, rows = fixture(kind)
             spec["add_significance_stars"] = True
             with self.assertRaisesRegex(ValueError, "Unsupported"):
@@ -391,7 +393,7 @@ class ScientificChartExtensionChecks(unittest.TestCase):
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
-        for kind in CHARTS.EXTENSIONS:
+        for kind in ORIGINAL_IDS:
             with self.subTest(kind=kind), warnings.catch_warnings(record=True) as captured:
                 warnings.simplefilter("always")
                 spec, rows = fixture(kind)

@@ -3,7 +3,7 @@
   "seed": 20261007,
   "source_scope": "Anonymous deterministic synthetic inputs and authored mechanism schematics; no contest results.",
   "generator": "examples/scientific-figures/gallery/generate_gallery.py",
-  "generator_sha256": "8b03c27b78601a1a84d11a0eb7aba733a5c434b77db59a01b09ca2edf34e8d46",
+  "generator_sha256": "29d6274317e3603a3d4a0cf587195b8de2d81b982192ec5244f7a8f3bcaa02f4",
   "records": [
     {
       "template_id": "binary-pr-comparison",
@@ -664,6 +664,361 @@
         "source": "qa/gallery-v09/flows-01/validation_decision/figure.png"
       },
       "render_report": "qa/gallery-v09/flows-01/validation_decision/rendering_report.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "hexbin-density",
+      "category": "statistical",
+      "title": "六边形计数密度",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/hexbin-density.json",
+      "data": "examples/scientific-figures/gallery/hexbin-density.csv",
+      "roles": {
+        "sample_id": "sample_id",
+        "x": "x",
+        "y": "y"
+      },
+      "axes": {
+        "x": {
+          "label": "变量一",
+          "unit": "1"
+        },
+        "y": {
+          "label": "变量二",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/hexbin-density.jpg",
+        "width": 640,
+        "height": 492,
+        "bytes": 39105,
+        "sha256": "7be6150b7e755137b5dc881288675b7d78baaa94cba9c11f842aea5267b887c9",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/hexbin-density/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/hexbin-density/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "density-contour",
+      "category": "statistical",
+      "title": "分箱密度等高线",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/density-contour.json",
+      "data": "examples/scientific-figures/gallery/density-contour.csv",
+      "roles": {
+        "sample_id": "sample_id",
+        "x": "x",
+        "y": "y"
+      },
+      "axes": {
+        "x": {
+          "label": "变量一",
+          "unit": "1"
+        },
+        "y": {
+          "label": "变量二",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/density-contour.jpg",
+        "width": 640,
+        "height": 475,
+        "bytes": 33138,
+        "sha256": "436a6ea4233072822e01832f450651b9e32e60e5484495acc2a830af7652b4fc",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 2,
+        "source": "qa/gallery-expanded-20261009-clean/density-contour/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/density-contour/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "coefficient-forest",
+      "category": "statistical",
+      "title": "给定系数与区间",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/coefficient-forest.json",
+      "data": "examples/scientific-figures/gallery/coefficient-forest.csv",
+      "roles": {
+        "term": "term",
+        "estimate": "estimate",
+        "lower": "lower",
+        "upper": "upper"
+      },
+      "axes": {
+        "estimate": {
+          "label": "给定系数",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/coefficient-forest.jpg",
+        "width": 640,
+        "height": 558,
+        "bytes": 24735,
+        "sha256": "48c4fe2dbdc97e29648ecfcb7b5b691d2667eff25f9507108bebb4dd01b0d19d",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/coefficient-forest/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/coefficient-forest/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "sensitivity-tornado",
+      "category": "statistical",
+      "title": "给定情景响应",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/sensitivity-tornado.json",
+      "data": "examples/scientific-figures/gallery/sensitivity-tornado.csv",
+      "roles": {
+        "parameter": "parameter",
+        "baseline": "baseline",
+        "lower_case": "lower_case",
+        "upper_case": "upper_case"
+      },
+      "axes": {
+        "baseline": {
+          "label": "给定响应值",
+          "unit": "kg"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/sensitivity-tornado.jpg",
+        "width": 640,
+        "height": 558,
+        "bytes": 31252,
+        "sha256": "b3eb0c0049dd07b41cd70097630d301c3179c3cd525ecccdef874cae42f1925c",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/sensitivity-tornado/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/sensitivity-tornado/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "multimetric-profile",
+      "category": "statistical",
+      "title": "统一尺度指标轮廓",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/multimetric-profile.json",
+      "data": "examples/scientific-figures/gallery/multimetric-profile.csv",
+      "roles": {
+        "series": "series",
+        "metric": "metric",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "point",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/multimetric-profile.jpg",
+        "width": 640,
+        "height": 723,
+        "bytes": 49656,
+        "sha256": "ffe026b4478adc27f81fabbc53a2d01859138cf2971e2d570ff5aa5b127e53d6",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 2,
+        "source": "qa/gallery-expanded-20261009-clean/multimetric-profile/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/multimetric-profile/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "bubble-matrix",
+      "category": "statistical",
+      "title": "数值气泡矩阵",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/bubble-matrix.json",
+      "data": "examples/scientific-figures/gallery/bubble-matrix.csv",
+      "roles": {
+        "row": "row",
+        "column": "column",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/bubble-matrix.jpg",
+        "width": 640,
+        "height": 534,
+        "bytes": 34675,
+        "sha256": "ff5f474d1bb53b20b8c6dc9fbe32cafac27495bff3294fc3bc831bf8e9f5e67b",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/bubble-matrix/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/bubble-matrix/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "ridge-distribution",
+      "category": "statistical",
+      "title": "分组山脊分布",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/ridge-distribution.json",
+      "data": "examples/scientific-figures/gallery/ridge-distribution.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/ridge-distribution.jpg",
+        "width": 640,
+        "height": 510,
+        "bytes": 31807,
+        "sha256": "46656e081db9dce43856a46bfd04f4979398d368621be2c9edb14bed50dff88c",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/ridge-distribution/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/ridge-distribution/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "qq-normal",
+      "category": "statistical",
+      "title": "正态理论分位比较",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/qq-normal.json",
+      "data": "examples/scientific-figures/gallery/qq-normal.csv",
+      "roles": {
+        "group": "group",
+        "sample_id": "sample_id",
+        "value": "value"
+      },
+      "axes": {},
+      "unit": "1",
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/qq-normal.jpg",
+        "width": 640,
+        "height": 560,
+        "bytes": 37604,
+        "sha256": "c60c3aebd06eef5c81e18b3c90cd4f11e3b6c5f6d39ec289645c27b7a79db582",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/qq-normal/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/qq-normal/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "calibration-curve",
+      "category": "statistical",
+      "title": "给定概率校准曲线",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/calibration-curve.json",
+      "data": "examples/scientific-figures/gallery/calibration-curve.csv",
+      "roles": {
+        "model": "model",
+        "sample_id": "sample_id",
+        "label": "label",
+        "score": "score"
+      },
+      "axes": {},
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/calibration-curve.jpg",
+        "width": 640,
+        "height": 501,
+        "bytes": 35135,
+        "sha256": "f9cf2a99e854e53ddc434f3dc9f3f6757029f8e744b7839bdfaf2d786604d75c",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/calibration-curve/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/calibration-curve/figure-data.json",
+      "generation_status": "generated_from_contract",
+      "scientific_validation": "not established"
+    },
+    {
+      "template_id": "spatial-point-values",
+      "category": "statistical",
+      "title": "平面测点与数值",
+      "data_kind": "synthetic",
+      "contract": "examples/scientific-figures/gallery/spatial-point-values.json",
+      "data": "examples/scientific-figures/gallery/spatial-point-values.csv",
+      "roles": {
+        "sample_id": "sample_id",
+        "x": "x",
+        "y": "y",
+        "value": "value"
+      },
+      "axes": {
+        "x": {
+          "label": "平面横坐标",
+          "unit": "m"
+        },
+        "y": {
+          "label": "平面纵坐标",
+          "unit": "m"
+        },
+        "value": {
+          "label": "给定测点数值",
+          "unit": "1"
+        }
+      },
+      "unit": null,
+      "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+      "generator": "examples/scientific-figures/gallery/generate_gallery.py",
+      "thumbnail": {
+        "file": "examples/scientific-figures/gallery/spatial-point-values.jpg",
+        "width": 640,
+        "height": 575,
+        "bytes": 34498,
+        "sha256": "2aaedd2e4854c116ea6fccc2e25a53c11df778cfef7d5293590f43f5dccb2382",
+        "encoding": "JPEG",
+        "quality": 88,
+        "subsampling": 0,
+        "source": "qa/gallery-expanded-20261009-clean/spatial-point-values/figure.png"
+      },
+      "render_report": "qa/gallery-expanded-20261009-clean/spatial-point-values/figure-data.json",
       "generation_status": "generated_from_contract",
       "scientific_validation": "not established"
     }

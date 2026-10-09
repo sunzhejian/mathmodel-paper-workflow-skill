@@ -48,7 +48,13 @@ DeepSeek原程序把整数上取整技巧套到连续吨数，漏算小吨位运
 
 ## 科研绘图示例
 
-数据分析和求解结果需要图件时，skill 会主动从科研绘图库选择能解释结论的图型。当前固定入口有11个上游样式脚本，本项目已接通20类[CSV数据适配](scripts/render_scientific_data.py)和5类流程模板，涵盖趋势、给定区间、分布、柱状、矩阵、残差、ROC/PR、混淆矩阵、优化轨迹及Pareto候选。[新增图库](examples/scientific-figures/gallery)包含15份合成CSV/合同、缩略图与生成脚本。坐标、单位和样本来自合同，统计量由输入重算，区间性质与目标方向须明确。
+新增森林区间图、场景龙卷风图、共同量尺雷达图、矩阵气泡、二维频数/密度、山脊分布、QQ诊断、概率校准和空间点值。每项保留CSV、合同、可运行脚本及PNG/PDF/SVG；区间含义、量尺、概率分箱和坐标口径须明确。以下均为匿名合成数据示例，不是竞赛或实验结果。
+
+![参数估计与给定区间示例](examples/scientific-figures/gallery/coefficient-forest.jpg)
+
+![概率校准合成示例](examples/scientific-figures/gallery/calibration-curve.jpg)
+
+数据分析和求解结果需要图件时，skill 会主动从科研绘图库选择能解释结论的图型。当前固定入口有11个上游样式脚本，本项目已接通30类[CSV数据适配](scripts/render_scientific_data.py)和5类流程模板，涵盖趋势、给定区间、分布、柱状、矩阵、残差、ROC/PR、混淆矩阵、优化轨迹及Pareto候选。[新增图库](examples/scientific-figures/gallery)包含25份合成CSV/合同、缩略图与生成脚本。坐标、单位和样本来自合同，统计量由输入重算，区间性质与目标方向须明确。
 
 | 多变量关系与分布 | 预测边缘分布与误差 | 参数响应网格 |
 | --- | --- | --- |

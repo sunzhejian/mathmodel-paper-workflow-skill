@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "template_id": "sensitivity-tornado",
+  "data_kind": "synthetic",
+  "data": "sensitivity-tornado.csv",
+  "title": "给定情景响应",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "parameter": "parameter",
+    "baseline": "baseline",
+    "lower_case": "lower_case",
+    "upper_case": "upper_case"
+  },
+  "axes": {
+    "baseline": {
+      "label": "给定响应值",
+      "unit": "kg"
+    }
+  },
+  "scenario_note": "各参数低、高情景的给定响应值；共同基准100 kg。"
+}

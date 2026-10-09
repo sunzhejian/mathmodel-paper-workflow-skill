@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "template_id": "coefficient-forest",
+  "data_kind": "synthetic",
+  "data": "coefficient-forest.csv",
+  "title": "给定系数与区间",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "term": "term",
+    "estimate": "estimate",
+    "lower": "lower",
+    "upper": "upper"
+  },
+  "axes": {
+    "estimate": {
+      "label": "给定系数",
+      "unit": "1"
+    }
+  },
+  "interval_note": "合成场景上下界，由示例表直接给定。"
+}

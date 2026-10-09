@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "template_id": "multimetric-profile",
+  "data_kind": "synthetic",
+  "data": "multimetric-profile.csv",
+  "title": "统一尺度指标轮廓",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "series": "series",
+    "metric": "metric",
+    "value": "value"
+  },
+  "unit": "point",
+  "scale_min": 0,
+  "scale_max": 100,
+  "scale_note": "各指标均采用同一0–100分量尺。"
+}

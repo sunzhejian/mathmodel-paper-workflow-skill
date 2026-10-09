@@ -25,6 +25,9 @@ IDS = (
     "grouped-violin", "distribution-histogram", "ecdf-distribution", "grouped-bar",
     "stacked-bar", "matrix-heatmap", "residual-diagnostics", "binary-pr-comparison",
     "confusion-matrix", "optimization-convergence", "pareto-front",
+    "hexbin-density", "density-contour", "coefficient-forest", "sensitivity-tornado",
+    "multimetric-profile", "bubble-matrix", "ridge-distribution", "qq-normal",
+    "calibration-curve", "spatial-point-values",
 )
 TITLES = {
     "grouped-line": "分组曲线", "uncertainty-band": "给定范围带",
@@ -35,6 +38,11 @@ TITLES = {
     "residual-diagnostics": "残差诊断", "binary-pr-comparison": "精确率–召回率比较",
     "confusion-matrix": "混淆矩阵", "optimization-convergence": "目标轨迹",
     "pareto-front": "非支配解前沿",
+    "hexbin-density": "六边形计数密度", "density-contour": "分箱密度等高线",
+    "coefficient-forest": "给定系数与区间", "sensitivity-tornado": "给定情景响应",
+    "multimetric-profile": "统一尺度指标轮廓", "bubble-matrix": "数值气泡矩阵",
+    "ridge-distribution": "分组山脊分布", "qq-normal": "正态理论分位比较",
+    "calibration-curve": "给定概率校准曲线", "spatial-point-values": "平面测点与数值",
 }
 
 
@@ -118,6 +126,41 @@ def datasets():
             y = 2.5 / (x - .6) + rng.uniform(0, .9)
             tables["pareto-front"].append({"group": group, "sample_id": f"{group[-1]}{i + 1:03d}",
                                            "x": round(x, 6), "y": round(y, 6)})
+    rng = np.random.default_rng(SEED + 30)
+    points = rng.multivariate_normal([10, 20], [[7, 4], [4, 9]], 280)
+    for kind in ("hexbin-density", "density-contour"):
+        tables[kind] = [{"sample_id": f"d{i:04d}", "x": round(x, 6), "y": round(y, 6)}
+                        for i, (x, y) in enumerate(points, 1)]
+    tables["coefficient-forest"] = [{"term": f"系数{i}", "estimate": estimate,
+                                     "lower": estimate - half, "upper": estimate + half}
+                                    for i, (estimate, half) in enumerate(((.8, .3), (-.5, .2), (.15, .25), (1.2, .4), (-.1, .15)), 1)]
+    tables["sensitivity-tornado"] = [{"parameter": f"参数{i}", "baseline": 100,
+                                       "lower_case": low, "upper_case": high}
+                                      for i, (low, high) in enumerate(((82, 123), (110, 87), (95, 104), (98, 101), (92, 111)), 1)]
+    tables["multimetric-profile"] = [{"series": name, "metric": f"指标{index}", "value": value}
+                                      for name, values in (("方案A", (72, 61, 85, 68, 80)), ("方案B", (66, 83, 70, 85, 62)))
+                                      for index, value in enumerate(values, 1)]
+    tables["bubble-matrix"] = [{"row": f"对象{i+1}", "column": f"指标{j+1}", "value": value}
+                               for i, values in enumerate(((0, 2, 7, 4), (3, 5, 2, 8), (6, 1, 9, 3), (4, 7, 5, 6)))
+                               for j, value in enumerate(values)]
+    for offset, kind in enumerate(("ridge-distribution", "qq-normal"), 32):
+        rng = np.random.default_rng(SEED + offset)
+        tables[kind] = [{"group": name, "sample_id": f"{letter}{index:03d}", "value": round(value, 6)}
+                        for letter, name, values in (("A", "组A", rng.normal(10, 1.4, 50)),
+                                                     ("B", "组B", rng.normal(13, 2.1, 50)),
+                                                     ("C", "常数组", np.full(25, 16)))
+                        for index, value in enumerate(values, 1)]
+    rng = np.random.default_rng(SEED + 34)
+    probabilities = np.linspace(.03, .97, 100)
+    labels = rng.binomial(1, probabilities)
+    tables["calibration-curve"] = [{"model": model, "sample_id": f"p{index:03d}", "label": int(label),
+                                      "score": round(float(score), 7)}
+                                     for model, scores in (("给定方案A", probabilities), ("给定方案B", .1 + .65 * probabilities))
+                                     for index, (label, score) in enumerate(zip(labels, scores), 1)]
+    rng = np.random.default_rng(SEED + 35)
+    tables["spatial-point-values"] = [{"sample_id": f"m{index:03d}", "x": round(x, 6), "y": round(y, 6),
+                                         "value": round(15 + .02 * x - .015 * y + rng.normal(0, 1), 6)}
+                                        for index, (x, y) in enumerate(rng.uniform(0, 250, (42, 2)), 1)]
     return tables
 
 
@@ -132,6 +175,12 @@ def contract(kind, metadata):
         "residual-diagnostics": {"actual": {"label": "参考值", "unit": "1"}, "predicted": {"label": "给定预测值", "unit": "1"}},
         "optimization-convergence": {"iteration": {"label": "迭代序号", "unit": "1"}, "objective": {"label": "给定目标值", "unit": "1"}},
         "pareto-front": {"x": {"label": "目标一", "unit": "1"}, "y": {"label": "目标二", "unit": "1"}},
+        "hexbin-density": {"x": {"label": "变量一", "unit": "1"}, "y": {"label": "变量二", "unit": "1"}},
+        "density-contour": {"x": {"label": "变量一", "unit": "1"}, "y": {"label": "变量二", "unit": "1"}},
+        "coefficient-forest": {"estimate": {"label": "给定系数", "unit": "1"}},
+        "sensitivity-tornado": {"baseline": {"label": "给定响应值", "unit": "kg"}},
+        "spatial-point-values": {"x": {"label": "平面横坐标", "unit": "m"}, "y": {"label": "平面纵坐标", "unit": "m"},
+                                   "value": {"label": "给定测点数值", "unit": "1"}},
     }
     if metadata.get("axes"):
         spec["axes"] = axes[kind]
@@ -141,6 +190,20 @@ def contract(kind, metadata):
         spec["interval_note"] = "范围为合成规则给定的上下界；不是由样本推算的置信区间。"
     if kind == "pareto-front":
         spec.update(x_direction="min", y_direction="min")
+    if kind == "hexbin-density":
+        spec["gridsize"] = 18
+    if kind == "density-contour":
+        spec.update(density_method="histogram", bins=12)
+    if kind == "coefficient-forest":
+        spec["interval_note"] = "合成场景上下界，由示例表直接给定。"
+    if kind == "sensitivity-tornado":
+        spec["scenario_note"] = "各参数低、高情景的给定响应值；共同基准100 kg。"
+    if kind == "multimetric-profile":
+        spec.update(scale_min=0, scale_max=100, unit="point", scale_note="各指标均采用同一0–100分量尺。")
+    if kind == "calibration-curve":
+        spec["bin_edges"] = [0, .2, .4, .6, .8, 1]
+    if kind == "spatial-point-values":
+        spec["coordinate_system"] = "planar"
     missing = set(metadata.get("required_fields", ())) - set(spec)
     if missing:
         raise ValueError(f"Metadata requires unimplemented sample fields: {kind}: {sorted(missing)}")
@@ -212,9 +275,9 @@ def gallery_labels(fig, spec):
         item.set_fontsize(8.5)
 
 
-def render_charts(output, font):
-    from scientific_chart_extensions import EXTENSIONS, prepare_extension, render_extension
-    from render_scientific_data import register_font
+def render_charts(output, font, ids=IDS):
+    from scientific_chart_extensions import EXTENSIONS, NEW_EXTENSIONS, prepare_extension, render_extension
+    from render_scientific_data import register_font, render
     tables = datasets()
     missing = set(IDS) - set(EXTENSIONS)
     if missing:
@@ -233,11 +296,24 @@ def render_charts(output, font):
                          "figure.facecolor": "white", "axes.facecolor": "white",
                          "svg.fonttype": "none", "pdf.fonttype": 42})
     records = []
-    for kind in IDS:
+    for kind in ids:
         spec = contract(kind, EXTENSIONS[kind])
         csv_path, manifest_path = HERE / f"{kind}.csv", HERE / f"{kind}.json"
         write_csv(csv_path, tables[kind])
         save_json(manifest_path, spec)
+        if kind in NEW_EXTENSIONS:
+            folder = output / kind
+            report = render(manifest_path, folder, font)
+            thumb_path = HERE / f"{kind}.jpg"
+            thumb = thumbnail(folder / "figure.png", thumb_path, font, kind=TITLES[kind])
+            record = dict(report, generator=str(Path(__file__)), generator_sha256=sha(__file__), seed=SEED,
+                          rows=report["statistics"]["observations"], input=str(csv_path), contract=str(manifest_path),
+                          outputs={suffix: dict(item, file=str(folder / item["file"])) for suffix, item in report["outputs"].items()},
+                          thumbnail={"file": str(thumb_path), **thumb})
+            save_json(folder / "gallery-record.json", record)
+            records.append(record)
+            print(json.dumps({"template_id": kind, "rows": record["rows"], "thumbnail_bytes": thumb["bytes"]}, ensure_ascii=False), flush=True)
+            continue
         with csv_path.open(encoding="utf-8", newline="") as stream:
             source_rows = list(csv.DictReader(stream))
         bundle = prepare_extension(spec, source_rows)
@@ -426,6 +502,7 @@ def main(argv=None):
     parser.add_argument("--font", type=Path, default=Path("C:/Windows/Fonts/simsun.ttc"))
     parser.add_argument("--drawio", type=Path, default=Path("E:/draw.io/draw.io.exe"))
     parser.add_argument("--only", choices=("all", "charts", "flowcharts"), default="all")
+    parser.add_argument("--ids", nargs="+", choices=IDS, help="Render only these statistical families; flowchart selection is unchanged")
     args = parser.parse_args(argv)
     output = args.output.resolve()
     if output.exists():
@@ -433,7 +510,7 @@ def main(argv=None):
     output.mkdir(parents=True)
     records = []
     if args.only in {"all", "charts"}:
-        records.extend(render_charts(output, args.font))
+        records.extend(render_charts(output, args.font, args.ids or IDS))
     if args.only in {"all", "flowcharts"}:
         records.extend(render_flows(output, args.font, args.drawio))
     save_json(output / "gallery_assets.json", {"schema_version": 1, "seed": SEED, "records": records})

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "template_id": "hexbin-density",
+  "data_kind": "synthetic",
+  "data": "hexbin-density.csv",
+  "title": "六边形计数密度",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "sample_id": "sample_id",
+    "x": "x",
+    "y": "y"
+  },
+  "axes": {
+    "x": {
+      "label": "变量一",
+      "unit": "1"
+    },
+    "y": {
+      "label": "变量二",
+      "unit": "1"
+    }
+  },
+  "gridsize": 18
+}

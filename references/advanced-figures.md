@@ -6,7 +6,7 @@
 
 截图中的相关矩阵、预测边缘分布、TPE曲面、半边小提琴、环形热图等对应 `mathmodel-figure-templates`。本项目默认入口为 `vendor/MathModelAgent/skills/mathmodel-figure-templates/SKILL.md`；sci-box 的 `scibox-figure` 声明同名，选择一个来源即可。先读所选入口及 `references/figure-catalog.md`，再调用具体模板。
 
-当前固定版本有 **11个可直接运行的上游模拟样式脚本**，本项目已接通 **20种CSV数据入口**和5类带实际图源的流程模板。它们与参考软件的95款菜单分别计数：菜单数不等于可跑脚本数，可跑模拟样式也不等于已验证的数据接口。选中模板、复制脚本、成功运行和绑定真实数据分别记录，模板说明不构成统计检验或模型已经执行的证据。
+当前固定版本有 **11个可直接运行的上游模拟样式脚本**，本项目已接通 **30种CSV数据入口**和5类带实际图源的流程模板。它们与参考软件的95款菜单分别计数：菜单数不等于可跑脚本数，可跑模拟样式也不等于已验证的数据接口。选中模板、复制脚本、成功运行和绑定真实数据分别记录，模板说明不构成统计检验或模型已经执行的证据。
 
 在已接入本工作流绘图工具的桌面/网页宿主中，先查询真实可用的图件资源，再读取具体资源返回的指导与 example 合同。只把 example 字段的值保存为合同，不混入工具返回的 scientific_verified、操作说明或来源元数据。已有用户确认的字段、单位、数据版本不得静默改写；材料使用宿主返回的项目路径，不猜原始文件名。没有这组工具的环境继续使用下文真实 CSV 脚本入口，不能伪造工具调用或要求用户更换 IDE。
 
@@ -38,7 +38,7 @@
 
 ## 已接通的CSV数据入口
 
-`scripts/render_scientific_data.py` 当前支持20种布局及网格/点云两种响应表示，角色合同示例见 [examples/scientific-figures](../examples/scientific-figures)与[新增图库](../examples/scientific-figures/gallery)。原数据只读；输出目录必须新建。图中不绘制默认显著性星号或拟合置信带；需要这些内容时先取得对应分析证据再改图源。
+`scripts/render_scientific_data.py` 当前支持30种布局及网格/点云两种响应表示，角色合同示例见 [examples/scientific-figures](../examples/scientific-figures)与[新增图库](../examples/scientific-figures/gallery)。原数据只读；输出目录必须新建。图中不绘制默认显著性星号或拟合置信带；需要这些内容时先取得对应分析证据再改图源。
 
 | template_id | 合同字段 | 实际行为 |
 | --- | --- | --- |
@@ -66,6 +66,25 @@
 | pareto-front | group/sample_id/x/y；axes x/y；x_direction/y_direction为min或max | 已供点集中的非支配候选，不宣称全局最优或可行性已验证 |
 
 字段缺失、非有限数值、重复样本/横轴/矩阵格、比较人群或观测不一致均拒绝。原始精度保留在`figure-data.json`，绘图仅按显示需求舍入。15份合成示例和生成脚本在新增图库内；正式使用替换CSV并确认字段、单位及来源。
+
+另10项仍由同一渲染器和复现源码导出，并分别提供同名CSV/JSON及真实渲染预览；不会把渲染器没有执行的回归、情景求解、重校准或地图分析写成已经完成。
+
+| template_id | 角色与额外输入 | 实际用途 |
+| --- | --- | --- |
+| hexbin-density | sample_id/x/y；axes x/y；gridsize可选（4–80整数，默认24） | 从原始点计算六边形分箱计数，渲染后回读每格计数并核对总数；颜色不是概率密度 |
+| density-contour | sample_id/x/y；axes x/y；density_method=histogram；bins可选（4–60整数，默认16） | 计算矩形分箱的密度与等高线，保留原始点；记录边界、计数、密度积分，不声称KDE或空间插值 |
+| coefficient-forest | term/estimate/lower/upper；axes estimate；interval_note；reference_value可选 | 展示给定系数和包含估计值的有限区间，默认参考线0；不拟合回归或推导CI/p值 |
+| sensitivity-tornado | parameter/baseline/lower_case/upper_case；axes baseline；scenario_note | 给定各参数低/高情景的输出减共同基准，输出方向可反转；不代跑参数扰动实验 |
+| multimetric-profile | series/metric/value；unit；scale_min/scale_max/scale_note | 完整3–12指标、1–6系列在显式共同量尺上画轮廓，拒绝越界；不归一化、不推断排名 |
+| bubble-matrix | row/column/value；unit | 完整非负矩阵，圆面积与数值成正比，色标和面积标尺明确，0用x标示；不静默汇总/填缺格 |
+| ridge-distribution | group/sample_id/value；unit | 共同数值轴与共同密度高度比例的分组描述性KDE、原始刻痕；常数组只画原值，不捏造密度宽度 |
+| qq-normal | group/sample_id/value；unit | 原样本排序值与标准正态(i−0.5)/n理论分位比较；参考线采用样本均值/标准差，不报告正态性检验p值 |
+| calibration-curve | model/sample_id/label/score；bin_edges显式数组 | 同样本0/1实际标签与[0,1]概率，按共同边界计算均值概率、正例率、Brier和该分箱ECE；不重校准、不生成CI |
+| spatial-point-values | sample_id/x/y/value；axes x/y/value；coordinate_system=planar或lonlat | 给定点位置与数值；平面x/y同单位，经纬度x/y采用degree并核对范围；无底图、投影或插值 |
+
+密度图要求两个轴均有变化；六边形统计为格内观测数，矩形密度为`计数/(总数×格面积)`，不能互换色标解释。系数图的区间性质和情景图的参数范围由`interval_note`/`scenario_note`明确提供，绘图不补造统计依据。雷达式轮廓仅展示使用者已经定义的共同量尺，不同单位指标须先在分析阶段取得明确可比较的输入；不在绘图时偷偷归一化。
+
+校准的`bin_edges`为3–31个有限边界，严格从0递增到1；采用`[lower,upper)`，仅最后一格包含1。空分箱保留`n=0`和null，不画成正例率0；重复样本、标签不一致或不同评价人群拒绝。分箱ECE依赖当前边界，不能称为不依赖分箱的模型性质；给定概率也不自动证明独立验证。空间图不接受重复坐标的未说明叠加；lonlat限定经度[-180,180]、纬度[-90,90]，原生经纬轴展示不等于投影地图。
 
 流程目录包含迭代推进、全文技术路线、数据质量分支、模型模块关系与验证回路。各合同保留实际节点、条件、箭头和坐标；复用的是图示组织方式，需替换成该题算法，不能把样式预览认作实验或求解证据。
 

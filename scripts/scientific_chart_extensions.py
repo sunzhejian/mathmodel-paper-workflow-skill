@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from statistics import NormalDist
 import numpy as np
 
 
@@ -34,6 +35,20 @@ EXTENSIONS = {
     "optimization-convergence": _metadata("Supplied objective values indexed by observed iteration; no optimizer run", ("group", "iteration", "objective"), ("iteration", "objective")),
     "pareto-front": _metadata("Nondominated supplied candidates under two explicitly directed objectives", ("group", "sample_id", "x", "y"), ("x", "y"), required_fields=("x_direction", "y_direction")),
 }
+
+NEW_EXTENSIONS = {
+    "hexbin-density": _metadata("Hexagonal counts from identified supplied points; no fitted density", ("sample_id", "x", "y"), ("x", "y"), optional_fields=("gridsize",)),
+    "density-contour": _metadata("Descriptive contours of an explicit rectangular histogram density; no KDE or spatial interpolation", ("sample_id", "x", "y"), ("x", "y"), required_fields=("density_method",), optional_fields=("bins",)),
+    "coefficient-forest": _metadata("Supplied coefficient estimates and named intervals; no regression fitted", ("term", "estimate", "lower", "upper"), ("estimate",), required_fields=("interval_note",), optional_fields=("reference_value",)),
+    "sensitivity-tornado": _metadata("Supplied low/high scenario outcomes relative to a common baseline; no scenarios run", ("parameter", "baseline", "lower_case", "upper_case"), ("baseline",), required_fields=("scenario_note",)),
+    "multimetric-profile": _metadata("Complete metric profiles on an explicitly supplied common scale; no hidden normalization", ("series", "metric", "value"), unit=True, required_fields=("scale_min", "scale_max", "scale_note")),
+    "bubble-matrix": _metadata("Complete nonnegative matrix with circle areas proportional to supplied values", ("row", "column", "value"), unit=True),
+    "ridge-distribution": _metadata("Identified grouped raw observations and descriptive Gaussian KDE on a common axis", ("group", "sample_id", "value"), unit=True),
+    "qq-normal": _metadata("Ordered raw observations against standard-normal quantiles; no normality test", ("group", "sample_id", "value"), unit=True),
+    "calibration-curve": _metadata("Empirical binary calibration using explicit probability bin edges and shared labeled samples", ("model", "sample_id", "label", "score"), required_fields=("bin_edges",)),
+    "spatial-point-values": _metadata("Supplied point coordinates and values; no basemap, projection or spatial interpolation", ("sample_id", "x", "y", "value"), ("x", "y", "value"), required_fields=("coordinate_system",)),
+}
+EXTENSIONS.update(NEW_EXTENSIONS)
 
 COLORS = ("#168c9a", "#e49c45", "#7862a1", "#ce6e7b", "#527c48", "#5e789d", "#a56d40", "#499984")
 
@@ -99,6 +114,10 @@ def _contract(spec, rows):
     if meta["unit"] and (not isinstance(spec.get("unit"), str) or not spec["unit"].strip()):
         raise ValueError("Contract requires a common measurement unit")
     for field in meta["required_fields"]:
+        if field in {"scale_min", "scale_max", "bin_edges"}:
+            if field not in spec:
+                raise ValueError(f"Contract requires {field}")
+            continue
         if not isinstance(spec.get(field), str) or not spec[field].strip():
             raise ValueError(f"Contract requires {field}")
     return kind, roles
@@ -228,6 +247,11 @@ def prepare_extension(spec, rows):
     kind, roles = _contract(spec, rows)
     stats = {"observations": len(rows), "fit_or_significance_test": "none",
              "confidence_interval_calculated": False, "missing_values_imputed": False}
+    if kind in NEW_EXTENSIONS:
+        bundle = _prepare_new(spec, rows, roles, stats)
+        bundle["statistics"] = stats
+        _finite_statistics(stats)
+        return bundle
     if kind in {"grouped-line", "uncertainty-band", "optimization-convergence"}:
         x_role, value_roles = (("iteration", ("objective",)) if kind == "optimization-convergence" else
                                ("x", ("estimate", "lower", "upper")) if kind == "uncertainty-band" else ("x", ("y",)))
@@ -437,6 +461,8 @@ def _density(values, grid):
 def render_extension(spec, bundle, plt):
     """Render checked arrays. Fonts/title/provenance remain the caller's concern."""
     kind = spec["template_id"]
+    if kind in NEW_EXTENSIONS:
+        return _render_new(spec, bundle, plt)
     if kind == "residual-diagnostics":
         models = list(bundle["groups"])
         fig, axes = plt.subplots(len(models), 2, figsize=(6.3, 2.5 * len(models)), squeeze=False)
@@ -583,4 +609,346 @@ def render_extension(spec, bundle, plt):
     if note:
         fig.text(.5, .025, note, ha="center", fontsize=6.5, wrap=True)
     fig.subplots_adjust(left=.13, right=.96, bottom=.22 if note else .18, top=.85)
+    return fig
+
+
+def _option_number(value, name):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not np.isfinite(value):
+        raise ValueError(f"{name} must be a finite numeric JSON value")
+    return float(value)
+
+
+def _identified_points(rows, roles, values):
+    ids, points, seen = [], [], set()
+    for line, row in enumerate(rows, 2):
+        sample = _text(row, roles["sample_id"], line)
+        if sample in seen:
+            raise ValueError("Duplicate sample ID; aggregate repeated measurements explicitly")
+        ids.append(sample)
+        seen.add(sample)
+        points.append([_number(row, roles[role], line) for role in values])
+    return ids, np.asarray(points, dtype=float)
+
+
+def _rectangular_matrix(rows, roles):
+    names, columns, cells = [], [], {}
+    for line, row in enumerate(rows, 2):
+        first = _text(row, roles["row"], line)
+        second = _text(row, roles["column"], line)
+        if (first, second) in cells:
+            raise ValueError("Duplicate matrix/profile cell; aggregate explicitly")
+        cells[first, second] = _number(row, roles["value"], line)
+        if first not in names:
+            names.append(first)
+        if second not in columns:
+            columns.append(second)
+    if len(cells) != len(names) * len(columns):
+        raise ValueError("A complete matrix/profile table is required; missing cells are not zero")
+    return names, columns, np.asarray([[cells[a, b] for b in columns] for a in names])
+
+
+def _prepare_new(spec, rows, roles, stats):
+    kind = spec["template_id"]
+    if kind in {"hexbin-density", "density-contour", "spatial-point-values"}:
+        numeric_roles = ("x", "y", "value") if kind == "spatial-point-values" else ("x", "y")
+        ids, values = _identified_points(rows, roles, numeric_roles)
+        stats.update({"sample_ids": ids, "x_summary": _summary(values[:, 0]), "y_summary": _summary(values[:, 1])})
+        bundle = {"values": values}
+        if kind in {"hexbin-density", "density-contour"}:
+            if len(values) < 3 or any(np.ptp(values[:, index]) <= 0 for index in (0, 1)):
+                raise ValueError("Binned density needs at least three points with variation on both axes")
+            if not np.isfinite(np.ptp(values, axis=0)).all():
+                raise ValueError("Density coordinate range exceeds finite numeric range")
+        if kind == "hexbin-density":
+            gridsize = spec.get("gridsize", 24)
+            if type(gridsize) is not int or not 4 <= gridsize <= 80:
+                raise ValueError("gridsize must be an integer from 4 to 80")
+            bundle["gridsize"] = gridsize
+            stats.update({"gridsize": gridsize, "density_meaning": "observations per hexagonal bin, not probability density",
+                          "bin_receipt": "computed from the actual Matplotlib collection during rendering"})
+        elif kind == "density-contour":
+            if spec["density_method"] != "histogram":
+                raise ValueError("density_method must be histogram; this adapter does not estimate KDE")
+            bins = spec.get("bins", 16)
+            if type(bins) is not int or not 4 <= bins <= 60:
+                raise ValueError("bins must be an integer from 4 to 60")
+            counts, xedges, yedges = np.histogram2d(values[:, 0], values[:, 1], bins=bins)
+            areas = np.diff(xedges)[:, None] * np.diff(yedges)[None, :]
+            if not np.isfinite(areas).all() or (areas <= 0).any():
+                raise ValueError("Density bin area exceeds finite numeric range or resolution")
+            density = counts / len(values) / areas
+            stats.update({"density_method": "rectangular histogram; contour rendering between bin centers only",
+                          "bins": bins, "x_edges": xedges.tolist(), "y_edges": yedges.tolist(),
+                          "counts": counts.astype(int).tolist(), "density": density.tolist(),
+                          "density_integral": float(np.sum(density * areas)),
+                          "density_unit": f"1/({spec['axes']['x']['unit']}*{spec['axes']['y']['unit']})",
+                          "kde_fit": False, "spatial_interpolation": False})
+            bundle.update(counts=counts, density=density, xedges=xedges, yedges=yedges)
+        else:
+            coordinate_system = spec["coordinate_system"]
+            if coordinate_system not in {"planar", "lonlat"}:
+                raise ValueError("coordinate_system must be planar or lonlat")
+            if len({tuple(item[:2]) for item in values}) != len(values):
+                raise ValueError("Duplicate spatial coordinate; choose an explicit aggregation before plotting")
+            xunit, yunit = (spec["axes"][axis]["unit"] for axis in ("x", "y"))
+            if coordinate_system == "lonlat":
+                if xunit != "degree" or yunit != "degree":
+                    raise ValueError("lonlat coordinates require degree units: x longitude, y latitude")
+                if (np.abs(values[:, 0]) > 180).any() or (np.abs(values[:, 1]) > 90).any():
+                    raise ValueError("Longitude must be in [-180,180] and latitude in [-90,90]")
+            elif xunit != yunit:
+                raise ValueError("Planar x/y coordinates must use the same unit for equal physical scale")
+            stats.update({"coordinate_system": coordinate_system, "value_summary": _summary(values[:, 2]),
+                          "coordinates": values.tolist(), "map_projection": "none; native coordinate axes",
+                          "basemap": False, "spatial_interpolation": False})
+        return bundle
+    if kind in {"coefficient-forest", "sensitivity-tornado"}:
+        name_role = "term" if kind == "coefficient-forest" else "parameter"
+        value_roles = ("estimate", "lower", "upper") if kind == "coefficient-forest" else ("baseline", "lower_case", "upper_case")
+        names, records = [], []
+        for line, row in enumerate(rows, 2):
+            name = _text(row, roles[name_role], line)
+            if name in names:
+                raise ValueError("Duplicate coefficient term or sensitivity parameter")
+            names.append(name)
+            record = [_number(row, roles[role], line) for role in value_roles]
+            if kind == "coefficient-forest" and not record[1] <= record[0] <= record[2]:
+                raise ValueError("Supplied lower <= estimate <= upper is required")
+            records.append(record)
+        if len(names) > 25:
+            raise ValueError("Select at most 25 terms/parameters; split dense figures")
+        values = np.asarray(records)
+        if kind == "coefficient-forest":
+            reference = _option_number(spec.get("reference_value", 0), "reference_value")
+            stats.update({"terms": names, "supplied_intervals": values.tolist(), "interval_note": spec["interval_note"],
+                          "reference_value": reference, "regression_fit_by_renderer": False})
+            return {"names": names, "values": values, "reference": reference}
+        if (values[:, 0] != values[0, 0]).any():
+            raise ValueError("Tornado scenarios require a common supplied baseline outcome")
+        delta = values[:, 1:] - values[:, :1]
+        stats.update({"parameters": names, "baseline": float(values[0, 0]), "scenario_outcomes": values[:, 1:].tolist(),
+                      "outcome_differences": delta.tolist(), "scenario_note": spec["scenario_note"],
+                      "parameter_scenarios_run_by_renderer": False,
+                      "scope": "low/high denote the supplied parameter scenarios; output direction need not be monotone"})
+        return {"names": names, "delta": delta, "baseline": float(values[0, 0])}
+    if kind in {"multimetric-profile", "bubble-matrix"}:
+        matrix_roles = dict(roles, row=roles.get("series"), column=roles.get("metric")) if kind == "multimetric-profile" else roles
+        names, columns, values = _rectangular_matrix(rows, matrix_roles)
+        if kind == "multimetric-profile":
+            if not 1 <= len(names) <= 6 or not 3 <= len(columns) <= 12:
+                raise ValueError("Profiles need one to six series and three to twelve metrics")
+            minimum, maximum = (_option_number(spec[key], key) for key in ("scale_min", "scale_max"))
+            if minimum >= maximum or (values < minimum).any() or (values > maximum).any():
+                raise ValueError("Values must lie within explicit scale_min < scale_max")
+            stats.update({"series": names, "metrics": columns, "values": values.tolist(), "scale_min": minimum,
+                          "scale_max": maximum, "scale_note": spec["scale_note"], "normalization_performed": False,
+                          "ranking_inferred": False})
+        else:
+            if len(names) > 18 or len(columns) > 18 or (values < 0).any():
+                raise ValueError("Bubble matrices need at most 18x18 cells and nonnegative values")
+            stats.update({"row_labels": names, "column_labels": columns, "matrix": values.tolist(),
+                          "area_mapping": "circle area proportional to supplied nonnegative value; zeros marked with x",
+                          "maximum_value": float(values.max()), "input_aggregation": "none"})
+        return {"names": names, "columns": columns, "values": values}
+    if kind in {"ridge-distribution", "qq-normal"}:
+        groups = _identified_groups(rows, roles, ("value",))
+        if any(len(group) < 2 for group in groups.values()):
+            raise ValueError("Each distribution group needs at least two identified observations")
+        values = {name: np.asarray([item[1] for item in group]) for name, group in groups.items()}
+        stats["groups"] = {name: _summary(items) for name, items in values.items()}
+        if kind == "ridge-distribution":
+            pooled = np.concatenate(list(values.values()))
+            span = np.ptp(pooled)
+            pad = .12 * span if span else max(abs(float(pooled[0])) * .05, 1)
+            grid = np.linspace(pooled.min() - pad, pooled.max() + pad, 240)
+            if not np.isfinite(grid).all():
+                raise ValueError("Density grid exceeds finite numeric range")
+            densities = {name: _density(items, grid) for name, items in values.items()}
+            stats.update({"kde": "Gaussian KDE with Silverman bandwidth; constants omit KDE",
+                          "grid": grid.tolist(), "density_by_group": {name: None if density is None else density.tolist() for name, density in densities.items()},
+                          "constant_groups": [name for name, density in densities.items() if density is None],
+                          "display_scale": "common density-to-height multiplier; curve values are not normalized per group"})
+            return {"groups": values, "grid": grid, "densities": densities}
+        quantiles = {}
+        for name, items in values.items():
+            probabilities = (np.arange(len(items)) + .5) / len(items)
+            theoretical = np.asarray([NormalDist().inv_cdf(float(p)) for p in probabilities])
+            quantiles[name] = {"probabilities": probabilities.tolist(), "standard_normal": theoretical.tolist(),
+                               "observed": np.sort(items).tolist(), "reference_mean": float(items.mean()),
+                               "reference_sd": float(items.std(ddof=1))}
+        stats.update({"quantiles": quantiles, "plotting_position": "(i - 0.5)/n, i=1..n",
+                      "reference_line": "sample mean + sample standard deviation * standard-normal quantile",
+                      "normality_test_performed": False, "normality_assumed": False})
+        return {"quantiles": quantiles}
+    # Empirical calibration is a descriptive check of supplied probabilities.
+    edges_raw = spec["bin_edges"]
+    if not isinstance(edges_raw, list) or not 3 <= len(edges_raw) <= 31:
+        raise ValueError("bin_edges must contain three to thirty-one explicit probability boundaries")
+    edges = np.asarray([_option_number(value, "bin edge") for value in edges_raw])
+    if edges[0] != 0 or edges[-1] != 1 or (np.diff(edges) <= 0).any():
+        raise ValueError("bin_edges must strictly increase from 0 to 1")
+    cohorts = {}
+    for line, row in enumerate(rows, 2):
+        model, sample = (_text(row, roles[role], line) for role in ("model", "sample_id"))
+        label, score = (_number(row, roles[role], line) for role in ("label", "score"))
+        if label not in {0, 1} or not 0 <= score <= 1:
+            raise ValueError("Calibration needs binary 0/1 labels and probabilities in [0,1]")
+        if sample in cohorts.setdefault(model, {}):
+            raise ValueError("Duplicate model/sample ID")
+        cohorts[model][sample] = (label, score)
+    _limit(cohorts, 6)
+    reference = next(iter(cohorts.values()))
+    if {pair[0] for pair in reference.values()} != {0, 1}:
+        raise ValueError("Calibration comparison requires both observed classes")
+    models = {}
+    for model, samples in cohorts.items():
+        if samples.keys() != reference.keys() or any(pair[0] != reference[sample][0] for sample, pair in samples.items()):
+            raise ValueError("Calibration models require the same sample cohort and actual labels")
+        values = np.asarray(list(samples.values()))
+        assignments = np.minimum(np.searchsorted(edges, values[:, 1], side="right") - 1, len(edges) - 2)
+        bins = []
+        for index in range(len(edges) - 1):
+            members = values[assignments == index]
+            bins.append({"lower": float(edges[index]), "upper": float(edges[index + 1]), "n": len(members),
+                         "mean_probability": None if not len(members) else float(members[:, 1].mean()),
+                         "observed_fraction": None if not len(members) else float(members[:, 0].mean())})
+        brier = float(np.mean((values[:, 1] - values[:, 0]) ** 2))
+        ece = float(sum(item["n"] / len(values) * abs(item["mean_probability"] - item["observed_fraction"]) for item in bins if item["n"]))
+        models[model] = {"n": len(values), "bins": bins, "brier_score": brier, "ece_for_declared_bins": ece}
+    stats.update({"models": models, "bin_edges": edges.tolist(), "same_cohort_verified": True,
+                  "bin_definition": "[lower, upper), except final bin includes probability 1; empty bins remain null",
+                  "calibration_fit_by_renderer": False, "uncertainty_estimated": False,
+                  "scope": "descriptive calibration and Brier/ECE of supplied probabilities; no independent-validation claim"})
+    return {"models": models}
+
+
+def _render_new(spec, bundle, plt):
+    kind = spec["template_id"]
+    if kind == "qq-normal":
+        count = len(bundle["quantiles"])
+        columns = min(2, count)
+        rows = int(np.ceil(count / columns))
+        fig = plt.figure(figsize=(6.3, 2.8 * rows))
+        grid = fig.add_gridspec(rows, columns)
+        axes = [fig.add_subplot(grid[index // columns, :] if index == count - 1 and count % columns else grid[index // columns, index % columns])
+                for index in range(count)]
+        for ax, (name, curve), color in zip(axes, bundle["quantiles"].items(), COLORS):
+            x, y = np.asarray(curve["standard_normal"]), np.asarray(curve["observed"])
+            ax.scatter(x, y, color=color, s=14, linewidths=0)
+            ax.plot(x, curve["reference_mean"] + curve["reference_sd"] * x, linestyle="--", color="#8998a5", linewidth=.9)
+            ax.set(xlabel="Standard-normal theoretical quantile", ylabel=f"Ordered value ({spec['unit']})", title=name)
+            _style(ax)
+        fig.subplots_adjust(left=.12, right=.97, bottom=.14, top=.84, wspace=.4, hspace=.7)
+        return fig
+    if kind == "multimetric-profile":
+        fig, ax = plt.subplots(figsize=(6.3, 5.2), subplot_kw={"projection": "polar"})
+        angles = np.linspace(0, 2 * np.pi, len(bundle["columns"]), endpoint=False)
+        closed_angles = np.r_[angles, angles[0]]
+        for color, name, values in zip(COLORS, bundle["names"], bundle["values"]):
+            ax.plot(closed_angles, np.r_[values, values[0]], color=color, linewidth=1.4, marker="o", markersize=3, label=name)
+        ax.set(xticks=angles, xticklabels=bundle["columns"], ylim=(spec["scale_min"], spec["scale_max"]))
+        ax.tick_params(pad=8)
+        ax.legend(loc="upper left", bbox_to_anchor=(1.03, 1), frameon=False, fontsize=7)
+        fig.text(.5, .035, spec["scale_note"] + f" ({spec['unit']})", ha="center", fontsize=6.5, wrap=True)
+        fig.subplots_adjust(left=.1, right=.78, bottom=.13, top=.82)
+        return fig
+    height = max(4.5, 1.8 + .23 * len(bundle["names"])) if kind in {"coefficient-forest", "sensitivity-tornado"} else 4.5
+    fig, ax = plt.subplots(figsize=(6.3, height))
+    _style(ax)
+    note = None
+    if kind == "hexbin-density":
+        values = bundle["values"]
+        artist = ax.hexbin(values[:, 0], values[:, 1], gridsize=bundle["gridsize"], mincnt=1, cmap="Blues", linewidths=.15)
+        counts, centers = np.asarray(artist.get_array()), artist.get_offsets()
+        if int(counts.sum()) != len(values):
+            raise ValueError("Rendered hexbin count does not conserve supplied observations")
+        bundle["statistics"]["rendered_hexagons"] = {"centers": centers.tolist(), "counts": counts.astype(int).tolist(), "total": int(counts.sum())}
+        fig.colorbar(artist, ax=ax, label="Observations per hexagonal bin")
+        ax.set(xlabel=_axis(spec, "x"), ylabel=_axis(spec, "y"))
+    elif kind == "density-contour":
+        x = bundle["xedges"][:-1] + np.diff(bundle["xedges"]) / 2
+        y = bundle["yedges"][:-1] + np.diff(bundle["yedges"]) / 2
+        artist = ax.contourf(x, y, bundle["density"].T, levels=8, cmap="Blues")
+        ax.scatter(bundle["values"][:, 0], bundle["values"][:, 1], s=6, c="#243746", alpha=.35, linewidths=0)
+        fig.colorbar(artist, ax=ax, label=bundle["statistics"]["density_unit"])
+        ax.set(xlabel=_axis(spec, "x"), ylabel=_axis(spec, "y"))
+    elif kind == "coefficient-forest":
+        values, indices = bundle["values"], np.arange(len(bundle["names"]))
+        ax.errorbar(values[:, 0], indices, xerr=np.array([values[:, 0] - values[:, 1], values[:, 2] - values[:, 0]]),
+                    fmt="o", color=COLORS[0], capsize=3, markersize=4, linewidth=1.2)
+        ax.axvline(bundle["reference"], linestyle="--", color="#8998a5", linewidth=.9)
+        ax.set(yticks=indices, yticklabels=bundle["names"], xlabel=_axis(spec, "estimate"))
+        ax.invert_yaxis()
+        note = spec["interval_note"]
+    elif kind == "sensitivity-tornado":
+        delta = bundle["delta"]
+        order = np.argsort(-np.abs(delta).max(axis=1), kind="mergesort")
+        y = np.arange(len(order))
+        ax.barh(y - .16, delta[order, 0], height=.3, color=COLORS[0], label="Low parameter scenario")
+        ax.barh(y + .16, delta[order, 1], height=.3, color=COLORS[1], label="High parameter scenario")
+        ax.axvline(0, color="#8998a5", linewidth=.9)
+        ax.set(yticks=y, yticklabels=[bundle["names"][index] for index in order],
+               xlabel=spec["axes"]["baseline"]["label"] + f" - baseline ({bundle['baseline']:.4g})\n(" + spec["axes"]["baseline"]["unit"] + ")")
+        ax.invert_yaxis()
+        note = spec["scenario_note"]
+    elif kind == "bubble-matrix":
+        values = bundle["values"]
+        y, x = np.indices(values.shape)
+        maximum = float(values.max())
+        area = np.zeros_like(values) if maximum == 0 else 650 * values / maximum
+        artist = ax.scatter(x.ravel(), y.ravel(), s=area.ravel(), c=values.ravel(), cmap="Blues", edgecolors="#527c7c", linewidths=.5)
+        zeros = values == 0
+        ax.scatter(x[zeros], y[zeros], s=14, marker="x", c="#8998a5", linewidths=.7)
+        ax.set(xticks=range(len(bundle["columns"])), xticklabels=bundle["columns"], yticks=range(len(bundle["names"])),
+               yticklabels=bundle["names"], xlim=(-.65, len(bundle["columns"]) - .35), ylim=(len(bundle["names"]) - .35, -.65))
+        ax.tick_params(axis="x", rotation=30)
+        fig.colorbar(artist, ax=ax, label=f"Supplied value ({spec['unit']})")
+        if maximum > 0:
+            for fraction in (.25, .5, 1):
+                ax.scatter([], [], s=650 * fraction, edgecolor="#527c7c", facecolor="none", label=f"{maximum * fraction:.3g}")
+            ax.legend(title=f"Circle area ({spec['unit']})", loc="upper left", bbox_to_anchor=(1.15, 1),
+                      frameon=False, labelspacing=2.5, handleheight=3, handlelength=5, handletextpad=2, fontsize=7)
+        note = "Circle area proportional to value; x = 0."
+    elif kind == "ridge-distribution":
+        maximum = max((density.max() for density in bundle["densities"].values() if density is not None), default=1.)
+        for index, (color, (name, values)) in enumerate(zip(COLORS, bundle["groups"].items())):
+            density = bundle["densities"][name]
+            ax.axhline(index, color="#dfe5e8", linewidth=.6)
+            if density is not None:
+                height = .78 * density / maximum
+                ax.fill_between(bundle["grid"], index, index + height, color=color, alpha=.4)
+                ax.plot(bundle["grid"], index + height, color=color, linewidth=1)
+            ax.plot(values, np.full(len(values), index - .07), "|", color=color, markersize=5, alpha=.6)
+            if density is None:
+                ax.annotate("constant; KDE omitted", (values[0], index + .1), fontsize=6.5)
+        ax.set(yticks=range(len(bundle["groups"])), yticklabels=list(bundle["groups"]), xlabel=f"Value ({spec['unit']})")
+        note = "Gaussian KDE; shared density scale; ticks represent observations."
+    elif kind == "calibration-curve":
+        ax.plot([0, 1], [0, 1], linestyle="--", color="#8998a5", linewidth=.9, label="Identity")
+        for color, (model, data) in zip(COLORS, bundle["models"].items()):
+            populated = [item for item in data["bins"] if item["n"]]
+            ax.plot([item["mean_probability"] for item in populated], [item["observed_fraction"] for item in populated],
+                    color=color, marker="o", linewidth=1.3, markersize=4, label=f"{model}: Brier={data['brier_score']:.3g}")
+        ax.set(xlim=(0, 1), ylim=(0, 1), xlabel="Mean supplied probability in bin", ylabel="Observed positive fraction in bin")
+        note = "Bins: [lower, upper); final bin includes 1."
+    else:  # spatial-point-values
+        values = bundle["values"]
+        artist = ax.scatter(values[:, 0], values[:, 1], c=values[:, 2], cmap="viridis", s=35, edgecolors="white", linewidths=.4)
+        fig.colorbar(artist, ax=ax, label=_axis(spec, "value"))
+        ax.set(xlabel=_axis(spec, "x"), ylabel=_axis(spec, "y"))
+        if spec["coordinate_system"] == "planar":
+            ax.set_aspect("equal", adjustable="box")
+    handles, _ = ax.get_legend_handles_labels()
+    if handles and kind != "bubble-matrix":
+        ax.legend(frameon=False, fontsize=7, loc="best")
+    if note:
+        fig.text(.5, .02, note, ha="center", fontsize=6.5, wrap=True)
+    fig.subplots_adjust(left=.2 if kind in {"coefficient-forest", "sensitivity-tornado"} else .13,
+                        right=.8 if kind == "bubble-matrix" else .94, bottom=.23 if note else .18, top=.84)
+    # Matplotlib rasterizes dense colorbar solids by default. These figures are
+    # native supplied-data geometry; keep colorbars as vectors as well.
+    for figure_axis in fig.axes:
+        for collection in figure_axis.collections:
+            collection.set_rasterized(False)
+    _finite_statistics(bundle["statistics"])
     return fig

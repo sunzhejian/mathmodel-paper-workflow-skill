@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "template_id": "spatial-point-values",
+  "data_kind": "synthetic",
+  "data": "spatial-point-values.csv",
+  "title": "平面测点与数值",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "sample_id": "sample_id",
+    "x": "x",
+    "y": "y",
+    "value": "value"
+  },
+  "axes": {
+    "x": {
+      "label": "平面横坐标",
+      "unit": "m"
+    },
+    "y": {
+      "label": "平面纵坐标",
+      "unit": "m"
+    },
+    "value": {
+      "label": "给定测点数值",
+      "unit": "1"
+    }
+  },
+  "coordinate_system": "planar"
+}

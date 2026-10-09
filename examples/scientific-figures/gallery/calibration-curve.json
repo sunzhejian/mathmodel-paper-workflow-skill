@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "template_id": "calibration-curve",
+  "data_kind": "synthetic",
+  "data": "calibration-curve.csv",
+  "title": "给定概率校准曲线",
+  "source_note": "合成示例；generate_gallery.py::datasets，固定种子 20261007 及逐类偏移；仅说明合同和绘图行为，非实验、训练或赛题结果。",
+  "roles": {
+    "model": "model",
+    "sample_id": "sample_id",
+    "label": "label",
+    "score": "score"
+  },
+  "bin_edges": [
+    0,
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1
+  ]
+}
