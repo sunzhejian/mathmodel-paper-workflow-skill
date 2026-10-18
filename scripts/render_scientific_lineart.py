@@ -74,7 +74,7 @@ def control_volume():
         text(sum(ends)/2, 87, "$\\Delta x/2$", 8)
     text(80, 101, "(c) 均匀网格的中心与表面半控制体")
     return dict(width_mm=160, height_mm=105, items=items,
-                scientific_scope="机制示意，非实验结果；边界通量向外为正，r 为环带中径")
+                scientific_scope="机制示意，非实验结果；边界通量向外为正，r 为环带中线半径")
 
 
 def render(scene, output, font=None):
