@@ -113,7 +113,7 @@ def render(source, output, crs=None, target_crs=None, field=None, official=None,
             geom = transform(transformer.transform, original)
             parts = list(geom.geoms) if geom.geom_type.startswith("Multi") else [geom]
             for part in parts:
-                color = plt.cm.Blues(.25+.6*norm(value))
+                color = plt.cm.Blues(.55 if min(values) == max(values) else norm(value))
                 if part.geom_type == "Polygon":
                     part = orient(part, sign=1)
                     paths = []
@@ -132,8 +132,10 @@ def render(source, output, crs=None, target_crs=None, field=None, official=None,
         ax.set_aspect("equal", adjustable="datalim")
         ax.set_xlabel(projected.to_string())
         ax.set_title("Research geometry · "+(field or "study area"))
-        if field:
+        if field and min(values) != max(values):
             fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap="Blues"), ax=ax, label=field)
+        if field and min(values) == max(values):
+            ax.text(.02, .98, f"{field} = {values[0]:g}", transform=ax.transAxes, va="top")
         fig.tight_layout()
         receipt = dict(mode="study_geometry", source_hashes=hashes, feature_count=len(features),
                        input_crs=input_crs.to_string(), output_crs=projected.to_string(),
