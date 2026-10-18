@@ -166,3 +166,7 @@ python -X utf8 scripts/check_mathorcup_bigdata_pdf.py paper-bigdata-new/build/ma
 - 修改正文或最终 PDF 后重新生成相关检查报告；用 `verify_delivery.py` 拒绝旧报告和变更后的支撑文件。该工具只核对文件与报告一致性，不替代人工内容审查。
 
 交付先给最终文件链接，再报告实际页数、留白口径、附录状态及未完成事项，只写已验证内容。用户继续反馈时从最新授权版本修订，不重新解释整套流程。
+
+## 科学线稿与地图
+
+控制体、边界条件、几何装置的单线矢量图，以及 Shapefile/GeoJSON 地图任务，按需读取 [科学线稿与研究地图](references/scientific-lineart-and-maps.md)。使用配套参数化脚本，保留 SVG/JSON 图源与 PDF/PNG；中国边界只使用可核验官方底图。
