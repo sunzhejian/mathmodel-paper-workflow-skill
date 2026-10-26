@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "note": "填写实际文件及其SHA256；全零是未填写占位，不能作为通过记录。数据文件为JSON行对象数组，每行含id/source/purpose/questionnaire_sha256/answers/quality；AI行另含provenance的model/request_id/prompt_sha256。",
+  "questionnaire": {
+    "path": "results/survey/questionnaire.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "datasets": [
+    {
+      "id": "fieldwork-batch-1",
+      "source": "human_reported",
+      "purpose": "fieldwork",
+      "questionnaire_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file": {
+        "path": "results/survey/fieldwork-ledger.json",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "counts": {"valid": 0, "invalid": 0, "review": 0, "screened_out": 0}
+    }
+  ],
+  "analyses": [],
+  "workflow": {
+    "schema_version": 1,
+    "checkpoints": [
+      {
+        "stage": "descriptive-analysis",
+        "inputs": [
+          {"path": "results/survey/questionnaire.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+          {"path": "results/survey/fieldwork-ledger.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"}
+        ],
+        "outputs": [
+          {"path": "results/survey/descriptive-tables.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"}
+        ]
+      }
+    ]
+  }
+}
