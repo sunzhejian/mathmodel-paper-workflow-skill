@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "purpose": "匿名措辞回归示例；数值只用于验证信息保留，不是用户赛题结果或语料复测。",
+  "cases": [
+    {
+      "id": "direct-result",
+      "format": ".md",
+      "before": "一句话总结：方案A在给定约束下的误差为2.4%，方案B为3.1%。",
+      "after": "方案A在给定约束下的误差为2.4%，方案B为3.1%。",
+      "expected_protected_passed": true,
+      "reason": "只移除无信息提示语，保留方案顺序、比较条件和两个误差。"
+    },
+    {
+      "id": "retain-causal-limit",
+      "format": ".md",
+      "before": "观测只能支持两者相关，不能据此确定因果方向。",
+      "after": "观测只能支持两者相关，不能据此确定因果方向。",
+      "expected_protected_passed": true,
+      "reason": "限定影响科学结论，保持原文。"
+    },
+    {
+      "id": "retain-list-and-headings",
+      "format": ".md",
+      "before": "## 一、数据处理\n\n处理包括采集、存储、校验和分析。",
+      "after": "## 一、数据处理\n\n处理包括采集、存储、校验和分析。",
+      "expected_protected_passed": true,
+      "reason": "比赛章节编号和各处理步骤都有用途，不按风格删掉。"
+    },
+    {
+      "id": "display-period-only",
+      "format": ".tex",
+      "before": "\\[E=mc^2\\].\n其中，m为质量，单位为kg，c为速度，单位为m/s。",
+      "after": "\\[E=mc^2\\]\n其中，m为质量，单位为kg，c为速度，单位为m/s。",
+      "expected_protected_passed": true,
+      "reason": "只去掉数学环境外的独立点号，公式内容保持不变。"
+    },
+    {
+      "id": "reject-value-swap",
+      "format": ".md",
+      "before": "方案A耗时10 h，方案B耗时20 h。",
+      "after": "方案A耗时20 h，方案B耗时10 h。",
+      "expected_protected_passed": false,
+      "reason": "数值与方案的对应关系被交换，不属于风格改写。"
+    },
+    {
+      "id": "reject-unit-change",
+      "format": ".md",
+      "before": "测得温度为20 ℃。",
+      "after": "测得温度为20 K。",
+      "expected_protected_passed": false,
+      "reason": "数字相同也不能改变单位。"
+    },
+    {
+      "id": "uncertainty-needs-review",
+      "format": ".md",
+      "before": "模型可能或许存在未辨识的参数。",
+      "after": "模型可能存在未辨识的参数。",
+      "expected_protected_passed": true,
+      "expected_claim_review": true,
+      "reason": "精简叠加保留词后仍须核对不确定性是否完整。"
+    }
+  ]
+}

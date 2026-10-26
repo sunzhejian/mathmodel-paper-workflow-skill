@@ -150,11 +150,13 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 
 这是示例配置；页数、边距与阈值遵循具体用户和比赛要求，不是固定标准。可与已有数学建模技能配合，也可独立使用。
 
-## 清理制作痕迹与多余防御
+## 论文表达与局部改写
 
 **重要模型、参数和结果可以强调，必要的科学反驳与适用条件也保留。** 润色先判断一句话是否提供证据、范围或推理，再处理制作指令、内部记录、空泛辩解和证据不足的主张。例如，“数值收敛不能替代独立数据检验”属于必要论证；“模型优点是文件已经回读、清单已经检查”需要回到真正的模型证据。
 
-[数模表达规则和示例](references/paper-voice.md)按作用和证据修订表达。`check_paper_voice.py` 分开提示明确制作痕迹与人工复核候选，不自动删除真实限制或 AI 使用披露；最终仍核对科学内容和编译稿。
+[数模表达规则和示例](references/paper-voice.md)将主张、证据、段落衔接和局部改写连在一起。`check_paper_voice.py --style-review` 定位待核对句段，`check_paper_revision.py` 对照改写前后的数值、单位、公式、变量类型、引用及保护内容；两者只读、不自动改稿，支持 TeX、Typst 和 Markdown。
+
+通用规则要求独立公式去掉无意义点号，方程组后说明变量类型、范围及索引。数学内部有作用的点号、必要限定和真实 AI 使用披露保持准确，不通过改写补造科学事实。
 
 ## 内容
 
@@ -182,6 +184,7 @@ git clone --recurse-submodules https://github.com/sunzhejian/mathmodel-paper-wor
 | [修订记录](assets/revision-record.md) / [逐问证据表](assets/question-evidence.csv) | 多轮修订时按需复制使用 |
 | [证据与写作](references/evidence-and-writing.md) | 数值追溯、摘要、逐问模型、符号及文献 |
 | [论文表达](references/paper-voice.md) | 制作痕迹、多余防御与科学论证的区分；保留强调、必要限定和真实披露 |
+| [局部改写对照](scripts/check_paper_revision.py) / [匿名示例](examples/paper-revision/cases.json) | 对照数值、单位、公式、变量域和保护内容；句式候选与真实科学核验分开 |
 | [证据驱动扩写](references/longform-paper.md) | 用户要求最低页数时的内容预算与页数范围验收 |
 | [模板选择](references/template-selection.md) / [模板盘点](scripts/template_inventory.py) | 向使用者询问论文和流程图模板，区分数据图的实际适用性 |
 | [MCM/ICM 美赛路线](references/mcm-icm.md) / [双引擎模板](assets/templates/en) | 已核对的2027规则、项目适配模板、真实编译边界与美赛开发项 |

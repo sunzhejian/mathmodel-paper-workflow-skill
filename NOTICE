@@ -19,3 +19,8 @@ The project claims no ownership of user inputs or independently created outputs
 merely because they are processed. Copied project or third-party material in an
 output retains the applicable terms. Public examples are synthetic demonstrations,
 not official competition papers, empirical studies or endorsements by AI vendors.
+
+Writing guidance adaptations refer to the MIT-licensed sources recorded in
+LICENSES/writing-sources/README.md and sources.json. Their original copyright
+and permission notices are retained in that directory. Those notices and
+permissions remain applicable to the corresponding third-party material.

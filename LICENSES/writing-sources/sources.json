@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "less-ai-tone",
+      "repository": "https://github.com/larashero3-dotcom/lieflat-less-ai-tone",
+      "commit": "27d29232f10124db904ca9c0536d0b67cb3b2833",
+      "reviewed_at": "2026-10-26",
+      "license": "MIT",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/larashero3-dotcom/lieflat-less-ai-tone/27d29232f10124db904ca9c0536d0b67cb3b2833/LICENSE",
+          "sha256": "ea0bb158cb3b86076842202461a9bef2bd96d560dc76b3ef5d7a2c0f326c55b9"
+        },
+        {
+          "path": "SKILL.md",
+          "url": "https://raw.githubusercontent.com/larashero3-dotcom/lieflat-less-ai-tone/27d29232f10124db904ca9c0536d0b67cb3b2833/SKILL.md",
+          "sha256": "c55dec1765c2d6ce31f9e03e62876b36a3a65af830350d4d0d5bab6df766b042"
+        },
+        {
+          "path": "RESEARCH.md",
+          "url": "https://raw.githubusercontent.com/larashero3-dotcom/lieflat-less-ai-tone/27d29232f10124db904ca9c0536d0b67cb3b2833/RESEARCH.md",
+          "sha256": "13ee179aa2add5c1b3ec910c1ad79c5791a2865e2b7f221a6d17c65b47672f52"
+        }
+      ],
+      "distributed_license": {
+        "file": "less-ai-tone-MIT.txt",
+        "sha256": "ea0bb158cb3b86076842202461a9bef2bd96d560dc76b3ef5d7a2c0f326c55b9"
+      }
+    },
+    {
+      "id": "anti-defensive-writing",
+      "repository": "https://github.com/Kiterlin/anti-defensive-writing",
+      "commit": "c7edf8fc91ae9c4f7e58345bd12934bb4cf41c46",
+      "reviewed_at": "2026-10-26",
+      "license": "MIT",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/Kiterlin/anti-defensive-writing/c7edf8fc91ae9c4f7e58345bd12934bb4cf41c46/LICENSE",
+          "sha256": "cc3d842a912f0ed1fc80ae8d2ca7ab6cff37756422069424bf2edec554219fc9"
+        },
+        {
+          "path": "skill/anti-defensive-writing/SKILL.md",
+          "url": "https://raw.githubusercontent.com/Kiterlin/anti-defensive-writing/c7edf8fc91ae9c4f7e58345bd12934bb4cf41c46/skill/anti-defensive-writing/SKILL.md",
+          "sha256": "ef055917cc1407064cd0deaffd78264c251e8a27c30c112c54c64fb5ca46ef7a"
+        }
+      ],
+      "distributed_license": {
+        "file": "anti-defensive-writing-MIT.txt",
+        "sha256": "cc3d842a912f0ed1fc80ae8d2ca7ab6cff37756422069424bf2edec554219fc9"
+      }
+    }
+  ],
+  "adaptation": "Domain-specific guidance and independently implemented lexical review; no corpus reproduction, authorship classifier or upstream script execution."
+}
