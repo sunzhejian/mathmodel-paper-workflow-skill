@@ -65,6 +65,12 @@ class ResearchHelperTests(unittest.TestCase):
             self.assertNotEqual(changed.returncode,0)
             self.assertIn('source changed',changed.stderr)
 
+    def test_json_cursor_is_not_guessed_as_a_next_page_url(self):
+        code="const m=await import(process.argv[1]);const request=async u=>({status:200,headers:{'content-type':u.endsWith('robots.txt')?'text/plain':'application/json'},bytes:Buffer.from(u.endsWith('robots.txt')?'User-agent: *':JSON.stringify({items:[],next:'opaque-cursor-value'}))});const r=await m.crawlPublicData({urls:['https://example.test/data'],records_pointer:'/items',next_url_pointer:'/next'},{request});console.log(JSON.stringify({next:r.next_urls,issues:r.pagination_issues.length}));"
+        result=subprocess.run([NODE,'--input-type=module','-e',code,(ROOT/'scripts/collect_public_web.mjs').as_uri()],capture_output=True,text=True,encoding='utf-8')
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual(json.loads(result.stdout),dict(next=[],issues=1))
+
     def test_corpus_and_sentiment_chain_keeps_equal_answers_and_rejects_changed_original(self):
         with tempfile.TemporaryDirectory() as folder:
             base=Path(folder)

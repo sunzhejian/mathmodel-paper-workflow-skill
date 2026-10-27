@@ -59,7 +59,7 @@ export async function crawlPublicData(input,{signal,request=publicDataRequest,wa
    }
    pages.push(page);seen.add(url);
    if(followNext){
-    if(jsonNext!==undefined&&jsonNext!==null&&jsonNext!==''){if(typeof jsonNext==='string')enqueue(jsonNext,url,true);else pagination_issues.push({url,reason:'next_url_pointer未指向网址字符串，不将游标或对象猜成下一页'});}
+    if(jsonNext!==undefined&&jsonNext!==null&&jsonNext!==''){if(typeof jsonNext==='string'&&/^(?:https:\/\/|\/|\.\.?\/|\?)/i.test(jsonNext.trim()))enqueue(jsonNext.trim(),url,true);else pagination_issues.push({url,reason:'next_url_pointer须指向明确的HTTPS或相对路径网址，不将游标或对象猜成下一页'});}
     for(const m of String(response.headers.link??'').matchAll(/<([^>]+)>([^<]*)/g)){const rel=m[2].match(/;\s*rel\s*=\s*(?:"([^"]*)"|([^;,\s]+))/i);if((rel?.[1]??rel?.[2]??'').split(/\s+/).includes('next'))enqueue(m[1],url,true);}
    }
   }catch(e){
