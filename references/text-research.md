@@ -37,3 +37,13 @@
 analyze_text_sentiment按来源和分析单位分别输出summary.csv、sentiment.svg及analysis.md。图表共用计数刻度，每组显示实际分母；页面、评论、AI回答及其他来源不合并解释。空白与不确定不计入可分类数，需复核是可与类别重叠的标记；截断文本另标复核。正文回读同版工作稿与统计表，不能只看图推断比例。原输入或任一上游清洗来源变化后，保留旧结果并从当前原件重做，不能冒称旧分析已更新。
 
 独立宿主可运行node scripts/prepare_text_corpus.mjs input.json new-output-folder [options.json]，再对输出texts.json运行text_sentiment_baseline.mjs。options仅含deduplicate_text（默认false）和min_chars（默认1）；助手不覆盖原件，保留实际源SHA并检查上游来源。
+
+## 分页、失败接续与采集批次合并
+
+JSON响应具有真实的下一页网址时使用next_url_pointer；HTTP Link的rel=next可用follow_next:true接续，不将不透明游标猜成网址。分页限定本批起始来源域，跨域、无效指针和队列溢出明确记录。next_urls是尚未处理的网址，retry_urls只列可重试失败及not_before；429遵守Retry-After，不立即重复请求，403/robots拒绝不靠重试绕过。每批状态仅覆盖指定网址与发现的分页，不宣称整站或现实总体全量。
+
+多批网络数据先用merge_web_data，提供刚读SHA的collection.json清单。工作区核对当前项目实际采集记录及每份原件指纹，去除相同ID且同内容的重复观察，保留同文回答和重叠线索。源网页、记录和采集时间可回查；稳定ID区分不同网址与内容，不复用每批page-001作为样本ID。ID是观察标识，不代表独立真人身份；同文、同页或多次快照不能自动认定同一个人。
+
+合并核对早期待采/失败网址是否在后续批次实际取得，未解决项、分页问题和遗漏链接继续显示。清洗与词典分析会核对合并上游原件，原件改动后保留旧结果并重新合并。外部复制的清单不能冒充当前项目真实采集记录；普通用户文本走实际来源说明与清洗路线。
+
+独立宿主可用node scripts/merge_public_web.mjs collections.json new-output-folder，配置collections数组中每项为path及expected_sha256；它按所提供本地文件指纹核对，不声称具有工作区采集记录的来源证明。输出仍可接清洗和情感基线，来源链变化时拒绝沿用旧分析。

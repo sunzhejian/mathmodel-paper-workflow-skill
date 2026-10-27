@@ -35,6 +35,36 @@ class ResearchHelperTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), dict(blocked=True, denied=True))
 
+    def test_batch_merge_verifies_raw_files_and_keeps_equal_texts(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base=Path(folder)
+            items=[]
+            for name in ['first','second']:
+                batch=base/name
+                batch.mkdir()
+                raw=json.dumps(dict(id=name,text='满意')).encode('utf-8')
+                texts=json.dumps(dict(source='web_public',records=[dict(id=name,text='满意',source='web_public',unit='record',source_url='https://example.test/'+name)]),ensure_ascii=False).encode('utf-8')
+                (batch/'raw-page-001.txt').write_bytes(raw)
+                (batch/'texts.json').write_bytes(texts)
+                artifacts=[dict(name=f,sha256=hashlib.sha256(b).hexdigest(),bytes=len(b)) for f,b in [('raw-page-001.txt',raw),('texts.json',texts)]]
+                manifest=json.dumps(dict(source='web_public',pages=[dict(url='https://example.test/'+name)],next_urls=[],errors=[],completion=dict(requested_scope_complete=True,omitted_links=0),artifact_files=artifacts)).encode('utf-8')
+                (batch/'collection.json').write_bytes(manifest)
+                items.append(dict(path=str(batch/'collection.json'),expected_sha256=hashlib.sha256(manifest).hexdigest()))
+            config=base/'collections.json'
+            config.write_text(json.dumps(dict(collections=items)),encoding='utf-8')
+            command=[NODE,str(ROOT/'scripts/merge_public_web.mjs'),str(config),str(base/'merged')]
+            result=subprocess.run(command,capture_output=True,text=True,encoding='utf-8')
+            self.assertEqual(result.returncode,0,result.stderr)
+            merged=json.loads((base/'merged/texts.json').read_text(encoding='utf-8'))
+            self.assertEqual(len(merged['records']),2)
+            self.assertTrue(merged['web_collection']['complete'])
+            sentiment=[NODE,str(ROOT/'scripts/text_sentiment_baseline.mjs'),str(base/'merged/texts.json'),str(base/'analysis')]
+            self.assertEqual(subprocess.run(sentiment,capture_output=True).returncode,0)
+            (base/'first/raw-page-001.txt').write_text('changed',encoding='utf-8')
+            changed=subprocess.run(sentiment[:-1]+[str(base/'analysis-new')],capture_output=True,text=True,encoding='utf-8')
+            self.assertNotEqual(changed.returncode,0)
+            self.assertIn('source changed',changed.stderr)
+
     def test_corpus_and_sentiment_chain_keeps_equal_answers_and_rejects_changed_original(self):
         with tempfile.TemporaryDirectory() as folder:
             base=Path(folder)
