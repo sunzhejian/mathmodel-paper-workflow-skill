@@ -12,6 +12,16 @@ const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const stableCompare=(a,b)=>a<b?-1:a>b?1:0;
 function wordsInput(value,label,max){if(value===undefined)return[];if(!Array.isArray(value)||value.length>max||value.some(s=>typeof s!=='string'||!s.trim()||s.length>40))fail(label+'应为最多'+max+'个非空短词');return [...new Set(value.map(s=>s.normalize('NFKC').trim().toLowerCase()))].sort(stableCompare);}
 const escapeRegex=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+export function surveyWordcloudPolicyKey(){return surveyContentHash({algorithm:'intl-segmenter-zh-domain-phrases-v2',tokenizer_sha256:sha(tokenizer.toString()),icu:process.versions.icu,stop_words:SURVEY_STOP_WORDS,phrases:SURVEY_PHRASES});}
+export function surveyWordcloudCohort(state,{dataset='ai',question_id}={}){
+ if(!sourceLabels[dataset])fail('请选择AI调研、AI预调查或真实回收');
+ const q=state.schema.questions.find(q=>q.id===(question_id??state.schema.questions.find(q=>q.type==='text')?.id));if(!q||q.type!=='text')fail('请选择当前问卷中的开放题');
+ const revision=surveyContentHash(state.schema),rows=(dataset==='real'?state.realData:state.responses).filter(r=>r.surveyRevisionHash===revision&&r.source===(dataset==='real'?'human_reported':'ai_synthetic')&&(dataset==='real'||(state.responseMeta?.[r.id]?.purpose??'research')===(dataset==='pilot'?'pilot':'research'))).sort((a,b)=>stableCompare(a.id,b.id));
+ if(new Set(rows.map(r=>r.id)).size!==rows.length)fail('答卷标识重复，请先核对导入批次，不自动删除原始记录');
+ const values=rows.map(r=>({id:r.id,text:typeof r.answers?.[q.id]==='string'?r.answers[q.id]:null,skipped:(r.skippedQuestionIds??[]).includes(q.id)}));
+ return{q,revision,rows,cohort_digest:surveyContentHash({contract:2,revision,dataset,question:q.id,records:values})};
+}
+const contactSafe=text=>text.replace(/https?:\/\/\S+|[\w.+-]+@[\w.-]+\.[a-z]{2,}|(?<!\d)1[3-9]\d{9}(?!\d)/giu,'〔联系方式已隐去〕');
 function tokenizer(phrases,stops){
  const segmenter=new Intl.Segmenter('zh-CN',{granularity:'word'}),known=new Set(phrases),pattern=phrases.length?new RegExp('('+[...phrases].sort((a,b)=>b.length-a.length||stableCompare(a,b)).map(escapeRegex).join('|')+')','gu'):null;
  return text=>{
@@ -33,13 +43,9 @@ function tokenizer(phrases,stops){
 }
 
 export function buildSurveyWordcloud(state,{dataset='ai',question_id,stop_words,phrases,max_terms=40}={}){
- if(!sourceLabels[dataset])fail('请选择AI调研、AI预调查或真实回收');
  if(!Number.isSafeInteger(max_terms)||max_terms<1||max_terms>80)fail('展示词数应为1到80');
- const q=state.schema.questions.find(q=>q.id===(question_id??state.schema.questions.find(q=>q.type==='text')?.id));
- if(!q||q.type!=='text')fail('请选择当前问卷中的开放题');
+ const {q,revision,rows,cohort_digest}=surveyWordcloudCohort(state,{dataset,question_id});
  const extraStops=wordsInput(stop_words,'停用词',100),extraPhrases=wordsInput(phrases,'领域词',50),allStops=[...new Set([...SURVEY_STOP_WORDS,...extraStops])].sort(stableCompare),allPhrases=[...new Set([...SURVEY_PHRASES,...extraPhrases].map(s=>s.toLowerCase()))].sort(stableCompare),split=tokenizer(allPhrases,new Set(allStops));
- const revision=surveyContentHash(state.schema),rows=(dataset==='real'?state.realData:state.responses).filter(r=>r.surveyRevisionHash===revision&&r.source===(dataset==='real'?'human_reported':'ai_synthetic')&&(dataset==='real'||(state.responseMeta?.[r.id]?.purpose??'research')===(dataset==='pilot'?'pilot':'research')));
- if(new Set(rows.map(r=>r.id)).size!==rows.length)fail('答卷标识重复，请先核对导入批次，不自动删除原始记录');
  const counts=new Map(),sourceRows=[];let nonempty=0,totalTokens=0,totalChars=0;
  for(const row of rows){
   const raw=row.answers?.[q.id];if(typeof raw!=='string'||!raw.trim())continue;
@@ -50,8 +56,9 @@ export function buildSurveyWordcloud(state,{dataset='ai',question_id,stop_words,
  }
  const terms=[...counts.values()].sort((a,b)=>b.documents-a.documents||b.occurrences-a.occurrences||stableCompare(a.word,b.word));
  const settings={algorithm:'intl-segmenter-zh-domain-phrases-v2',tokenizer_sha256:sha(tokenizer.toString()),icu:process.versions.icu,stop_words:allStops,phrases:allPhrases,minimum_characters:2,max_terms,weight:'documents',negation_prefixes:['不','未','没','无','非'],negation:'Chinese prefix joined to following adjacent token only; no crossing punctuation or whitespace; no sentiment inference'};
- const digest=surveyContentHash({revision,dataset,question:q.id,rows:sourceRows,settings});
- return {schema_version:1,version:state.version??null,dataset,source_label:sourceLabels[dataset],question_id:q.id,question_text:q.text,survey_revision_hash:revision,input_digest:digest,counts:{accepted_records:rows.length,nonempty_texts:nonempty,empty_or_skipped:rows.length-nonempty,token_occurrences:totalTokens,unique_terms:terms.length},settings,terms,shown_terms:terms.slice(0,max_terms),scope:'每条答卷对同词的文档频数最多计1；词出现次数另列。来源与问卷版本分开；未另作语义清洗、主题编码或情感推断。姓名、单位名等仍需人工匿名复核。'};
+ const digest=surveyContentHash({contract:2,cohort_digest,settings}),sourceIndex=new Map(sourceRows.map((r,i)=>[r.id,{...r,anonymous_id:'T'+String(i+1).padStart(4,'0')}]));
+ const contexts=terms.slice(0,max_terms).map(t=>({word:t.word,shown:Math.min(3,t.record_ids.length),total_documents:t.documents,samples:t.record_ids.slice(0,3).map(id=>{const r=sourceIndex.get(id);return{anonymous_id:r.anonymous_id,record_id:id,text:[...contactSafe(r.text)].slice(0,180).join(''),original_text_sha256:sha(r.text),excerpt:true};})}));
+ return {schema_version:2,version:state.version??null,dataset,source_label:sourceLabels[dataset],question_id:q.id,question_text:q.text,survey_revision_hash:revision,cohort_digest,policy_key:surveyWordcloudPolicyKey(),input_digest:digest,requested_options:{dataset,question_id:q.id,max_terms,stop_words:extraStops,phrases:extraPhrases},counts:{accepted_records:rows.length,nonempty_texts:nonempty,empty_or_skipped:rows.length-nonempty,token_occurrences:totalTokens,unique_terms:terms.length},settings,terms,shown_terms:terms.slice(0,max_terms),contexts,scope:'每条答卷对同词的文档频数最多计1；词出现次数另列。来源与问卷版本分开；未另作语义清洗、主题编码或情感推断。原文回查显示片段，常见联系方式已过滤，姓名和单位等仍需人工匿名核对。'};
 }
 
 export function surveyWordcloudSvg(result){
@@ -81,6 +88,7 @@ export function surveyWordcloudCsv(result){
 export function surveyVisualResponse(state,url){
  const query=url.searchParams,expected=query.get('version');if(expected!==null&&String(state.version)!==expected)throw Object.assign(Error('答卷或问卷已更新，请重新生成图件'),{status:409});
  const result=buildSurveyWordcloud(state,{dataset:query.get('dataset')??'ai',question_id:query.get('question_id')??undefined,max_terms:query.has('max_terms')?Number(query.get('max_terms')):40,stop_words:query.has('stop_words')?query.get('stop_words').split(/\r?\n/).filter(Boolean):undefined,phrases:query.has('phrases')?query.get('phrases').split(/\r?\n/).filter(Boolean):undefined});
+ if(query.has('input_digest')&&query.get('input_digest')!==result.input_digest)throw Object.assign(Error('图件输入已变化，请重新生成后导出'),{status:409});
  const format=query.get('format')??'json';if(!['json','svg','csv'].includes(format))fail('图件导出格式应为json、svg或csv');
  const content=format==='svg'?surveyWordcloudSvg(result):format==='csv'?surveyWordcloudCsv(result):JSON.stringify(result),type={json:'application/json; charset=utf-8',svg:'image/svg+xml; charset=utf-8',csv:'text/csv; charset=utf-8'}[format];
  return new Response(content,{headers:{'content-type':type,'cache-control':'no-store','x-content-type-options':'nosniff','x-content-sha256':sha(content),...format!=='json'?{'content-disposition':`attachment; filename="survey-${result.dataset}-${result.question_id.replace(/[^a-zA-Z0-9_-]/g,'_')}-wordcloud.${format}"`}:{}}});
