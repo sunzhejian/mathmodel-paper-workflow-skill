@@ -34,3 +34,25 @@ class ResearchHelperTests(unittest.TestCase):
         result=subprocess.run([NODE, '--input-type=module', '-e', code, (ROOT/'scripts/collect_public_web.mjs').as_uri()], capture_output=True, text=True, encoding='utf-8')
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), dict(blocked=True, denied=True))
+
+    def test_corpus_and_sentiment_chain_keeps_equal_answers_and_rejects_changed_original(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base=Path(folder)
+            source=base/'raw.json'
+            source.write_text(json.dumps(dict(source='ai_synthetic',records=[dict(id='a',text=' 满意 '),dict(id='b',text='满意'),dict(id='c',text='  ')]),ensure_ascii=False),encoding='utf-8')
+            prep=[NODE,str(ROOT/'scripts/prepare_text_corpus.mjs'),str(source),str(base/'clean')]
+            result=subprocess.run(prep,capture_output=True,text=True,encoding='utf-8')
+            self.assertEqual(result.returncode,0,result.stderr)
+            clean=json.loads((base/'clean/texts.json').read_text(encoding='utf-8'))
+            self.assertEqual(len(clean['records']),2)
+            command=[NODE,str(ROOT/'scripts/text_sentiment_baseline.mjs'),str(base/'clean/texts.json'),str(base/'analysis')]
+            completed=subprocess.run(command,capture_output=True,text=True,encoding='utf-8')
+            self.assertEqual(completed.returncode,0,completed.stderr)
+            analysis=json.loads((base/'analysis/sentiment.json').read_text(encoding='utf-8'))
+            self.assertEqual(analysis['cohorts'][0]['counts']['positive'],2)
+            self.assertEqual(len(analysis['inputs']),2)
+            self.assertTrue((base/'analysis/sentiment.svg').is_file())
+            source.write_text('{}',encoding='utf-8')
+            changed=subprocess.run(command[:-1]+[str(base/'analysis-new')],capture_output=True,text=True,encoding='utf-8')
+            self.assertNotEqual(changed.returncode,0)
+            self.assertIn('source changed',changed.stderr)

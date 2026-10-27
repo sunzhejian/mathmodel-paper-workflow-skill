@@ -29,3 +29,11 @@
 ## 独立宿主的可选助手
 
 宿主已有Node.js时，可运行`node scripts/collect_public_web.mjs config.json new-output-folder`采集公开数据，或`node scripts/text_sentiment_baseline.mjs records.json new-output-folder`运行同口径基线；输出目录必须新建，不覆盖原件。采集配置沿用urls、max_pages、records_pointer、text_pointer等字段。监督训练仍使用已有scikit-learn环境和`text_sentiment.py`。这些是可选执行助手，不要求为使用本skill安装固定客户端或付费模型。
+
+## 可追溯清洗与分来源报告
+
+工作区先用prepare_text_corpus读取当前SHA，另存texts.json、cleaning.json和逐条清洗CSV；清洗只标准化Unicode与空白，默认移除空文本，保留不同受访者的相同回答。仅在研究设计明确要求时设置deduplicate_text:true；它按来源、单位、来源网址与标准化文本精确去重，不是机器人或恶意评论识别。每条保留/剔除原因和duplicate_of可回查，最短长度规则也必须明示。
+
+analyze_text_sentiment按来源和分析单位分别输出summary.csv、sentiment.svg及analysis.md。图表共用计数刻度，每组显示实际分母；页面、评论、AI回答及其他来源不合并解释。空白与不确定不计入可分类数，需复核是可与类别重叠的标记；截断文本另标复核。正文回读同版工作稿与统计表，不能只看图推断比例。原输入或任一上游清洗来源变化后，保留旧结果并从当前原件重做，不能冒称旧分析已更新。
+
+独立宿主可运行node scripts/prepare_text_corpus.mjs input.json new-output-folder [options.json]，再对输出texts.json运行text_sentiment_baseline.mjs。options仅含deduplicate_text（默认false）和min_chars（默认1）；助手不覆盖原件，保留实际源SHA并检查上游来源。
