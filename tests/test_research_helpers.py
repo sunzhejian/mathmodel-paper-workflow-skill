@@ -71,6 +71,12 @@ class ResearchHelperTests(unittest.TestCase):
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertEqual(json.loads(result.stdout),dict(next=[],issues=1))
 
+    def test_shared_origin_gate_serializes_batches_and_cancels_queued_slot(self):
+        code="const m=await import(process.argv[1]);let clock=0;const starts=[];const gate=m.createWebRequestGate({now:()=>clock,wait:async ms=>clock+=ms});await Promise.all([gate.run('https://example.test/a',{},async()=>{starts.push(clock);return {status:200,headers:{}}}),gate.run('https://example.test/b',{},async()=>{starts.push(clock);return {status:200,headers:{}}})]);let release,startedResolve;const started=new Promise(r=>startedResolve=r),held=gate.run('https://held.test/a',{},async()=>{startedResolve();await new Promise(r=>release=r);return {status:200,headers:{}}});await started;let called=false;const c=new AbortController(),cancel=gate.run('https://held.test/b',{signal:c.signal},async()=>{called=true;return {status:200,headers:{}}}).catch(e=>e.name);c.abort();const result=await cancel;release();await held;console.log(JSON.stringify({gap:starts[1]-starts[0],cancelled:result==='AbortError',called,pending:gate.snapshot().pending}));"
+        result=subprocess.run([NODE,'--input-type=module','-e',code,(ROOT/'scripts/web_throttle.mjs').as_uri()],capture_output=True,text=True,encoding='utf-8')
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual(json.loads(result.stdout),dict(gap=1000,cancelled=True,called=False,pending=0))
+
     def test_corpus_and_sentiment_chain_keeps_equal_answers_and_rejects_changed_original(self):
         with tempfile.TemporaryDirectory() as folder:
             base=Path(folder)
