@@ -45,3 +45,9 @@ test('manifest fingerprint, deleted or changed inputs and unexpected files canno
 test('links are rejected rather than used as a purported portable original',async t=>{
  const f=await setup(t),r=await exportContestReplay(f.options);await mkdir(f.root+'/outside');await writeFile(f.root+'/outside/a','x');await symlink(f.root+'/outside',r.path+'/linked','junction');await assert.rejects(()=>verifyContestReplay(r.path,r.manifest_sha256),/linked/);
 });
+test('real Windows directory spelling aliases work, while a linked export parent remains rejected',async t=>{
+ const f=await setup(t);
+ if(process.platform==='win32'){const r=await exportContestReplay({...f.options,destination:path.join(f.root.toUpperCase(),'export')});assert((await verifyContestReplay(r.path,r.manifest_sha256)).consistent);}
+ await symlink(f.root,f.root+'-link','junction');t.after(async()=>{await rm(f.root+'-link',{force:true,recursive:true})});
+ await assert.rejects(()=>exportContestReplay({...f.options,destination:f.root+'-link/blocked'}),/real directory/);
+});

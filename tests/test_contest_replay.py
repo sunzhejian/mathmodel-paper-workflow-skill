@@ -11,4 +11,4 @@ class ContestReplayTests(unittest.TestCase):
         result = subprocess.run(["node", "--test", "tests/contest_replay_cases.mjs"],
                                 cwd=ROOT, text=True, encoding="utf-8", capture_output=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("pass 6", result.stdout)
+        self.assertIn("pass 7", result.stdout)

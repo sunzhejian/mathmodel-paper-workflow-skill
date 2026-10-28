@@ -58,8 +58,11 @@ export async function exportContestReplay({destination,inputs,artifacts,readProj
   if(bytes.length!==f.bytes||hash(bytes)!==f.sha256)throw Error('Saved source bytes changed: '+f.source_path);
   snapshots.push({record:f,bytes});
  }
- const target=path.resolve(destination),parent=path.dirname(target);
- if(await realpath(parent)!==parent||(await lstat(parent)).isSymbolicLink())throw Error('Replay parent must be a real directory');
+ const requested=path.resolve(destination),parent=path.dirname(requested);let cursor=path.parse(parent).root;
+ for(const part of path.relative(cursor,parent).split(path.sep).filter(Boolean)){cursor=path.join(cursor,part);const info=await lstat(cursor);if(info.isSymbolicLink()||!info.isDirectory())throw Error('Replay parent must be a real directory');}
+ // Windows may spell a real directory with a short 8.3 name or different case.
+ // Check directory entries for links, then create under its canonical path.
+ const target=path.join(await realpath(parent),path.basename(requested));
  await mkdir(target);
  for(const {record:f,bytes} of snapshots){const dest=path.join(target,f.path);await mkdir(path.dirname(dest),{recursive:true});await writeFile(dest,bytes,{flag:'wx'});}
  const manifest={schema_version:1,context,mappings,files:planned.map(({source_path,...f})=>f),code_execution:'not-performed-by-export',scientific_verified:false};
