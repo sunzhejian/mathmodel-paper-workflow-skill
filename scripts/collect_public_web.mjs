@@ -46,7 +46,7 @@ export async function crawlPublicData(input,{signal,request=publicDataRequest,wa
  }
  crawl:while(queue.length&&attempted<max){
   signal?.throwIfAborted();let url=queue.shift();if(seen.has(url))continue;seen.add(url);attempted++;
-  const requested_url=url,recordStart=records.length,rawKey='page-'+String(attempted).padStart(3,'0')+'.txt';
+  const requested_url=url,recordStart=records.length,rawKey='page-'+String(attempted).padStart(3,'0')+'.txt',rawMeta={};
   try{
    let response;
    for(let hop=0;hop<4;hop++){
@@ -60,7 +60,7 @@ export async function crawlPublicData(input,{signal,request=publicDataRequest,wa
    const declared=type.match(/charset\s*=\s*["']?([^;\s"']+)/i)?.[1]??response.bytes.toString('ascii',0,4096).match(/charset\s*=\s*["']?([a-z0-9_-]+)/i)?.[1]??'utf-8';let text;
    try{text=new TextDecoder(declared).decode(response.bytes);}catch{fail('来源字符编码不受支持：'+declared);}
    const raw_sha256=sha(response.bytes),id='web-'+sha(Buffer.from(url)).slice(0,24)+'-'+raw_sha256.slice(0,16),collected_at=new Date().toISOString(),page={id,url,requested_url,collected_at,content_type:type,raw_file:rawKey,raw_sha256,raw_bytes:response.bytes.length,charset:declared,decoding_replacements:(text.match(/\uFFFD/g)??[]).length,request_timing:response.request_timing??null,robots:{status:robots.get(new URL(url).origin)?.status,checked:true}};
-   rawFiles[rawKey]=response.bytes;
+   rawFiles[rawKey]=response.bytes;rawMeta.charset=declared;rawMeta.content_type=type;
    let jsonNext;
    if(csv.selected&&!/\btext\/(?:csv|plain)\b/i.test(type))throw Object.assign(Error('已选择CSV字段，但来源未返回CSV或纯文本'),{code:'csv_extract_error',retryable:false,stage:'csv_extract'});
    if(csv.selected){
@@ -90,7 +90,7 @@ export async function crawlPublicData(input,{signal,request=publicDataRequest,wa
     for(const m of String(response.headers.link??'').matchAll(/<([^>]+)>([^<]*)/g)){const rel=m[2].match(/;\s*rel\s*=\s*(?:"([^"]*)"|([^;,\s]+))/i);if((rel?.[1]??rel?.[2]??'').split(/\s+/).includes('next'))enqueue(m[1],url,true);}
    }
   }catch(e){
-   if(signal?.aborted||e.name==='AbortError')throw e;records.splice(recordStart);const rejected=e.code==='csv_extract_error'&&rawFiles[rawKey]?{raw_file:rawKey,raw_sha256:sha(rawFiles[rawKey]),raw_bytes:rawFiles[rawKey].length,stage:'csv_extract'}:{};if(!rejected.raw_file)delete rawFiles[rawKey];errors.push({...rejected,url:requested_url,resolved_url:url,reason:e.message,status:e.status??null,retryable:e.retryable??(!e.status&&!(e instanceof SyntaxError)),retry_after:e.retry_after??null,deferred:e.deferred===true,prior_origin_status:e.prior_origin_status??null});
+   if(signal?.aborted||e.name==='AbortError')throw e;records.splice(recordStart);const rejected=e.code==='csv_extract_error'&&rawFiles[rawKey]?{raw_file:rawKey,raw_sha256:sha(rawFiles[rawKey]),raw_bytes:rawFiles[rawKey].length,stage:'csv_extract',...rawMeta}:{};if(!rejected.raw_file)delete rawFiles[rawKey];errors.push({...rejected,url:requested_url,resolved_url:url,reason:e.message,status:e.status??null,retryable:e.retryable??(!e.status&&!(e instanceof SyntaxError)),retry_after:e.retry_after??null,deferred:e.deferred===true,prior_origin_status:e.prior_origin_status??null});
   }
  }
  const next_urls=[...new Set(queue)],retry_urls=errors.filter(e=>e.retryable).map(e=>({url:e.url,not_before:e.retry_after}));if(stop_reason==='scope_processed')stop_reason=next_urls.length?'batch_page_limit':errors.length?'source_errors':pagination_issues.length||omitted_links?'pagination_incomplete':'scope_processed';
