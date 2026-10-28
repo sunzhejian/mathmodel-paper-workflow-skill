@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,6 +12,28 @@ ROOT = Path(__file__).resolve().parents[1]
 
 @unittest.skipUnless(shutil.which("node"), "Node.js is required for CSV helper comparison")
 class WebCSVTests(unittest.TestCase):
+    def test_direct_cli_collection_rejects_changed_raw_before_cleaning_and_sentiment(self):
+        script = """import{collectPublicMain,crawlPublicData}from'./scripts/collect_public_web.mjs';
+import{corpusMain}from'./scripts/prepare_text_corpus.mjs';
+import{sentimentMain}from'./scripts/text_sentiment_baseline.mjs';
+import{writeFile,readFile,appendFile,stat}from'node:fs/promises';import assert from'node:assert/strict';
+const dir=process.argv[1],config=dir+'/request.json',collected=dir+'/collected',clean=dir+'/clean';
+await writeFile(config,JSON.stringify({urls:['https://example.test/answers.csv'],csv_text_column:'comment'}));
+const result=await collectPublicMain([config,collected],{crawl:input=>crawlPublicData(input,{request:async url=>({status:200,headers:{'content-type':url.endsWith('/robots.txt')?'text/plain':'text/csv'},bytes:Buffer.from(url.endsWith('/robots.txt')?'User-agent: *':'id,comment\\n1,好用\\n2,不好用')})})});
+assert.equal(result.records,2);const source=JSON.parse(await readFile(collected+'/texts.json','utf8'));
+assert.equal(source.web_collection.inputs.length,1);await corpusMain([collected+'/texts.json',clean]);
+await corpusMain([clean+'/texts.json',dir+'/reclean']);
+await appendFile(source.web_collection.inputs[0].path,'\\nchanged');
+await assert.rejects(corpusMain([collected+'/texts.json',dir+'/bad-clean']),/source changed/);
+await assert.rejects(corpusMain([clean+'/texts.json',dir+'/bad-reclean']),/source changed/);
+await assert.rejects(sentimentMain([clean+'/texts.json',dir+'/bad-sentiment']),/source changed/);
+await assert.rejects(stat(dir+'/bad-clean'));await assert.rejects(stat(dir+'/bad-reclean'));await assert.rejects(stat(dir+'/bad-sentiment'));
+console.log(JSON.stringify({direct_raw_bound:true,both_stages_reject_changed_raw:true}));"""
+        with tempfile.TemporaryDirectory(prefix="mathmodel-csv-source-test-") as out:
+            p = subprocess.run(["node", "--input-type=module", "-e", script, out],
+                               text=True, encoding="utf-8", capture_output=True, cwd=ROOT, check=True)
+            self.assertTrue(json.loads(p.stdout)["both_stages_reject_changed_raw"])
+
     def extract(self, text, options):
         script = """import{csvOptions,parseCSVText}from'./scripts/web_csv.mjs';
 let s='';for await(const c of process.stdin)s+=c;const x=JSON.parse(s);
