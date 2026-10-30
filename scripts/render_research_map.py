@@ -7,7 +7,13 @@ from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
-OFFICIAL_HOSTS = {"bzdt.ch.mnr.gov.cn", "bzdt.mnr.gov.cn"}
+# Central service plus provincial services linked by the responsible authorities.
+# The allowlist establishes a download channel, not approval of arbitrary content.
+OFFICIAL_HOSTS = {
+    "bzdt.ch.mnr.gov.cn", "bzdt.mnr.gov.cn", "bzdt.tianditu.gov.cn",
+    "beijing.tianditu.gov.cn", "gansu.tianditu.gov.cn",
+    "guangdong.tianditu.gov.cn", "bzdt.fjmap.net",
+}
 
 
 def official_basemap(manifest):
@@ -23,7 +29,7 @@ def official_basemap(manifest):
     if len(raw) > 20*1024*1024 or hashlib.sha256(raw).hexdigest() != meta["sha256"]:
         raise ValueError("Basemap hash or size differs")
     with urlopen(url, timeout=30) as response:
-        if urlparse(response.url).hostname not in OFFICIAL_HOSTS:
+        if urlparse(response.url).scheme != "https" or urlparse(response.url).hostname not in OFFICIAL_HOSTS:
             raise ValueError("Official source redirected outside the approved service")
         downloaded = response.read(20*1024*1024+1)
     if hashlib.sha256(downloaded).hexdigest() != meta["sha256"]:
