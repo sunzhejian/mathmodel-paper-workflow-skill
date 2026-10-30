@@ -42,8 +42,11 @@ function tokenizer(phrases,stops){
  };
 }
 
-export function buildSurveyWordcloud(state,{dataset='ai',question_id,stop_words,phrases,max_terms=40}={}){
+export function buildSurveyWordcloud(state,{dataset='ai',question_id,stop_words,phrases,max_terms=40,layout='rectangle',palette='classic',density='balanced'}={}){
  if(!Number.isSafeInteger(max_terms)||max_terms<1||max_terms>80)fail('展示词数应为1到80');
+ if(!['rectangle','ellipse','dialogue','columns'].includes(layout))fail('请选择矩形、椭圆、对话气泡或分栏版式');
+ if(!['classic','teal','blue','mono'].includes(palette))fail('请选择可用的词云配色');
+ if(!['balanced','airy','compact'].includes(density))fail('请选择适中、疏朗或紧凑的词云密度');
  const {q,revision,rows,cohort_digest}=surveyWordcloudCohort(state,{dataset,question_id});
  const extraStops=wordsInput(stop_words,'停用词',100),extraPhrases=wordsInput(phrases,'领域词',50),allStops=[...new Set([...SURVEY_STOP_WORDS,...extraStops])].sort(stableCompare),allPhrases=[...new Set([...SURVEY_PHRASES,...extraPhrases].map(s=>s.toLowerCase()))].sort(stableCompare),split=tokenizer(allPhrases,new Set(allStops));
  const counts=new Map(),sourceRows=[];let nonempty=0,totalTokens=0,totalChars=0;
@@ -56,28 +59,46 @@ export function buildSurveyWordcloud(state,{dataset='ai',question_id,stop_words,
  }
  const terms=[...counts.values()].sort((a,b)=>b.documents-a.documents||b.occurrences-a.occurrences||stableCompare(a.word,b.word));
  const settings={algorithm:'intl-segmenter-zh-domain-phrases-v2',tokenizer_sha256:sha(tokenizer.toString()),icu:process.versions.icu,stop_words:allStops,phrases:allPhrases,minimum_characters:2,max_terms,weight:'documents',negation_prefixes:['不','未','没','无','非'],negation:'Chinese prefix joined to following adjacent token only; no crossing punctuation or whitespace; no sentiment inference'};
+ const appearance=layout==='rectangle'&&palette==='classic'&&density==='balanced'?{}:{layout,palette,density};
+ if(Object.keys(appearance).length)settings.appearance=appearance;
  const digest=surveyContentHash({contract:2,cohort_digest,settings}),sourceIndex=new Map(sourceRows.map((r,i)=>[r.id,{...r,anonymous_id:'T'+String(i+1).padStart(4,'0')}]));
  const contexts=terms.slice(0,max_terms).map(t=>({word:t.word,shown:Math.min(3,t.record_ids.length),total_documents:t.documents,samples:t.record_ids.slice(0,3).map(id=>{const r=sourceIndex.get(id);return{anonymous_id:r.anonymous_id,record_id:id,text:[...contactSafe(r.text)].slice(0,180).join(''),original_text_sha256:sha(r.text),excerpt:true};})}));
- return {schema_version:2,version:state.version??null,dataset,source_label:sourceLabels[dataset],question_id:q.id,question_text:q.text,survey_revision_hash:revision,cohort_digest,policy_key:surveyWordcloudPolicyKey(),input_digest:digest,requested_options:{dataset,question_id:q.id,max_terms,stop_words:extraStops,phrases:extraPhrases},counts:{accepted_records:rows.length,nonempty_texts:nonempty,empty_or_skipped:rows.length-nonempty,token_occurrences:totalTokens,unique_terms:terms.length},settings,terms,shown_terms:terms.slice(0,max_terms),contexts,scope:'每条答卷对同词的文档频数最多计1；词出现次数另列。来源与问卷版本分开；未另作语义清洗、主题编码或情感推断。原文回查显示片段，常见联系方式已过滤，姓名和单位等仍需人工匿名核对。'};
+ return {schema_version:2,version:state.version??null,dataset,source_label:sourceLabels[dataset],question_id:q.id,question_text:q.text,survey_revision_hash:revision,cohort_digest,policy_key:surveyWordcloudPolicyKey(),input_digest:digest,requested_options:{dataset,question_id:q.id,max_terms,stop_words:extraStops,phrases:extraPhrases,...appearance},counts:{accepted_records:rows.length,nonempty_texts:nonempty,empty_or_skipped:rows.length-nonempty,token_occurrences:totalTokens,unique_terms:terms.length},settings,terms,shown_terms:terms.slice(0,max_terms),contexts,scope:'每条答卷对同词的文档频数最多计1；词出现次数另列。来源与问卷版本分开；未另作语义清洗、主题编码或情感推断。原文回查显示片段，常见联系方式已过滤，姓名和单位等仍需人工匿名核对。'};
 }
 
-export function surveyWordcloudSvg(result){
- const width=1120,height=680,boxes=[],palette=['#225b6a','#4a7c59','#94623b','#516884','#665978'];
+export function surveyWordcloudLayout(result){
+ const width=1120,height=680,boxes=[],{layout='rectangle',palette='classic',density='balanced'}=result.settings?.appearance??{};
+ const colors={classic:['#225b6a','#4a7c59','#94623b','#516884','#665978'],teal:['#163c4c','#1f6972','#397f83','#656951','#426456'],blue:['#203d61','#345c85','#4c739a','#6b859c','#425362'],mono:['#18242c','#34434c','#4c5960','#657079','#26363f']}[palette];
+ if(!colors||!['rectangle','ellipse','dialogue','columns'].includes(layout)||!['balanced','airy','compact'].includes(density))fail('词云展示设置不正确');
+ const gap={airy:22,balanced:14,compact:8}[density],padding=gap/2;
+ const inside=b=>{
+  if(b.x<30||b.y<142||b.x+b.w>width-30||b.y+b.h>height-94)return false;
+  if(layout==='ellipse')return [[b.x,b.y],[b.x+b.w,b.y],[b.x,b.y+b.h],[b.x+b.w,b.y+b.h]].every(([x,y])=>((x-560)/520)**2+((y-350)/202)**2<=1);
+  if(layout==='dialogue'&&(b.x<58||b.x+b.w>1062||b.y<160||b.y+b.h>552))return false;
+  if(layout==='columns'&&b.x<580&&b.x+b.w>540)return false;
+  return true;
+ };
  const max=result.shown_terms[0]?.documents??1;
+ let previousSize=Infinity;
  for(const [index,t] of result.shown_terms.entries()){
-  let size=16+42*Math.sqrt(t.documents/max),box=null;
-  for(let shrink=0;shrink<5&&!box;shrink++,size*=.88){
-   const w=[...t.word].reduce((n,c)=>n+(/[\p{Script=Han}]/u.test(c)?1:.65),0)*size+14,h=size*1.4+8;
+  let size=Math.min(previousSize,16+42*Math.sqrt(t.documents/max)),box=null;
+  for(let shrink=0;shrink<8&&!box;shrink++,size*=.88){
+   const w=[...t.word].reduce((n,c)=>n+(/[\p{Script=Han}]/u.test(c)?1:.65),0)*size+gap,h=size*1.4+padding;
    for(let k=0;k<3800;k++){
-    const a=k*.38,r=3.4*Math.sqrt(k),x=width/2+Math.cos(a)*r*2.45-w/2,y=330+Math.sin(a)*r*1.32-h/2;
-    const b={x,y,w,h,size};if(x<30||y<142||x+w>width-30||y+h>height-94||boxes.some(p=>x<p.x+p.w&&x+w>p.x&&y<p.y+p.h&&y+h>p.y))continue;
-    box={...b,...t,color:palette[index%palette.length]};break;
+    const a=k*.38,r=3.4*Math.sqrt(k),center=layout==='columns'?(index%2?820:300):width/2,x=center+Math.cos(a)*r*(layout==='columns'?1.1:2.45)-w/2,y=350+Math.sin(a)*r*1.32-h/2;
+    const b={x,y,w,h,size};if(!inside(b)||boxes.some(p=>x<p.x+p.w&&x+w>p.x&&y<p.y+p.h&&y+h>p.y))continue;
+    box={...b,...t,color:colors[index%colors.length]};break;
    }
   }
-  if(box)boxes.push(box);
+  if(box){boxes.push(box);previousSize=box.size;}
  }
+ return{width,height,layout,palette,density,boxes};
+}
+export function surveyWordcloudSvg(result){
+ const {width,height,layout,boxes}=surveyWordcloudLayout(result);
+ const ornament=layout==='dialogue'?'<path d="M70 150 H1050 Q1075 150 1075 175 V530 Q1075 555 1050 555 H860 L820 580 L815 555 H70 Q45 555 45 530 V175 Q45 150 70 150 Z" fill="#f6f9fa" stroke="#dce5e9"/>':layout==='columns'?'<path d="M560 157 V556" stroke="#e1e7eb"/>':'';
  const text=boxes.map(b=>`<text x="${(b.x+b.w/2).toFixed(1)}" y="${(b.y+b.h/2).toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-size="${b.size.toFixed(1)}" fill="${b.color}"><title>${xml(b.word)}：${b.documents}份答卷，出现${b.occurrences}次</title>${xml(b.word)}</text>`).join('');
- return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="开放回答词云"><rect width="100%" height="100%" fill="#fff"/><g font-family="Microsoft YaHei,SimSun,Noto Sans CJK SC,sans-serif"><text x="40" y="48" font-size="27" fill="#20262e">${xml(result.question_id)} 开放回答词云</text><text x="40" y="82" font-size="18" fill="#5d6872">${xml(result.source_label)} · 非空文本 ${result.counts.nonempty_texts} 条 · 按包含词语的答卷数缩放</text>${text||'<text x="560" y="340" text-anchor="middle" font-size="24" fill="#666">当前没有可展示词语，请核对文本或停用词</text>'}<text x="40" y="616" font-size="16" fill="#5d6872">计数口径：每份答卷对同一词语计1次；全部出现次数见词频表</text><text x="40" y="646" font-size="15" fill="#6b747c">显示 ${boxes.length}/${result.terms.length} 个词 · 输入指纹 ${result.input_digest.slice(0,16)} · 完整频次与规则请导出CSV/JSON</text></g></svg>`;
+ return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="开放回答词云"><metadata>${xml(JSON.stringify({input_digest:result.input_digest,appearance:result.settings?.appearance??{layout:'rectangle',palette:'classic',density:'balanced'}}))}</metadata><rect width="100%" height="100%" fill="#fff"/>${ornament}<g font-family="Microsoft YaHei,SimSun,Noto Sans CJK SC,sans-serif"><text x="40" y="48" font-size="27" fill="#20262e">${xml(result.question_id)} 开放回答词云</text><text x="40" y="82" font-size="18" fill="#5d6872">${xml(result.source_label)} · 非空文本 ${result.counts.nonempty_texts} 条 · 按包含词语的答卷数缩放</text>${text||'<text x="560" y="340" text-anchor="middle" font-size="24" fill="#666">当前没有可展示词语，请核对文本或停用词</text>'}<text x="40" y="616" font-size="16" fill="#5d6872">计数口径：每份答卷对同一词语计1次；全部出现次数见词频表</text><text x="40" y="646" font-size="15" fill="#6b747c">显示 ${boxes.length}/${result.terms.length} 个词 · 完整频次与规则请导出CSV/JSON</text></g></svg>`;
 }
 
 export function surveyWordcloudCsv(result){
@@ -85,20 +106,12 @@ export function surveyWordcloudCsv(result){
  return '\uFEFF'+[['word','documents','occurrences','nonempty_texts','dataset','question_id','input_digest'],...result.terms.map(t=>[t.word,t.documents,t.occurrences,result.counts.nonempty_texts,result.dataset,result.question_id,result.input_digest])].map(r=>r.map(cell).join(',')).join('\r\n');
 }
 
-export function surveyVisualResponse(state,url){
- const query=url.searchParams,expected=query.get('version');if(expected!==null&&String(state.version)!==expected)throw Object.assign(Error('答卷或问卷已更新，请重新生成图件'),{status:409});
- const result=buildSurveyWordcloud(state,{dataset:query.get('dataset')??'ai',question_id:query.get('question_id')??undefined,max_terms:query.has('max_terms')?Number(query.get('max_terms')):40,stop_words:query.has('stop_words')?query.get('stop_words').split(/\r?\n/).filter(Boolean):undefined,phrases:query.has('phrases')?query.get('phrases').split(/\r?\n/).filter(Boolean):undefined});
- if(query.has('input_digest')&&query.get('input_digest')!==result.input_digest)throw Object.assign(Error('图件输入已变化，请重新生成后导出'),{status:409});
- const format=query.get('format')??'json';if(!['json','svg','csv'].includes(format))fail('图件导出格式应为json、svg或csv');
- const content=format==='svg'?surveyWordcloudSvg(result):format==='csv'?surveyWordcloudCsv(result):JSON.stringify(result),type={json:'application/json; charset=utf-8',svg:'image/svg+xml; charset=utf-8',csv:'text/csv; charset=utf-8'}[format];
- return new Response(content,{headers:{'content-type':type,'cache-control':'no-store','x-content-type-options':'nosniff','x-content-sha256':sha(content),...format!=='json'?{'content-disposition':`attachment; filename="survey-${result.dataset}-${result.question_id.replace(/[^a-zA-Z0-9_-]/g,'_')}-wordcloud.${format}"`}:{}}});
-}
 
 import {readFile,writeFile,mkdir,stat} from 'node:fs/promises';
 import path from 'node:path';import {pathToFileURL}from'node:url';
 
 export async function wordcloudMain(argv){
- const args={};for(let i=0;i<argv.length;i+=2){if(!/^--(?:input|out|dataset|question|max-terms|stop-words|phrases)$/.test(argv[i])||!argv[i+1]||argv[i+1].startsWith('--'))throw Error('Usage: node survey_wordcloud.mjs --input records.json --out new-output-directory [--dataset ai|pilot|real] [--question Q15] [--stop-words words.txt] [--phrases phrases.txt]');args[argv[i].slice(2)]=argv[i+1];}
+ const args={};for(let i=0;i<argv.length;i+=2){if(!/^--(?:input|out|dataset|question|max-terms|stop-words|phrases|layout|palette|density)$/.test(argv[i])||!argv[i+1]||argv[i+1].startsWith('--'))throw Error('Usage: node survey_wordcloud.mjs --input records.json --out new-output-directory [--dataset ai|pilot|real] [--question Q15] [--stop-words words.txt] [--phrases phrases.txt]');args[argv[i].slice(2)]=argv[i+1];}
  if(!args.input||!args.out)throw Error('--input and --out are required');
  const input=path.resolve(args.input),out=path.resolve(args.out),info=await stat(input);if(info.size>16*1024*1024)throw Error('Input exceeds 16 MiB');const bytes=await readFile(input),value=JSON.parse(bytes.toString('utf8'));
  let state=value,dataset=args.dataset??value.dataset??value.source??'ai';
@@ -110,7 +123,7 @@ export async function wordcloudMain(argv){
   state={schema,responses:dataset==='real'?[]:records,realData:dataset==='real'?records:[],responseMeta:Object.fromEntries(records.map(r=>[r.id,{purpose:dataset==='pilot'?'pilot':'research'}]))};
  }
  const lines=async filename=>filename?(await readFile(path.resolve(filename),'utf8')).split(/\r?\n/).map(s=>s.trim()).filter(Boolean):undefined;
- const result=buildSurveyWordcloud(state,{dataset,question_id:args.question,max_terms:args['max-terms']?Number(args['max-terms']):40,stop_words:await lines(args['stop-words']),phrases:await lines(args.phrases)});result.input_file_sha256=sha(bytes);
+ const result=buildSurveyWordcloud(state,{dataset,question_id:args.question,max_terms:args['max-terms']?Number(args['max-terms']):40,stop_words:await lines(args['stop-words']),phrases:await lines(args.phrases),layout:args.layout,palette:args.palette,density:args.density});result.input_file_sha256=sha(bytes);
  const outputs={'wordcloud.svg':surveyWordcloudSvg(result),'word-frequency.csv':surveyWordcloudCsv(result),'wordcloud.json':JSON.stringify(result,null,2)+'\n'};
  await mkdir(out,{recursive:true});for(const name of Object.keys(outputs)){try{await stat(path.join(out,name));throw Error('Output exists; choose a new directory: '+name);}catch(e){if(e.code!=='ENOENT')throw e;}}
  for(const [name,content]of Object.entries(outputs))await writeFile(path.join(out,name),content);
