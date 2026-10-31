@@ -52,7 +52,7 @@ SOR的经典来源为Mehrabian与Russell《An Approach to Environmental Psycholo
 
 ## 可用的计算助手
 
-`scripts/survey_empirical.py`读取当前问卷导出、同来源`records`和代理建立的显式分析计划，生成11类可选结果表、JSON与输入/文件SHA清单。只计算计划中有实际支持的部分，不估计SEM或构造潜变量。
+`scripts/survey_empirical.py`读取当前问卷导出、同来源`records`和代理建立的显式分析计划，生成12类可选结果表与summary.md、JSON与输入/文件SHA清单。只计算计划中有实际支持的部分，不估计SEM或构造潜变量。
 
 ```text
 python scripts/survey_empirical.py --questionnaire 当前问卷.json --data 同版答卷.json --plan 分析计划.json --out 新结果目录
@@ -82,3 +82,12 @@ python scripts/survey_empirical.py --questionnaire 当前问卷.json --data 同�
 - Firth：[原始论文及摘要](https://doi.org/10.1093/biomet/80.1.27)，Biometrika 80(1):27–38，1993；[logistf官方软件资料](https://cran.r-project.org/package=logistf)。
 - 精确检验与条件OR：[SciPy Fisher文档](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.fisher_exact.html)、[条件OR区间](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats._result_classes.OddsRatioResult.confidence_interval.html)。
 - PLS重抽样：[SmartPLS方法说明](https://smartpls.com/documentation/algorithms-and-techniques/resampling-and-inference/bootstrapping/)。阅读其方法说明不记作实际运行软件。
+
+
+## 结果回写与缺失分母
+
+执行时按当前调查版本分页取得完整同来源记录，先对账记录数，再绑定实际问卷、答卷与计划。助手按同一份输入字节计算SHA与结果，保留CSV的完整精度；summary.md只作可读核对，不把其中的显示精度当作重算数据。
+
+画像比较只纳入该维度实际有合法编码且结局有效的记录，group_cells.csv保存逐组原始计数与分母；缺失画像不分配到任一地区或年龄组。多选题按实际有效的正向/负向组分别取分母；空组比例和p保持未定义，不补为0或1。允许零选择的多选空数组计为有效零选择，最小选择数大于0的空数组计为未答；与未出现字段分别核对。编辑器的eq、neq、in、notIn、contains、answered和all/any/not条件沿引用链求值，缺失或隐藏的父题不激活否定条件。
+
+运行后回读summary.md、results.json、CSV和manifest.json，核对来源、实际分母、计算状态与SHA。在Thevra中，使用read_file取得该summary.md当前SHA，再调用record_survey_stage，以当前expected_version、stage_id=analysis、实际path和expected_sha256登记工作稿；需要项目执行权限。输入已变则重新取得版本并复算，不能只把旧结果登记为新版本。报告按当前有效阶段读取并引用同目录CSV，表格保留有效n、区间口径和家族；单侧缺失、常量或不足组仍留下诊断。通用skill环境通过宿主文件工具将同版结果接回分析报告，不要求特定MCP。
